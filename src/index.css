@@ -13,6 +13,7 @@
   height: 100vh;
 }
 /* navbar styles */
+/* Start Desktop Nav Styles */
 .desktop-nav-bar {
   padding: 10px;
   min-height: 100px;
@@ -41,6 +42,44 @@ nav ul li {
   font-size: 1.15rem;
 }
 
+/* End Desktop Nav Styles */
+
+/* Start Movbile Nav Styles */
+.mobile-nav-bar {
+  position: absolute;
+  z-index: 999;
+  background-color: black;
+  color: white;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 40%;
+  transition: 0.5s ease-in-out;
+}
+.mobile-nav-bar .close-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 2rem;
+  cursor: pointer;
+  color: antiquewhite;
+}
+.mobile-nav-bar .logo {
+  text-align: center;
+}
+
+.mobile-nav-bar ul {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  height: 100%;
+  padding: 30px;
+}
+.mobile-nav-bar ul li {
+  color: antiquewhite;
+}
+/* End Mobile Nav Styles */
+
 /* footer styles */
 footer {
   background-color: #252525;
@@ -66,7 +105,7 @@ h1 {
   font-size: 4rem;
 }
 
-/* button styles */
+/* Start button styles */
 .btn {
   padding: 15px;
   font-family: inherit;
@@ -84,8 +123,14 @@ h1 {
   background: #ff8c38;
   font-size: 1.5rem;
 }
+.btn-secondary {
+  background-color: #161616;
+  color: #fff7ed;
+  font-size: 1.15rem;
+}
+/* End button styles */
 
-/* homepage styles */
+/* start homepage styles */
 
 .homepage {
   height: calc(100vh - 200px);
@@ -103,23 +148,14 @@ h1 {
   justify-content: center;
   color: white;
 }
-.homepage::after {
-  z-index: -1;
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  background-color: rgba(0, 0, 0, 0.6);
-}
 
 .homepage p {
   color: #c8c7c7;
   font-size: 1.75rem;
 }
+/* End Home page Sytles */
 
-/* About Page Styles */
+/* Start About Page Styles */
 .about-page .about-page__container {
   display: flex;
   flex-direction: column;
@@ -153,11 +189,9 @@ h1 {
   font-weight: bold;
   margin: 10px;
 }
-.btn-secondary {
-  background-color: #161616;
-  color: #fff7ed;
-  font-size: 1.15rem;
-}
+/* End about page styles */
+
+/* mobile styles */
 
 @media (max-width: 700px) {
   h1 {

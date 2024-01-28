@@ -1,4 +1,12 @@
-export default function MobileNavBar() {
+import { IoMdClose } from 'react-icons/io';
+import { Link } from 'react-router-dom';
+
+type MobileNavBarProps = {
+  active: boolean;
+  setActive: (active: boolean) => void;
+};
+
+export default function MobileNavBar({ active, setActive }: MobileNavBarProps) {
   return (
     <nav className='mobile-nav-bar'>
       <div className='logo'>
@@ -11,18 +19,21 @@ export default function MobileNavBar() {
       </div>
       <ul className='nav-links'>
         <li>
-          <a href='#'>About</a>
+          <Link to='/'>Home</Link>
         </li>
         <li>
-          <a href='#'>Vans</a>
+          <Link to='/about'>About</Link>
         </li>
         <li>
-          <a href='#'>FAQ</a>
-        </li>
-        <li>
-          <a href='#'>Contact</a>
+          <Link to='/vans'>Vans</Link>
         </li>
       </ul>
+      {active && (
+        <IoMdClose
+          onClick={() => setActive(false)}
+          className='close-icon'
+        />
+      )}
     </nav>
   );
 }

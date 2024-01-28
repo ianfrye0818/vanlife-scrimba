@@ -28,7 +28,12 @@ export default function Navbar() {
         className='menu-icon'
         onClick={() => setIsActive((prev) => !prev)}
       />
-      {isActive && <MobileNavBar />}
+      {isActive && (
+        <MobileNavBar
+          active={isActive}
+          setActive={setIsActive}
+        />
+      )}
     </header>
   );
 }
