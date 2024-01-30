@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './pages/Home';
+import Home from './pages/home/Home';
 import About from './pages/about/About';
-import Vans from './pages/Vans';
+import Vans from './pages/vans/Vans';
 
 export default function App() {
   return (

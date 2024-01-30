@@ -1,4 +1,4 @@
-import Layout from '../../Layout';
+import Layout from '../../layout';
 import CallToActionBox from './CallToActionBox';
 import heroImg from '../../assets/about-hero.png';
 

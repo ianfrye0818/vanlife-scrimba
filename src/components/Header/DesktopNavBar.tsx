@@ -1,4 +1,4 @@
-import NavLink from '../NavLink';
+import NavLink from './NavLinks';
 
 const navLinks = [
   { path: '/', text: 'Home' },
