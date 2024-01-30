@@ -1,40 +1,75 @@
-import { useState } from 'react';
-import { IoIosMenu, IoMdClose } from 'react-icons/io';
+import React, { useState } from 'react';
+import { IoIosMenu } from 'react-icons/io';
 import { Link } from 'react-router-dom';
+import Drawer from '@mui/material/Drawer';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
+import { Box } from '@mui/material';
 
 export default function MobileNavBar() {
-  const [isActive, setIsActive] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-  function toggleMobileNav() {
-    setIsActive(!isActive);
-  }
+  const toggleMobileNav = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
+    if (
+      event.type === 'keydown' &&
+      ((event as React.KeyboardEvent).key === 'Tab' ||
+        (event as React.KeyboardEvent).key === 'Shift')
+    ) {
+      return;
+    }
+    setIsOpen(open);
+  };
+
+  const list = (
+    <Box
+      sx={{
+        width: '50vw',
+        backgroundColor: 'black',
+        height: '100%',
+        color: 'white',
+        padding: '20px 0px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+      role='presentation'
+      onClick={toggleMobileNav(false)}
+      onKeyDown={toggleMobileNav(false)}
+    >
+      <List>
+        {['Home', 'About', 'Vans'].map((text) => (
+          <ListItem key={text}>
+            <ListItemButton>
+              <Link to={text.toLowerCase() === 'home' ? '/' : `/${text.toLowerCase()}`}>
+                <ListItemText primary={text} />
+              </Link>
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
   return (
     <div>
-      <nav className={`mobile-nav-bar ${isActive ? 'open' : ''}`}>
-        <div className='logo'>
-          <h1>VanLife</h1>
-        </div>
-        <ul className='nav-links'>
-          <li>
-            <Link to='/'>Home</Link>
-          </li>
-          <li>
-            <Link to='/about'>About</Link>
-          </li>
-          <li>
-            <Link to='/vans'>Vans</Link>
-          </li>
-        </ul>
-        <IoMdClose
-          className={`close-icon`}
-          onClick={toggleMobileNav}
-        />
+      <nav className={`mobile-nav-bar`}>
+        <Drawer
+          anchor='right'
+          open={isOpen}
+          onClose={toggleMobileNav(false)}
+        >
+          <div className='logo'>
+            <h1 style={{ textAlign: 'center', background: 'black', color: 'white' }}>VanLife</h1>
+          </div>
+          {list}
+        </Drawer>
       </nav>
 
-      {!isActive && (
+      {!isOpen && (
         <IoIosMenu
-          className={`menu-icon ${isActive ? 'open' : ''}`}
-          onClick={toggleMobileNav}
+          className={`menu-icon`}
+          onClick={toggleMobileNav(true)}
         />
       )}
     </div>
