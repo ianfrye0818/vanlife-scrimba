@@ -170,29 +170,7 @@ h1 {
 
 /* Start van page styles */
 /* Start Van Filter List Styles */
-.filter-options-container {
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  gap: 20px;
-  padding: 20px;
-}
 
-.filter-options-container input[type='checkbox'] {
-  display: none;
-}
-.van-card-type.filter-options {
-  background-color: #ffead0;
-  color: #4d4d4d;
-  flex: 1;
-  max-width: unset;
-  border: none;
-  cursor: pointer;
-}
-.van-card-type.filter-options.active {
-  background-color: #161616;
-  color: #ffead0;
-}
 .clear-filter-button {
   border: none;
   background-color: transparent;

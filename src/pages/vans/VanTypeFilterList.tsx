@@ -1,66 +1,55 @@
 import { useContext } from 'react';
 import { VanFilterContext } from './Vans';
 import { VanFilterEnum } from '../../types/VanEnums';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 export default function VanTypeFilterList() {
   const { vanFilter, setVanFilter } = useContext(VanFilterContext);
 
-  function handleFilterClick(filter: VanFilterEnum) {
-    if (vanFilter.includes(filter)) {
-      setVanFilter(vanFilter.filter((f: VanFilterEnum) => f !== filter));
-    } else {
-      setVanFilter([...vanFilter, filter]);
-    }
-  }
+  const handleChange = (event: SelectChangeEvent<typeof vanFilter>) => {
+    const {
+      target: { value },
+    } = event;
+    setVanFilter(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? (value.split(',') as VanFilterEnum[]) : value
+    );
+  };
 
-  const isFilterActive = (filter: VanFilterEnum) => vanFilter.includes(filter);
-
+  const values = [VanFilterEnum.rugged, VanFilterEnum.simple, VanFilterEnum.luxury];
   return (
-    <div className='filter-options-container'>
-      <label
-        className={`van-card-type filter-options ${
-          isFilterActive(VanFilterEnum.rugged) && 'active'
-        }`}
-      >
-        <input
-          type='checkbox'
-          checked={isFilterActive(VanFilterEnum.rugged)}
-          onChange={() => handleFilterClick(VanFilterEnum.rugged)}
-        />
-        Rugged
-      </label>
-      <label
-        className={`van-card-type filter-options ${
-          isFilterActive(VanFilterEnum.simple) && 'active'
-        }`}
-      >
-        <input
-          type='checkbox'
-          checked={isFilterActive(VanFilterEnum.simple)}
-          onChange={() => handleFilterClick(VanFilterEnum.simple)}
-        />
-        Simple
-      </label>
-      <label
-        className={`van-card-type filter-options ${
-          isFilterActive(VanFilterEnum.luxury) && 'active'
-        }`}
-      >
-        <input
-          type='checkbox'
-          checked={isFilterActive(VanFilterEnum.luxury)}
-          onChange={() => handleFilterClick(VanFilterEnum.luxury)}
-        />
-        Luxury
-      </label>
-      <div>
-        <button
-          className='clear-filter-button'
-          onClick={() => setVanFilter([])}
+    <div style={{ marginTop: '20px', display: 'flex', gap: '10px', alignItems: 'center' }}>
+      <FormControl sx={{ m: 1, width: 300 }}>
+        <InputLabel id='VanFilters-label'>Filter By Type</InputLabel>
+        <Select
+          labelId='VanFilters-label'
+          id='VanFilters'
+          multiple
+          value={vanFilter}
+          onChange={(e) => handleChange(e)}
+          input={<OutlinedInput label='VanFilters-label' />}
+          renderValue={(selected) => (selected as VanFilterEnum[]).join(', ')}
         >
-          Clear filters
-        </button>
-      </div>
+          {values.map((value) => (
+            <MenuItem
+              key={value}
+              value={value}
+            >
+              {value}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <button
+        className='clear-filter-button'
+        onClick={() => setVanFilter([])}
+      >
+        Clear Filters
+      </button>
     </div>
   );
 }
