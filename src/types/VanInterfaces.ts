@@ -4,7 +4,7 @@ export interface Van {
   id: string;
   name: string;
   price: number;
-  desription?: string;
+  description?: string;
   imageUrl?: string;
   type: string;
 }

@@ -2,7 +2,6 @@ import { useContext } from 'react';
 import { VanFilterContext } from './Vans';
 import { VanFilterEnum } from '../../types/VanEnums';
 import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
@@ -24,15 +23,19 @@ export default function VanTypeFilterList() {
   return (
     <div style={{ marginTop: '20px', display: 'flex', gap: '10px', alignItems: 'center' }}>
       <FormControl sx={{ m: 1, width: 300 }}>
-        <InputLabel id='VanFilters-label'>Filter By Type</InputLabel>
         <Select
-          labelId='VanFilters-label'
-          id='VanFilters'
           multiple
+          displayEmpty
           value={vanFilter}
           onChange={(e) => handleChange(e)}
-          input={<OutlinedInput label='VanFilters-label' />}
-          renderValue={(selected) => (selected as VanFilterEnum[]).join(', ')}
+          input={<OutlinedInput />}
+          renderValue={(selected) => {
+            if (selected.length === 0) {
+              return <em>Filter By Type</em>;
+            }
+
+            return selected.join(', ');
+          }}
         >
           {values.map((value) => (
             <MenuItem
