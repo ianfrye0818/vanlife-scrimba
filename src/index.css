@@ -213,6 +213,87 @@ h1 {
 }
 /* End About Page Styles */
 
+/* Start van page styles */
+.filter-options-container {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+}
+.van-card-type.filter-options {
+  background-color: #ffead0;
+  color: #4d4d4d;
+  flex: 1;
+  max-width: unset;
+  border: none;
+  cursor: pointer;
+}
+.van-card-type.filter-options.active {
+  background-color: #161616;
+  color: #ffead0;
+}
+/* start van list styles */
+
+.van-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 50px;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+/* start van card styles */
+.van-card {
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  height: 100%;
+}
+.van-card-image {
+  width: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+.van-card-text-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.van-card-price-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+}
+.van-card-price-label {
+  font-size: 1rem;
+  font-weight: 3400;
+}
+.van-card-type {
+  padding: 10px;
+  color: #ffead0;
+  display: inline;
+  max-width: 100px;
+  text-align: center;
+  border-radius: 10px;
+  font-size: 1.15rem;
+}
+.rugged {
+  background-color: #115e59;
+}
+.simple {
+  background-color: #e17654;
+}
+.luxury {
+  background-color: #161616;
+}
+
 /* mobile styles */
 @media (max-width: 700px) {
   h1 {
