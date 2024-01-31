@@ -2,18 +2,42 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Van } from '../../types/VanInterfaces';
 import Layout from '../../layout';
+import ReactLoading from 'react-loading';
 
 export default function VanDetails() {
   const [van, setVan] = useState<Van | null>(null);
+  const [loading, setloading] = useState(true);
   const { id } = useParams();
 
   useEffect(() => {
+    setloading(true);
     fetch(`/api/vans/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setVan(data.vans);
+        setloading(false);
       });
   }, [id]);
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          height: 'calc(100vh - 100px)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <ReactLoading
+          type='bubbles'
+          color='green'
+          height={300}
+          width={375}
+        />
+      </div>
+    );
+  }
 
   return (
     <Layout>
