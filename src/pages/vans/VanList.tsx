@@ -1,17 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
-
-interface Van {
-  id: string;
-  name: string;
-  price: number;
-  desription?: string;
-  imageUrl?: string;
-  type?: string;
-}
+import { VanFilterContext } from './Vans';
+import { Van } from '../../types/VanInterfaces';
+import { VanFilterEnum } from '../../types/VanEnums';
 
 export default function Vanslist() {
   const [vans, setVans] = useState<Van[]>([]);
+  const { vanFilter } = useContext(VanFilterContext);
   useEffect(() => {
     fetch('/api/vans')
       .then((res) => res.json())
@@ -20,9 +15,14 @@ export default function Vanslist() {
       });
   }, []);
 
+  const filteredVans =
+    vanFilter.length > 0
+      ? vans.filter((van) => vanFilter.includes(van.type as VanFilterEnum))
+      : vans;
+
   return (
     <div className='van-list'>
-      {vans.map((van, index) => (
+      {filteredVans.map((van, index) => (
         <Link
           to={`/vans/${van.id}`}
           key={index}

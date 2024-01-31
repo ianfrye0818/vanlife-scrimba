@@ -1,48 +1,30 @@
-import { useState } from 'react';
+import { Suspense, createContext, useState } from 'react';
 import Layout from '../../layout';
-import Vanslist from './vanslist';
+import Vanslist from './VanList';
+import VanTypeFilterList from './VanTypeFilterList';
+import { VanFilterContextType } from '../../types/VanInterfaces';
+import { VanFilterEnum } from '../../types/VanEnums';
+
+const VanFilterContext = createContext<VanFilterContextType>({} as VanFilterContextType);
 
 export default function Vans() {
-  const [activeFilters, setActiveFilters] = useState<number[]>([]);
-
-  const handleFilterClick = (index: number) => {
-    if (activeFilters.includes(index)) {
-      // If the filter is already active, remove it
-      setActiveFilters(activeFilters.filter((filter) => filter !== index));
-    } else {
-      setActiveFilters([...activeFilters, index]);
-    }
-  };
-
-  const isFilterActive = (index: number) => activeFilters.includes(index);
-
+  const [vanFilter, setVanFilter] = useState<VanFilterEnum[]>([]);
   return (
     <Layout>
-      <h1>Explore our van options</h1>
-      <div className='filter-options-container'>
-        <button
-          className={`van-card-type filter-options ${isFilterActive(0) && 'active'}`}
-          onClick={() => handleFilterClick(0)}
-        >
-          Rugged
-        </button>
-        <button
-          className={`van-card-type filter-options ${isFilterActive(1) && 'active'}`}
-          onClick={() => handleFilterClick(1)}
-        >
-          Simple
-        </button>
-        <button
-          className={`van-card-type filter-options ${isFilterActive(2) && 'active'}`}
-          onClick={() => handleFilterClick(2)}
-        >
-          Luxury
-        </button>
-        <div>
-          <button onClick={() => setActiveFilters([])}>Clear filters</button>
-        </div>
+      <div className='vans-page'>
+        <h1>Explore our van options</h1>
+        <VanFilterContext.Provider value={{ vanFilter, setVanFilter }}>
+          <VanTypeFilterList />
+          <Suspense fallback={<Loading />}>
+            <Vanslist />
+          </Suspense>
+        </VanFilterContext.Provider>
       </div>
-      <Vanslist />
     </Layout>
   );
 }
+
+function Loading() {
+  return <h2>🌀 Loading...</h2>;
+}
+export { VanFilterContext };

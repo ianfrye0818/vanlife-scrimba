@@ -5,7 +5,7 @@ export default function Navbar() {
   return (
     <header>
       <MobileNavBar />
-      <DesktopNavBar className='desktop-nav-bar' />
+      <DesktopNavBar />
     </header>
   );
 }

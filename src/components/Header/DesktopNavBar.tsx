@@ -6,13 +6,9 @@ const navLinks = [
   { path: '/vans', text: 'Vans' },
 ];
 
-type DesktopNavBarProps = {
-  className: string;
-};
-
-export default function DesktopNavBar({ className }: DesktopNavBarProps) {
+export default function DesktopNavBar() {
   return (
-    <nav className={className}>
+    <nav className='desktop-nav-bar'>
       <div className='logo'>#vanlife</div>
       <ul>
         {navLinks.map((link) => (

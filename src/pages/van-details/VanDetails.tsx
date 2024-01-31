@@ -1,14 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { Van } from '../../types/VanInterfaces';
 
-interface Van {
-  id: string;
-  name: string;
-  price: number;
-  desription?: string;
-  imageUrl?: string;
-  type?: string;
-}
 export default function VanDetails() {
   const [van, setVan] = useState<Van | null>(null);
   const { id } = useParams();

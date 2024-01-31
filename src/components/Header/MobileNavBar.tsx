@@ -53,7 +53,7 @@ export default function MobileNavBar() {
   );
   return (
     <div>
-      <nav className={`mobile-nav-bar`}>
+      <nav>
         <Drawer
           anchor='right'
           open={isOpen}
@@ -66,12 +66,23 @@ export default function MobileNavBar() {
         </Drawer>
       </nav>
 
-      {!isOpen && (
+      <div
+        style={{
+          zIndex: '999',
+          right: '20px',
+          top: '20px',
+          position: 'absolute',
+          marginLeft: 'auto',
+          backgroundColor: 'white',
+          padding: '3px',
+          borderRadius: '50%',
+        }}
+      >
         <IoIosMenu
           className={`menu-icon`}
           onClick={toggleMobileNav(true)}
         />
-      )}
+      </div>
     </div>
   );
 }
