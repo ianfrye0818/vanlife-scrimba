@@ -25,8 +25,8 @@ export default function MobileNavBar() {
   const list = (
     <Box
       sx={{
-        width: '50vw',
-        backgroundColor: 'black',
+        width: '60vw',
+        backgroundColor: '#1f1f1f',
         height: '100%',
         color: 'white',
         padding: '20px 0px',
@@ -60,7 +60,16 @@ export default function MobileNavBar() {
           onClose={toggleMobileNav(false)}
         >
           <div className='logo'>
-            <h1 style={{ textAlign: 'center', background: 'black', color: 'white' }}>VanLife</h1>
+            <h1
+              style={{
+                textAlign: 'center',
+                background: '#1f1f1f',
+                color: 'white',
+                padding: '20px 0',
+              }}
+            >
+              VanLife
+            </h1>
           </div>
           {list}
         </Drawer>
