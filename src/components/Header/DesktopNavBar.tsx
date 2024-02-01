@@ -13,29 +13,12 @@ export default function DesktopNavBar() {
   const authLinks = user ? (
     <>
       <NavLink
-        style={{
-          marginLeft: '10px',
-          color: 'white',
-          backgroundColor: '#ff8c38',
-          padding: '10px',
-          borderRadius: '5px',
-          textDecoration: 'none',
-        }}
-        path={'/dashboard'}
+        className='inline-block uppercase p-2 h-10 bg-orange-500 text-gray-100 ml-3 rounded-md font-bold'
+        path={'/host/dashboard'}
         text={'Dashboard'}
       />
       <button
-        style={{
-          color: 'white',
-          backgroundColor: '#1f1f1f',
-          padding: '11px',
-          borderRadius: '5px',
-          marginLeft: '10px',
-          textDecoration: 'none',
-          border: 'none',
-          cursor: 'pointer',
-          textTransform: 'uppercase',
-        }}
+        className='p-2 uppercase bg-gray-900 text-gray-100 rounded-md ml-3 font-bold'
         onClick={() => console.log('sign out')}
       >
         Sign Out
@@ -71,8 +54,13 @@ export default function DesktopNavBar() {
   );
   return (
     <nav className='desktop-nav-bar'>
-      <div className='logo'>
-        <Link to={'/'}>#vanlife</Link>
+      <div>
+        <Link
+          className='font-black text-4xl uppercase'
+          to={'/'}
+        >
+          #vanlife
+        </Link>
       </div>
       <ul>
         {navLinks.map((link) => (

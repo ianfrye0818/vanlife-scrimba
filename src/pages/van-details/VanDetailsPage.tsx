@@ -53,14 +53,7 @@ export default function VanDetails() {
   const van = data.vans;
   return (
     <Layout>
-      <div
-        style={{
-          textDecoration: 'underline',
-          marginBottom: '20px',
-          marginTop: '50px',
-          paddingLeft: '20px',
-        }}
-      >
+      <div className='underline mb-5 mt-14 pl-5'>
         <Link to='/vans'>{'<- Back to Vans'}</Link>
       </div>
       <div className='van-details-page'>
@@ -71,10 +64,10 @@ export default function VanDetails() {
           />
         </div>
         <div className='van-details-page-text-container'>
-          <div className={`van-card-type ${van.type}`}>{van.type}</div>
-          <h2>{van.name}</h2>
-          <p style={{ fontWeight: 'bold' }}>Price: ${van.price}/day</p>
-          <p style={{ lineHeight: '1.5rem' }}>{van.description}</p>
+          <div className={`van-card-type ${van.type} font-bold`}>{van.type}</div>
+          <h2 className='text-2xl font-bold'>{van.name}</h2>
+          <p className='font-bold'>Price: ${van.price}/day</p>
+          <p className='leading-6'>{van.description}</p>
           <button className='btn btn-primary'>Rent this van</button>
         </div>
       </div>

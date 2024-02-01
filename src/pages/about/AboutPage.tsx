@@ -5,22 +5,23 @@ import heroImg from '../../assets/about-hero.png';
 export default function About() {
   return (
     <Layout>
-      <main className='about-page'>
-        <div className='hero'>
+      <main>
+        <div>
           <img
+            className='w-full'
             src={heroImg}
-            alt=''
+            alt='Hero Img'
           />
         </div>
-        <div className='about-page__container'>
-          <h1>Don't squeeze in a sedan when you could relax in a van.</h1>
+        <div className='flex flex-col justify-between gap-12 px-24 mt-12'>
+          <h1 className='md:text-6xl'>Don't squeeze in a sedan when you could relax in a van.</h1>
           <section>
-            <p>
+            <p className='text-lg mb-3'>
               Our mission is to enliven your road trip with the perfect travel van rental. Our vans
               are recertified before each trip to ensure your travel plans can go off without a
               hitch. (Hitch costs extra 😉)
             </p>
-            <p>
+            <p className='text-lg'>
               Our team is full of vanlife enthusiasts who know firsthand the magic of touring the
               world on 4 wheels.
             </p>
@@ -28,7 +29,6 @@ export default function About() {
           <section>
             <CallToActionBox />
           </section>
-          <section className='about-call-to-action'></section>
         </div>
       </main>
     </Layout>
