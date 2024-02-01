@@ -47,7 +47,14 @@ export default function VanDetails() {
 
   return (
     <Layout>
-      <div style={{ textDecoration: 'underline', marginBottom: '20px' }}>
+      <div
+        style={{
+          textDecoration: 'underline',
+          marginBottom: '20px',
+          marginTop: '50px',
+          paddingLeft: '20px',
+        }}
+      >
         <Link to='/vans'>{'<- Back to Vans'}</Link>
       </div>
       <div className='van-details-page'>

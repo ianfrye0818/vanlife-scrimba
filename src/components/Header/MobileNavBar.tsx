@@ -74,7 +74,7 @@ export default function MobileNavBar() {
           position: 'absolute',
           marginLeft: 'auto',
           backgroundColor: 'white',
-          padding: '3px',
+          padding: '8px',
           borderRadius: '50%',
         }}
       >

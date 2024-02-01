@@ -242,6 +242,7 @@ h1 {
 }
 .van-details-page-img-container img {
   width: 100%;
+  border-radius: 20px;
 }
 .van-details-page-text-container {
   flex: 1;
