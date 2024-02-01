@@ -26,7 +26,7 @@ export default function DesktopNavBar() {
         <NavLink
           style={{
             color: 'white',
-            backgroundColor: 'blue',
+            backgroundColor: '#ff8c38',
             padding: '10px',
             borderRadius: '5px',
             marginLeft: '10px',
