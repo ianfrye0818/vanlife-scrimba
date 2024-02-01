@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { VanFilterContext } from './Vans';
+import { VanFilterContext } from './VansPage';
 import { Van } from '../../types/VanInterfaces';
 import { VanFilterEnum } from '../../types/VanEnums';
 import ReactLoading from 'react-loading';

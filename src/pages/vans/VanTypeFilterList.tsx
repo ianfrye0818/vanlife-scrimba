@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { VanFilterContext } from './Vans';
+import { VanFilterContext } from './VansPage';
 import { VanFilterEnum } from '../../types/VanEnums';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import MenuItem from '@mui/material/MenuItem';

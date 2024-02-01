@@ -1,6 +1,8 @@
 import { Button, TextField } from '@mui/material';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { FaGoogle } from 'react-icons/fa6';
+import { FaGithub } from 'react-icons/fa';
 
 export default function SignInForm() {
   const [email, setEmail] = useState('');
@@ -15,6 +17,33 @@ export default function SignInForm() {
         margin: 'auto',
       }}
     >
+      <Button
+        variant='outlined'
+        type='button'
+        sx={{
+          padding: '15px',
+          color: '#1f1f1f',
+          border: '1px solid #1f1f1f',
+          display: 'flex',
+          gap: '10px',
+        }}
+      >
+        <FaGoogle /> Sign In with Google
+      </Button>
+      <Button
+        variant='contained'
+        type='button'
+        sx={{
+          padding: '15px',
+          backgroundColor: '#1f1f1f',
+          '&:hover': { background: '#1f1f1fdd' },
+          color: '#f5f5f5',
+          display: 'flex',
+          gap: '10px',
+        }}
+      >
+        <FaGithub /> Sign In with Github
+      </Button>
       <TextField
         id='email'
         label='Email'
@@ -31,7 +60,7 @@ export default function SignInForm() {
         onChange={(e) => setPassword(e.target.value)}
       />
       <Button
-        sx={{ padding: '15px' }}
+        sx={{ padding: '15px', backgroundColor: '#ff8c38', '&:hover': { background: '#ff8c38dd' } }}
         type='submit'
         variant='contained'
       >
