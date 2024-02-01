@@ -1,26 +1,28 @@
-import { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Van } from '../../types/VanInterfaces';
-import Layout from '../../layout';
+//library imports
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import ReactLoading from 'react-loading';
+import { useQuery } from '@tanstack/react-query';
+//interface imports
+import { Van } from '../../types/VanInterfaces';
+//component imports
+import Layout from '../../layout';
 
 export default function VanDetails() {
-  const [van, setVan] = useState<Van | null>(null);
-  const [loading, setloading] = useState(true);
   const { id } = useParams();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    setloading(true);
-    fetch(`/api/vans/${id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setVan(data.vans);
-      })
-      .finally(() => setloading(false));
-  }, [id]);
+  const { data, error, isLoading } = useQuery({
+    queryKey: ['van', id],
+    queryFn: async () => {
+      const { data } = await axios.get<{ vans: Van }>(`/api/vans/${id}`);
+      return data;
+    },
+  });
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div
         style={{
@@ -40,11 +42,15 @@ export default function VanDetails() {
     );
   }
 
-  if (!van) {
+  if (error) {
+    return <div>Something went wrong</div>;
+  }
+  if (data === null || data === undefined) {
     navigate('/not-found');
     return null;
   }
 
+  const van = data.vans;
   return (
     <Layout>
       <div

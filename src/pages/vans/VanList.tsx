@@ -1,30 +1,25 @@
-import { useEffect, useState, useContext } from 'react';
+import { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { VanFilterContext } from './VansPage';
+import axios from 'axios';
+import ReactLoading from 'react-loading';
 import { Van } from '../../types/VanInterfaces';
 import { VanFilterEnum } from '../../types/VanEnums';
-import ReactLoading from 'react-loading';
 
 export default function Vanslist() {
-  const [vans, setVans] = useState<Van[]>([]);
-  const [loading, setLoading] = useState(false);
   const { vanFilter } = useContext(VanFilterContext);
-  useEffect(() => {
-    setLoading(true);
-    fetch('/api/vans')
-      .then((res) => res.json())
-      .then((data) => {
-        setLoading(false);
-        setVans(data.vans);
-      });
-  }, []);
+  const navigate = useNavigate();
+  const { data, error, isLoading } = useQuery({
+    queryKey: ['vans'],
+    queryFn: async () => {
+      const { data } = await axios.get<{ vans: Van[] }>('/api/vans');
+      return data;
+    },
+  });
 
-  const filteredVans =
-    vanFilter.length > 0
-      ? vans.filter((van) => vanFilter.includes(van.type as VanFilterEnum))
-      : vans;
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div
         style={{
@@ -43,6 +38,22 @@ export default function Vanslist() {
       </div>
     );
   }
+
+  if (error) {
+    return <div>Something went wrong</div>;
+  }
+
+  if (data === null || data === undefined) {
+    navigate('/not-found');
+    return null;
+  }
+
+  const vans = data.vans;
+  const filteredVans =
+    vanFilter.length > 0
+      ? vans.filter((van) => vanFilter.includes(van.type as VanFilterEnum))
+      : vans;
+
   return (
     <div className='van-list'>
       {filteredVans.map((van, index) => (

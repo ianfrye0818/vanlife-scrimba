@@ -3,8 +3,10 @@ export default function NotFound() {
   return (
     <div style={styles.container}>
       <div style={{ textAlign: 'center' }}>
-        <h1 style={styles.heading}>404</h1>
-        <p style={styles.text}>Oops! The page you're looking for could not be found.</p>
+        <h1 style={styles.heading}>
+          Oops! <br /> It seems we've hit a snag!
+        </h1>
+        <p style={styles.text}>The page you're looking for could not be found.</p>
         <Link
           to='/'
           style={styles.link}
