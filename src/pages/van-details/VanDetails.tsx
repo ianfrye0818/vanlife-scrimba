@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Van } from '../../types/VanInterfaces';
 import Layout from '../../layout';
 import ReactLoading from 'react-loading';
@@ -8,6 +8,7 @@ export default function VanDetails() {
   const [van, setVan] = useState<Van | null>(null);
   const [loading, setloading] = useState(true);
   const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setloading(true);
@@ -15,8 +16,8 @@ export default function VanDetails() {
       .then((res) => res.json())
       .then((data) => {
         setVan(data.vans);
-        setloading(false);
-      });
+      })
+      .finally(() => setloading(false));
   }, [id]);
 
   if (loading) {
@@ -39,20 +40,28 @@ export default function VanDetails() {
     );
   }
 
+  if (!van) {
+    navigate('/not-found');
+    return null;
+  }
+
   return (
     <Layout>
+      <div style={{ textDecoration: 'underline', marginBottom: '20px' }}>
+        <Link to='/vans'>{'<- Back to Vans'}</Link>
+      </div>
       <div className='van-details-page'>
         <div className='van-details-page-img-container'>
           <img
-            src={van?.imageUrl}
-            alt={van?.name}
+            src={van.imageUrl}
+            alt={van.name}
           />
         </div>
         <div className='van-details-page-text-container'>
-          <div className={`van-card-type ${van?.type}`}>{van?.type}</div>
-          <h2>{van?.name}</h2>
-          <p style={{ fontWeight: 'bold' }}>Price: ${van?.price}/day</p>
-          <p style={{ lineHeight: '1.5rem' }}>{van?.description}</p>
+          <div className={`van-card-type ${van.type}`}>{van.type}</div>
+          <h2>{van.name}</h2>
+          <p style={{ fontWeight: 'bold' }}>Price: ${van.price}/day</p>
+          <p style={{ lineHeight: '1.5rem' }}>{van.description}</p>
           <button className='btn btn-primary'>Rent this van</button>
         </div>
       </div>
