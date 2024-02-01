@@ -1,5 +1,4 @@
-import React from 'react';
-
+import HostPageLayout from '../HostPageLayout';
 export default function IncomePage() {
-  return <div>IncomePage</div>;
+  return <HostPageLayout>Income</HostPageLayout>;
 }

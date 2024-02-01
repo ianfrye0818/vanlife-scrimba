@@ -1,5 +1,5 @@
-import React from 'react';
+import HostPageLayout from '../../HostPageLayout';
 
 export default function HostVanDetails() {
-  return <div>HostVanDetails</div>;
+  return <HostPageLayout>Van Details</HostPageLayout>;
 }

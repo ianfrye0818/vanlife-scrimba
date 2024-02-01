@@ -1,5 +1,5 @@
-import React from 'react';
+import HostPageLayout from '../HostPageLayout';
 
 export default function HostVansPage() {
-  return <div>HostVansPage</div>;
+  return <HostPageLayout>Vans </HostPageLayout>;
 }

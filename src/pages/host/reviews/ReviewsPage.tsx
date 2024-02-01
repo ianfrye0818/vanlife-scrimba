@@ -1,5 +1,4 @@
-import React from 'react';
-
+import HostPageLayout from '../HostPageLayout';
 export default function ReviewsPage() {
-  return <div>ReviewsPage</div>;
+  return <HostPageLayout>Reviews</HostPageLayout>;
 }
