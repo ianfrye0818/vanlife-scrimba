@@ -9,10 +9,12 @@ import { useQuery } from '@tanstack/react-query';
 import { Van } from '../../types/VanInterfaces';
 //component imports
 import Layout from '../../layout';
+import { useCart } from '../../hooks/useCartContext';
 
 export default function VanDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { dispatch } = useCart();
 
   const { data, error, isLoading } = useQuery({
     queryKey: ['van', id],
@@ -21,6 +23,12 @@ export default function VanDetails() {
       return data;
     },
   });
+
+  function addToCart() {
+    if (data) {
+      dispatch({ type: 'ADD', payload: data.vans });
+    }
+  }
 
   if (isLoading) {
     return (
@@ -51,6 +59,7 @@ export default function VanDetails() {
   }
 
   const van = data.vans;
+
   return (
     <Layout>
       <div className='underline mb-5 mt-14 pl-5'>
@@ -73,7 +82,12 @@ export default function VanDetails() {
           <h2 className='text-2xl font-bold'>{van.name}</h2>
           <p className='font-bold'>Price: ${van.price}/day</p>
           <p className='leading-6'>{van.description}</p>
-          <button className='btn btn-primary'>Rent this van</button>
+          <button
+            onClick={addToCart}
+            className='btn btn-primary'
+          >
+            Rent this van
+          </button>
         </div>
       </div>
     </Layout>

@@ -1,8 +1,11 @@
 import { useFormContext } from 'react-hook-form';
 import { CardTitle, CardHeader, CardContent, Card, CardFooter } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
+import { useCart } from '../../hooks/useCartContext';
 export default function OrderSummaryCard() {
   const { handleSubmit } = useFormContext<FormData>();
+  const { cart } = useCart();
+  console.log(cart);
 
   //TODO:Replace with actual backend logic to handle payment
   function onSubmit<FormData>(data: FormData) {
@@ -15,19 +18,16 @@ export default function OrderSummaryCard() {
           <CardTitle>Order Summary</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className='space-y-4'>
+          {cart.map((item) => (
             <div className='flex justify-between'>
-              <span>Product 1 x 2</span>
-              <span>$99.98</span>
+              <span>{item.name} x 2</span>
+              <span>${item.price}</span>
             </div>
-            <div className='flex justify-between'>
-              <span>Product 2 x 1</span>
-              <span>$49.99</span>
-            </div>
-            <div className='flex justify-between font-bold'>
-              <span>Total</span>
-              <span>$149.97</span>
-            </div>
+          ))}
+
+          <div className='flex justify-between font-bold'>
+            <span>Total</span>
+            <span>$149.97</span>
           </div>
         </CardContent>
         <CardFooter>
