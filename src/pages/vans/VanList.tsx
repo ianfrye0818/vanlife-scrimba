@@ -22,12 +22,13 @@ export default function Vanslist() {
   if (isLoading) {
     return (
       <div
-        style={{
-          height: 'calc(100vh - 100px)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
+        className='h-[calc(100vh-100px)] flex justify-center items-center'
+        // style={{
+        //   height: 'calc(100vh - 100px)',
+        //   display: 'flex',
+        //   justifyContent: 'center',
+        //   alignItems: 'center',
+        // }}
       >
         <ReactLoading
           type='bubbles'
@@ -55,26 +56,30 @@ export default function Vanslist() {
       : vans;
 
   return (
-    <div className='van-list'>
+    <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-col-4 gap-5 p-0 w-full max-w-5xl my-16 mx-auto'>
       {filteredVans.map((van, index) => (
         <Link
           to={`/vans/${van.id}`}
           key={index}
         >
-          <div className='van-card'>
+          <div className='p-5 rounded-xl flex flex-col justify-between gap-3 h-full md:border-1 md:border'>
             <img
-              className='van-card-image'
+              className='w-full bg-cover rounded-xl'
               src={van.imageUrl}
               alt={van.name}
             />
-            <div className='van-card-text-container'>
-              <h2 className='van-card-title'>{van.name}</h2>
-              <div className='van-card-price-container'>
-                <span className='van-card-price'>${van.price}</span>
-                <span className='van-card-price-label'>/day</span>
+            <div className='flex justify-between items-center'>
+              <h2>{van.name}</h2>
+              <div className='flex flex-col justify-center items-end text-3xl'>
+                <span>${van.price}</span>
+                <span className='text-lg'>/day</span>
               </div>
             </div>
-            <div className={`van-card-type ${van.type}`}>{van.type}</div>
+            <div
+              className={`p-3 text-[#ffead0] inline max-w-28 text-center rounded-xl text-xl ${van.type}`}
+            >
+              {van.type}
+            </div>
           </div>
         </Link>
       ))}

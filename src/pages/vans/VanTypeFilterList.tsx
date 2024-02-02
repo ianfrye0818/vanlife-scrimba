@@ -48,7 +48,7 @@ export default function VanTypeFilterList() {
         </Select>
       </FormControl>
       <button
-        className='clear-filter-button'
+        className='border-none bg-transparent p-0 cursor-pointer underline'
         onClick={() => setVanFilter([])}
       >
         Clear Filters

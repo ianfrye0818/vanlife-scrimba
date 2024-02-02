@@ -56,15 +56,20 @@ export default function VanDetails() {
       <div className='underline mb-5 mt-14 pl-5'>
         <Link to='/vans'>{'<- Back to Vans'}</Link>
       </div>
-      <div className='van-details-page'>
-        <div className='van-details-page-img-container'>
+      <div className='flex flex-col gap-8 p-3 lg:flex-row min-h-screen md:h-auto mb-12 pb-9'>
+        <div className='flex-1'>
           <img
+            className='w-full bg-cover rounded-2xl'
             src={van.imageUrl}
             alt={van.name}
           />
         </div>
-        <div className='van-details-page-text-container'>
-          <div className={`van-card-type ${van.type} font-bold`}>{van.type}</div>
+        <div className='flex-1 md:p-12 flex flex-col gap-10'>
+          <div
+            className={`p-3 text-[#ffead0] inline max-w-28 text-center rounded-xl text-xl ${van.type}`}
+          >
+            {van.type}
+          </div>
           <h2 className='text-2xl font-bold'>{van.name}</h2>
           <p className='font-bold'>Price: ${van.price}/day</p>
           <p className='leading-6'>{van.description}</p>

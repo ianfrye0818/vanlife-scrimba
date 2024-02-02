@@ -12,7 +12,7 @@ export default function Vans() {
   return (
     <Layout>
       <div className='vans-page'>
-        <h1 className='w-8/12 md:w-full'>Explore Our Van Options</h1>
+        <h1 className='w-8/12 text-3xl lg:text-6xl font-bold md:w-full'>Explore Our Van Options</h1>
         <VanFilterContext.Provider value={{ vanFilter, setVanFilter }}>
           <VanTypeFilterList />
           <Vanslist />

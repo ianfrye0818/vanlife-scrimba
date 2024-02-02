@@ -14,7 +14,9 @@ export default function About() {
           />
         </div>
         <div className='flex flex-col justify-between gap-12 p-4 md:px-24 mt-12'>
-          <h1 className='md:text-6xl'>Don't squeeze in a sedan when you could relax in a van.</h1>
+          <h1 className='text-3xl md:text-6xl font-bold'>
+            Don't squeeze in a sedan when you could relax in a van.
+          </h1>
           <section>
             <p className='text-lg mb-3'>
               Our mission is to enliven your road trip with the perfect travel van rental. Our vans

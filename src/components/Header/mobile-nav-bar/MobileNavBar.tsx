@@ -26,26 +26,15 @@ export default function MobileNavBar() {
           onClose={toggleMobileNav(false)}
         >
           <div className='logo'>
-            <h1 className='text-center bg-gray-900 text-white py-5'>VanLife</h1>
+            <h1 className='text-center bg-[#1f1f1f] text-white py-5'>VanLife</h1>
           </div>
           <MobileNavBarLinks toggleMobileNav={toggleMobileNav} />
         </Drawer>
       </nav>
 
-      <div
-        style={{
-          zIndex: '999',
-          right: '20px',
-          top: '20px',
-          position: 'absolute',
-          marginLeft: 'auto',
-          backgroundColor: 'white',
-          padding: '8px',
-          borderRadius: '50%',
-        }}
-      >
+      <div className='md:hidden z-50 absolute right-4 top-4 ml-auto bg-white p-1 rounded-full '>
         <IoIosMenu
-          className={`menu-icon`}
+          className={`z-50 h-9 w-9 text-3xl cursor-pointer text-orange-600`}
           onClick={toggleMobileNav(true)}
         />
       </div>

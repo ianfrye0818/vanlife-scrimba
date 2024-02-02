@@ -27,33 +27,19 @@ export default function DesktopNavBar() {
   ) : (
     <>
       <NavLink
-        style={{
-          color: 'white',
-          backgroundColor: '#ff8c38',
-          padding: '10px',
-          borderRadius: '5px',
-          marginLeft: '10px',
-          textDecoration: 'none',
-        }}
+        className='text-white bg-orange-500 p-2 rounded-md font-bold ml-2 no-underline'
         path={'/sign-in'}
         text={'Sign In'}
       />
       <NavLink
-        style={{
-          color: 'white',
-          backgroundColor: '#6c757d',
-          padding: '10px',
-          borderRadius: '5px',
-          marginLeft: '10px',
-          textDecoration: 'none',
-        }}
+        className='text-white bg-gray-600 p-2 rounded-md font-bold ml-2 no-underline'
         path={'/sign-up'}
         text={'Sign Up'}
       />
     </>
   );
   return (
-    <nav className='desktop-nav-bar'>
+    <nav className='hidden md:flex p-3 min-h-28 items-center'>
       <div>
         <Link
           className='font-black text-4xl uppercase'
@@ -62,9 +48,10 @@ export default function DesktopNavBar() {
           #vanlife
         </Link>
       </div>
-      <ul>
+      <ul className='flex gap-6 mr-5 text-xl ml-auto list-none items-center'>
         {navLinks.map((link) => (
           <NavLink
+            className='text-[#5a5858] text-xl'
             key={link.path}
             path={link.path}
             text={link.text}
