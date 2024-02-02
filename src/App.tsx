@@ -14,6 +14,7 @@ import ReviewsPage from './pages/host/reviews/ReviewsPage';
 import HostVanDetailsPage from './pages/host/vans/van-details/HostVanDetails';
 import CheckOutPage from './pages/checkout/CheckOutPage';
 import { CartProvider } from './hooks/useCartContext';
+import { Toaster } from 'sonner';
 
 const queryClient = new QueryClient();
 
@@ -33,7 +34,7 @@ const router = createBrowserRouter([
   { path: '/host/dashboard', element: <DashboardPage /> },
   { path: '/host/vans', element: <HostVanDetailsPage /> },
   { path: '/host/vans/:id', element: <HostVanDetailsPage /> },
-  { path: '/checkout', element: <CheckOutPage /> },
+  { path: '/cart', element: <CheckOutPage /> },
 ]);
 
 export default function App() {
@@ -41,6 +42,7 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <CartProvider>
         <RouterProvider router={router} />
+        <Toaster />
       </CartProvider>
     </QueryClientProvider>
   );

@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import ReactLoading from 'react-loading';
 import { useQuery } from '@tanstack/react-query';
+import { toast } from 'sonner';
+
 //interface imports
 import { Van } from '../../types/VanInterfaces';
 //component imports
@@ -26,8 +28,15 @@ export default function VanDetails() {
 
   function addToCart() {
     if (data) {
-      dispatch({ type: 'ADD', payload: data.vans });
+      dispatch({ type: 'ADD', payload: { ...data.vans, quantity: 1 } });
     }
+    toast('Item Added to Cart', {
+      description: `${van.name} was added to your cart.`,
+      action: {
+        label: 'Remove',
+        onClick: () => dispatch({ type: 'REMOVE', payload: { id: van.id } }),
+      },
+    });
   }
 
   if (isLoading) {
@@ -59,7 +68,6 @@ export default function VanDetails() {
   }
 
   const van = data.vans;
-
   return (
     <Layout>
       <div className='underline mb-5 mt-14 pl-5'>
@@ -88,6 +96,7 @@ export default function VanDetails() {
           >
             Rent this van
           </button>
+          <Link to='/cart'>Go To Cart</Link>
         </div>
       </div>
     </Layout>

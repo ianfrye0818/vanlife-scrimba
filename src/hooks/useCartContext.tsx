@@ -1,15 +1,8 @@
+/* eslint-disable no-case-declarations */
 import { createContext, useReducer, useContext, ReactNode, Dispatch } from 'react';
+import { CartItem } from '../types/CartItemInterface';
 
 // Define types for your items in the cart
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  description?: string;
-  imgUrl?: string;
-  type?: string;
-  // Add other properties as needed
-}
 
 // Define the action types
 type CartAction = { type: 'ADD'; payload: CartItem } | { type: 'REMOVE'; payload: { id: string } };
@@ -27,6 +20,14 @@ const CartContext = createContext<CartContextProps | undefined>(undefined);
 const cartReducer = (state: CartItem[], action: CartAction): CartItem[] => {
   switch (action.type) {
     case 'ADD':
+      const itemInCart = state.find((item) => item.id === action.payload.id);
+      if (itemInCart) {
+        return state.map((item) =>
+          item.id === action.payload.id
+            ? { ...item, quantity: item.quantity + 1, price: item.price * item.quantity }
+            : item
+        );
+      }
       return [...state, action.payload];
     case 'REMOVE':
       return state.filter((item) => item.id !== action.payload.id);

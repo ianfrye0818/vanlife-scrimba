@@ -5,10 +5,15 @@ import { useCart } from '../../hooks/useCartContext';
 export default function OrderSummaryCard() {
   const { handleSubmit } = useFormContext<FormData>();
   const { cart } = useCart();
-  console.log(cart);
 
   //TODO:Replace with actual backend logic to handle payment
+
+  const total = cart.reduce((reducer, item) => {
+    return reducer + item.price;
+  }, 0);
+
   function onSubmit<FormData>(data: FormData) {
+    data = { ...data, cart, total };
     console.log(data);
   }
   return (
@@ -20,14 +25,16 @@ export default function OrderSummaryCard() {
         <CardContent>
           {cart.map((item) => (
             <div className='flex justify-between'>
-              <span>{item.name} x 2</span>
+              <span>
+                {item.name} x {item.quantity}
+              </span>
               <span>${item.price}</span>
             </div>
           ))}
 
           <div className='flex justify-between font-bold'>
             <span>Total</span>
-            <span>$149.97</span>
+            <span>{total.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span>
           </div>
         </CardContent>
         <CardFooter>

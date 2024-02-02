@@ -1,3 +1,5 @@
+import { CartItem } from './CartItemInterface';
+
 export interface FormData {
   name: string;
   street: string;
@@ -9,4 +11,5 @@ export interface FormData {
   cardNumber: string;
   expiryDate: string;
   cvc: string;
+  itemsOrdered?: CartItem[];
 }
