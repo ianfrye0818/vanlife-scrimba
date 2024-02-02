@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 export default function Home() {
   return (
     <Layout>
-      <main className='homepage'>
+      <main className='h-screen relative z-2 md:p-28 flex flex-col items-center gap-8 justify-center text-white homepage'>
         <h1 className='text-4xl md:text-7xl font-bold '>
           You got the travel plans, we got the travel vans.
         </h1>

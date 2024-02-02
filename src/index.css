@@ -46,20 +46,10 @@
 
 /* start homepage styles */
 .homepage {
-  height: calc(100vh - 100px);
-  position: relative;
   background-image: url('/public/homepage-bg.png');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  z-index: 2;
-  padding: 100px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2rem;
-  justify-content: center;
-  color: white;
 }
 /* end homepage style*/
 

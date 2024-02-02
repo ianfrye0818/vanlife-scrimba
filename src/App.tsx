@@ -12,6 +12,7 @@ import DashboardPage from './pages/host/dashboard/DashboardPage';
 import IncomePage from './pages/host/income/IncomePage';
 import ReviewsPage from './pages/host/reviews/ReviewsPage';
 import HostVanDetailsPage from './pages/host/vans/van-details/HostVanDetails';
+import CheckOutPage from './pages/checkout/CheckOutPage';
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ const router = createBrowserRouter([
   { path: '/host/dashboard', element: <DashboardPage /> },
   { path: '/host/vans', element: <HostVanDetailsPage /> },
   { path: '/host/vans/:id', element: <HostVanDetailsPage /> },
+  { path: '/checkout', element: <CheckOutPage /> },
 ]);
 
 export default function App() {

@@ -3,16 +3,17 @@ import { Link, useLocation } from 'react-router-dom';
 type NavLinkListProps = {
   text: string;
   path: string;
+  className?: string;
   [key: string]: any;
 };
 
-export default function HostNavLinks({ path, text, ...rest }: NavLinkListProps) {
+export default function HostNavLinks({ path, text, className = '', ...rest }: NavLinkListProps) {
   const location = useLocation();
   const { pathname } = location;
   return (
     <Link
       {...rest}
-      className={pathname === path ? 'active' : ''}
+      className={`${pathname.startsWith(path) && 'underline'} ${className}`}
       to={path}
     >
       {text}

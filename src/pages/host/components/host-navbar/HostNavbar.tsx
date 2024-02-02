@@ -9,7 +9,7 @@ const navLinks = [
 export default function HostNavBar() {
   return (
     <nav style={{ padding: '20px' }}>
-      <ul>
+      <ul className='flex gap-3'>
         {navLinks.map((link) => (
           <HostNavLinks
             key={link.path}
