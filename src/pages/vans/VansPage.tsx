@@ -1,10 +1,16 @@
+//library imports
+import { createContext, useState } from 'react';
+
+//componet imports
 import Layout from '../../layout';
 import Vanslist from './VanList';
 import VanTypeFilterList from './VanTypeFilterList';
+
+//type imports
 import { VanFilterContextType } from '../../types/VanInterfaces';
 import { VanFilterEnum } from '../../types/VanEnums';
-import { createContext, useState } from 'react';
 
+//create context for the filter so that it can be used in the filter list and the van list
 export const VanFilterContext = createContext<VanFilterContextType>({} as VanFilterContextType);
 
 export default function Vans() {

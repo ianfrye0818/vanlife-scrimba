@@ -1,8 +1,15 @@
-import { Button, TextField } from '@mui/material';
+//library imports
 import { useState } from 'react';
-import { FaGithub, FaGoogle } from 'react-icons/fa6';
 import { Link } from 'react-router-dom';
 
+//component imports
+import { Button, TextField } from '@mui/material';
+import { FaGithub, FaGoogle } from 'react-icons/fa6';
+
+//TODO: add form validation
+//TODO: add form submission
+//TODO: refactor to use tailwind
+//TODO: Refactor to use shadcn ui for more consistent styling
 export default function SignUpForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

@@ -1,3 +1,6 @@
+//TODO - remove this file once server is set up and running
+
+// MOCK SERVER
 import { createServer, Model } from 'miragejs';
 
 createServer({

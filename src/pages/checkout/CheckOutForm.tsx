@@ -1,9 +1,17 @@
-import { CardTitle, CardHeader, CardContent, Card } from '../../components/ui/card';
-import { Label } from '../../components/ui/label';
-import { Input } from '../../components/ui/input';
-import { FormData } from '../../types/FormDataInterfaces';
+//library imports
 import { useFormContext } from 'react-hook-form';
 
+//component imports
+import { Label } from '../../components/ui/label';
+import { CardTitle, CardHeader, CardContent, Card } from '../../components/ui/card';
+import { Input } from '../../components/ui/input';
+
+//type imports
+import { FormData } from '../../types/FormDataInterfaces';
+
+//TODO - could maybe refactor this to make it more readable - could create an object with all the form inputs and then map over them to create the form
+
+//Check out form - incldues all imputs for checkout - name, street, city, state, zip, email, cardName, cardNumber, expiryDate, cvc
 export default function CheckOutForm() {
   const {
     register,

@@ -13,6 +13,7 @@ import { Van } from '../../types/VanInterfaces';
 import Layout from '../../layout';
 import { useCart } from '../../hooks/useCartContext';
 
+//TODO: refactor this component to be more readable
 export default function VanDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -41,14 +42,7 @@ export default function VanDetails() {
 
   if (isLoading) {
     return (
-      <div
-        style={{
-          height: 'calc(100vh - 100px)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
+      <div className='h-screen flex items-center justify-center'>
         <ReactLoading
           type='bubbles'
           color='green'

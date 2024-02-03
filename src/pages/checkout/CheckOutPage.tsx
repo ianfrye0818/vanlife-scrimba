@@ -1,9 +1,13 @@
-import Layout from '../../layout';
+//library imports
 import { useForm, FormProvider } from 'react-hook-form';
+
+//component imports
+import Layout from '../../layout';
 import CheckOutForm from './CheckOutForm';
 import OrderSummaryCard from './OrderSummaryCard';
 
 export default function Component() {
+  //creates context to be able to pass down to the form components
   const methods = useForm();
 
   return (

@@ -1,4 +1,9 @@
+//library imports
 import { Link } from 'react-router-dom';
+
+//component imports
+
+//TODO: can make this look a bit better
 export default function NotFound() {
   return (
     <div>

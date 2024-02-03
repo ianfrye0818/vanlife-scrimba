@@ -1,5 +1,8 @@
-import Layout from '../../layout';
+//library imports
 import { Link } from 'react-router-dom';
+
+//component imports
+import Layout from '../../layout';
 
 export default function Home() {
   return (

@@ -1,11 +1,18 @@
+//library imports
+import { Link } from 'react-router-dom';
+
+//component imports
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import { Link } from 'react-router-dom';
+
 export default function MobileNavBarAuthLinks() {
   //TODO: Replace null with user object
   const user = null;
 
+  //Creates auth links when the user is logged in or signin / sign up links when the user is not logged in.
+
+  //uses Material UI List and ListItem components to create the links - will refactor to ShadCN UI once project is complete for more consistent styling.
   const authLinks = user ? (
     <>
       <ListItem>

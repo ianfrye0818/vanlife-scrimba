@@ -6,6 +6,7 @@ import MobileNavBarLinks from './MobileNavBarLinks';
 export default function MobileNavBar() {
   const [isOpen, setIsOpen] = useState(false);
 
+  //Set's the state of the mobile nav to open or close
   const toggleMobileNav = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
     if (
       event.type === 'keydown' &&
@@ -17,6 +18,7 @@ export default function MobileNavBar() {
     setIsOpen(open);
   };
 
+  //Uses material UI Drawer to create a mobile nav bar - swtiched to ShadCN UI halfway through the project - will come back and refactor to their drawer once project is complete.
   return (
     <div>
       <nav>

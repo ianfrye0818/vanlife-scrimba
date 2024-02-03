@@ -1,14 +1,22 @@
+//library imports
 import { useContext } from 'react';
+
+//component imports
 import { VanFilterContext } from './VansPage';
-import { VanFilterEnum } from '../../types/VanEnums';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
+//type imports
+import { VanFilterEnum } from '../../types/VanEnums';
+
+//TODO: refactor to use shadow ui for more consistent styling
 export default function VanTypeFilterList() {
+  //get the vanFilter and setVanFilter from the context
   const { vanFilter, setVanFilter } = useContext(VanFilterContext);
 
+  //handle the change of the selected filter
   const handleChange = (event: SelectChangeEvent<typeof vanFilter>) => {
     const {
       target: { value },
@@ -21,7 +29,7 @@ export default function VanTypeFilterList() {
 
   const values = [VanFilterEnum.rugged, VanFilterEnum.simple, VanFilterEnum.luxury];
   return (
-    <div style={{ marginTop: '20px', display: 'flex', gap: '10px', alignItems: 'center' }}>
+    <div className='mt-5 flex gap-3 items-center'>
       <FormControl sx={{ m: 1, width: 300 }}>
         <Select
           multiple

@@ -1,16 +1,20 @@
+//library imporrts
 import { Link } from 'react-router-dom';
+
+//component imports
 import NavLink from './NavLinks';
 
-const navLinks = [
-  { path: '/', text: 'Home' },
-  { path: '/about', text: 'About' },
-  { path: '/vans', text: 'Vans' },
-];
-
 export default function DesktopNavBar() {
+  const navLinks = [
+    { path: '/', text: 'Home' },
+    { path: '/about', text: 'About' },
+    { path: '/vans', text: 'Vans' },
+  ];
+  //TODO: Replace with user object once auth is set up
   const user = true;
 
   const authLinks = user ? (
+    //TODO - refactor authlinks to seperate component to be consistent with mobile nav
     <>
       <NavLink
         className='inline-block uppercase p-2 h-10 bg-orange-500 text-gray-100 ml-3 rounded-md font-bold'

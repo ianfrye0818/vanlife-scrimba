@@ -1,18 +1,25 @@
+//library imports
 import React from 'react';
+import { Link } from 'react-router-dom';
+
+//component imports
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import { Box } from '@mui/material';
 import MobileNavBarAuthLinks from './MobileNavBarAuthLinks';
-import { Link } from 'react-router-dom';
 
+//declare props so taht I can pass in the toggle function to ppen and close the mobile nav
 type MobileNavBarLinksProps = {
   toggleMobileNav: (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => void;
 };
 
+//uses Material UI List and ListItem components to create the links - will refactor to ShadCN UI once project is complete for more consistent styling.
 export default function MobileNavBarLinks({ toggleMobileNav }: MobileNavBarLinksProps) {
+  const navBarLinks = ['Home', 'About', 'Vans'];
   const list = (
+    //cannot get MUI to work with Tailwind CSS - has to use SX - another advantage of using ShadCN UI
     <Box
       sx={{
         width: '60vw',
@@ -29,7 +36,7 @@ export default function MobileNavBarLinks({ toggleMobileNav }: MobileNavBarLinks
       onKeyDown={toggleMobileNav(false)}
     >
       <List className=' w-full h-full text-center'>
-        {['Home', 'About', 'Vans'].map((text) => (
+        {navBarLinks.map((text) => (
           <ListItem key={text}>
             <ListItemButton>
               <Link
@@ -41,6 +48,7 @@ export default function MobileNavBarLinks({ toggleMobileNav }: MobileNavBarLinks
             </ListItemButton>
           </ListItem>
         ))}
+        {/* displays appropriate navbar links based on if the user is logged in or not */}
         <MobileNavBarAuthLinks />
       </List>
     </Box>

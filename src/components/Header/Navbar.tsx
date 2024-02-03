@@ -1,3 +1,6 @@
+//library imports
+
+//component imports
 import MobileNavBar from './mobile-nav-bar/MobileNavBar';
 import DesktopNavBar from './DesktopNavBar';
 

@@ -1,5 +1,9 @@
+//TODO: type key props to remove the warning below
 /* eslint-disable @typescript-eslint/no-explicit-any */
+//library imports
 import { Link, useLocation } from 'react-router-dom';
+
+//component imports
 
 type NavLinkProps = {
   text: string;

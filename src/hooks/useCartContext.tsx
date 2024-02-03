@@ -1,8 +1,11 @@
+//TODO: fix warning below
 /* eslint-disable no-case-declarations */
-import { createContext, useReducer, useContext, ReactNode, Dispatch } from 'react';
-import { CartItem } from '../types/CartItemInterface';
 
-// Define types for your items in the cart
+//library imports
+import { createContext, useReducer, useContext, ReactNode, Dispatch } from 'react';
+
+//component imports
+import { CartItem } from '../types/CartItemInterface';
 
 // Define the action types
 type CartAction = { type: 'ADD'; payload: CartItem } | { type: 'REMOVE'; payload: { id: string } };
@@ -16,6 +19,7 @@ interface CartContextProps {
 // Create the context with an initial value of null (this will be overridden by the provider)
 const CartContext = createContext<CartContextProps | undefined>(undefined);
 
+//TODO - Can probably refactor some of the logic below to make it more readable
 // Define the reducer function
 const cartReducer = (state: CartItem[], action: CartAction): CartItem[] => {
   switch (action.type) {
@@ -44,7 +48,6 @@ interface CartProviderProps {
 // Create the CartProvider component
 function CartProvider({ children }: CartProviderProps) {
   const [cart, dispatch] = useReducer(cartReducer, []);
-
   return <CartContext.Provider value={{ cart, dispatch }}>{children}</CartContext.Provider>;
 }
 
