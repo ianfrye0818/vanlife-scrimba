@@ -2,23 +2,28 @@
 import { Link } from 'react-router-dom';
 
 //component imports
+import notFoundImg from '../../assets/404-error-page-not-found-hand-hold-plug-graphic-vector-26853731.jpg';
 
-//TODO: can make this look a bit better
-export default function NotFound() {
+export default function Component() {
   return (
-    <div>
-      <div className='flex flex-col text-center justify-center items-center h-screen bg-slate-100 gap-8'>
-        <h1 className='text-7xl text-red-500'>
-          Oops! <br /> It seems we've hit a snag!
-        </h1>
-        <p className='text-lg text-gray-800'>The page you're looking for could not be found.</p>
-        <Link
-          className='text-xl inliine-block bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 transition-colors duration-300'
-          to='/'
-        >
-          Go back to the home page
-        </Link>
-      </div>
+    <div className='flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900'>
+      <img
+        src={notFoundImg}
+        alt='404 error'
+        className='w-96 h-96'
+      />
+      <p className='text-2xl text-gray-600 dark:text-gray-400 mt-4'>
+        Opps looks like we hit a snag!
+      </p>
+      <p className='text-2xl text-gray-600 dark:text-gray-400 mt-4'>
+        The page you're looking for does not exist
+      </p>
+      <Link
+        className='mt-8 bg-orange-500 text-gray-100 py-2 px-4 rounded-md hover:bg-orange-600 '
+        to='/'
+      >
+        Return to Homepage
+      </Link>
     </div>
   );
 }
