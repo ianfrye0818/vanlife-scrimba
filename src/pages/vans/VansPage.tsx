@@ -17,7 +17,7 @@ export default function Vans() {
   const [vanFilter, setVanFilter] = useState<VanFilterEnum[]>([]);
   return (
     <Layout>
-      <div className='vans-page'>
+      <div className='container'>
         <h1 className='w-8/12 text-3xl lg:text-6xl font-bold md:w-full'>Explore Our Van Options</h1>
         <VanFilterContext.Provider value={{ vanFilter, setVanFilter }}>
           <VanTypeFilterList />

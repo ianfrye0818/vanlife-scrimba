@@ -6,7 +6,7 @@ import DesktopNavBar from './DesktopNavBar';
 
 export default function Navbar() {
   return (
-    <header>
+    <header className='container'>
       <MobileNavBar />
       <DesktopNavBar />
     </header>

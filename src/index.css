@@ -10,40 +10,6 @@
   font-family: 'Inter', sans-serif;
 }
 
-/* main container */
-.container {
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  height: 100vh;
-}
-
-.btn {
-  padding: 15px;
-  font-family: inherit;
-  text-align: center;
-  color: inherit;
-  border: none;
-  cursor: pointer;
-  border-radius: 10px;
-}
-
-.btn:hover {
-  opacity: 0.8;
-}
-
-.btn-primary {
-  width: 100%;
-  background: #ff8c38;
-  font-size: 1.5rem;
-}
-
-.btn-secondary {
-  background-color: #161616;
-  color: #fff7ed;
-  font-size: 1.15rem;
-}
-
 /* start homepage styles */
 .homepage {
   background-image: url('/public/homepage-bg.png');
@@ -64,10 +30,10 @@
 }
 
 /* mobile styles */
-@media (max-width: 700px) {
+/* @media (max-width: 700px) {
   .homepage {
     justify-content: space-evenly;
     padding: 50px;
     height: 100%;
   }
-}
+} */
