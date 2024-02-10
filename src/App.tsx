@@ -24,6 +24,7 @@ import ReviewsPage from './pages/host/reviews/ReviewsPage';
 import HostVanDetailsPage from './pages/host/vans/van-details/HostVanDetails';
 import CheckOutPage from './pages/checkout/CheckOutPage';
 import OrderConfirmationPage from './pages/order-confirmation/OrderConfirmationPage';
+import { AuthContextProvider } from './context/AuthContextProvider';
 
 //crate react query client to fetch data and handle async state
 const queryClient = new QueryClient();
@@ -51,12 +52,14 @@ const router = createBrowserRouter([
 
 export default function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <CartProvider>
-        <RouterProvider router={router} />
-        {/* add toast to any pages - can set custom message for toast within page */}
-        <Toaster />
-      </CartProvider>
-    </QueryClientProvider>
+    <AuthContextProvider>
+      <QueryClientProvider client={queryClient}>
+        <CartProvider>
+          <RouterProvider router={router} />
+          {/* add toast to any pages - can set custom message for toast within page */}
+          <Toaster />
+        </CartProvider>
+      </QueryClientProvider>
+    </AuthContextProvider>
   );
 }
