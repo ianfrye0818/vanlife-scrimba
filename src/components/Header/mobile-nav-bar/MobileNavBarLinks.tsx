@@ -1,5 +1,4 @@
 //library imports
-import React from 'react';
 import { Link } from 'react-router-dom';
 
 //component imports

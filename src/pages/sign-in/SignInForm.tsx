@@ -8,7 +8,8 @@ import { FaGoogle } from 'react-icons/fa6';
 import { FaGithub } from 'react-icons/fa';
 
 //custom imports
-import { signInUser, signInWithGithub, signInWithGoogle } from '../../firebase/firebaseAuth';
+import { signInWithGithub, signInWithGoogle } from '../../firebase/firebaseAuth';
+import { signInUser } from '../../firebase/firebaseConfig';
 
 //TODO: add form validation
 //TODO: add form submission
@@ -17,7 +18,7 @@ export default function SignInForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   return (
-    <form className='flex flex-col gap-4 w-72 mx-auto'>
+    <div className='flex flex-col gap-4 w-72 mx-auto'>
       <Button
         variant='outlined'
         type='button'
@@ -64,7 +65,6 @@ export default function SignInForm() {
       />
       <Button
         sx={{ padding: '15px', backgroundColor: '#ff8c38', '&:hover': { background: '#ff8c38dd' } }}
-        type='submit'
         variant='contained'
         onClick={() => {
           signInUser(email, password);
@@ -81,6 +81,6 @@ export default function SignInForm() {
           Create One
         </Link>
       </p>
-    </form>
+    </div>
   );
 }
