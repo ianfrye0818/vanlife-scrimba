@@ -1,4 +1,4 @@
-//library importss
+//library imports
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -7,23 +7,17 @@ import { Button, TextField } from '@mui/material';
 import { FaGoogle } from 'react-icons/fa6';
 import { FaGithub } from 'react-icons/fa';
 
+//custom imports
+import { signInUser, signInWithGithub, signInWithGoogle } from '../../firebase/firebaseAuth';
+
 //TODO: add form validation
 //TODO: add form submission
-//TODO: refactor to use tailwind
 //TODO: Refactor to use shadcn ui for more consistent styling
 export default function SignInForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   return (
-    <form
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '1rem',
-        width: '300px',
-        margin: 'auto',
-      }}
-    >
+    <form className='flex flex-col gap-4 w-72 mx-auto'>
       <Button
         variant='outlined'
         type='button'
@@ -34,6 +28,7 @@ export default function SignInForm() {
           display: 'flex',
           gap: '10px',
         }}
+        onClick={() => signInWithGoogle()}
       >
         <FaGoogle /> Sign In with Google
       </Button>
@@ -48,6 +43,7 @@ export default function SignInForm() {
           display: 'flex',
           gap: '10px',
         }}
+        onClick={() => signInWithGithub()}
       >
         <FaGithub /> Sign In with Github
       </Button>
@@ -70,6 +66,9 @@ export default function SignInForm() {
         sx={{ padding: '15px', backgroundColor: '#ff8c38', '&:hover': { background: '#ff8c38dd' } }}
         type='submit'
         variant='contained'
+        onClick={() => {
+          signInUser(email, password);
+        }}
       >
         Sign In
       </Button>
