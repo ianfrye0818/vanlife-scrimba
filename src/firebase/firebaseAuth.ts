@@ -20,7 +20,7 @@ async function createUser(email: string, password: string) {
     return userCredential.user;
   } catch (error) {
     console.log(error);
-    return { message: 'Error creating user!' };
+    return null;
   }
 }
 
@@ -31,7 +31,7 @@ async function signInUser(email: string, password: string) {
     return userCredential.user;
   } catch (error) {
     console.log(error);
-    return { message: 'Error signing in' };
+    return null;
   }
 }
 

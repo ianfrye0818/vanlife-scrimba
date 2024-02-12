@@ -8,11 +8,9 @@ import { FaGoogle } from 'react-icons/fa6';
 import { FaGithub } from 'react-icons/fa';
 
 //custom imports
-import { signInWithGithub, signInWithGoogle } from '../../firebase/firebaseAuth';
+import { signInUser, signInWithGithub, signInWithGoogle } from '../../firebase/firebaseAuth';
+import { addItem, getItem } from '../../firebase/firebaseDatabase';
 
-//TODO: add form validation
-//TODO: add form submission
-//TODO: Refactor to use shadcn ui for more consistent styling
 export default function SignInForm() {
   const {
     register,
@@ -20,8 +18,21 @@ export default function SignInForm() {
     formState: { errors },
   } = useForm();
 
-  function onSubmit(data: { email: string; password: string }) {
-    console.log(data.email, data.password);
+  async function onSubmit(data: { email: string; password: string }) {
+    const user = await signInUser(data.email, data.password);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    const userDB = await getItem('users', user?.email as string);
+    if (!userDB) {
+      await addItem('users', {
+        name: '',
+        email: data.email,
+        hostId: '',
+        hostVans: [],
+        transactions: [],
+      });
+    }
   }
 
   return (
