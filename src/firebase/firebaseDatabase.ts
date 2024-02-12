@@ -4,8 +4,8 @@
 import { addDoc, doc, getDoc, collection, updateDoc, deleteDoc } from 'firebase/firestore';
 //custom imports
 
-import { db } from './firebaseConfig';
 //global database instance
+import { db } from './firebaseConfig';
 
 //get single item from database
 async function getItem(collectionName: string, id: string) {

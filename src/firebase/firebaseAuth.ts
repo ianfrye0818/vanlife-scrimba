@@ -9,16 +9,29 @@ import {
   signInWithPopup,
   signOut,
 } from 'firebase/auth';
-import { auth } from './firebaseConfig';
 
 //global auth instance
+import { auth } from './firebaseConfig';
+
+//create user with email and password
+async function createUser(email: string, password: string) {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    return userCredential.user;
+  } catch (error) {
+    console.log(error);
+    return { message: 'Error creating user!' };
+  }
+}
 
 //sign in user with email and password
 async function signInUser(email: string, password: string) {
   try {
-    await signInWithEmailAndPassword(auth, email, password);
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    return userCredential.user;
   } catch (error) {
     console.log(error);
+    return { message: 'Error signing in' };
   }
 }
 
@@ -42,15 +55,6 @@ async function signInWithGithub() {
   }
 }
 
-//signup user with email and password
-async function signUpUser(email: string, password: string) {
-  try {
-    await createUserWithEmailAndPassword(auth, email, password);
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 //logout user
 async function logoutUser() {
   try {
@@ -60,4 +64,4 @@ async function logoutUser() {
   }
 }
 
-export { auth, signUpUser, logoutUser, signInUser, signInWithGoogle, signInWithGithub };
+export { auth, createUser, logoutUser, signInUser, signInWithGoogle, signInWithGithub };
