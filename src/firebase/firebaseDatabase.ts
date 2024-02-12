@@ -7,6 +7,8 @@ import { addDoc, doc, getDoc, collection, updateDoc, deleteDoc } from 'firebase/
 //global database instance
 import { db } from './firebaseConfig';
 
+type Data = { [key: string]: any };
+
 //get single item from database
 async function getItem(collectionName: string, id: string) {
   try {
@@ -25,7 +27,7 @@ async function getItem(collectionName: string, id: string) {
 }
 
 //add item to database
-async function addItem(collectionName: string, data: any) {
+async function addItem<T extends Data>(collectionName: string, data: T) {
   try {
     const docRef = await addDoc(collection(db, collectionName), data);
     return docRef.id;
@@ -35,7 +37,7 @@ async function addItem(collectionName: string, data: any) {
 }
 
 //update item in database
-async function updateItem(collectionName: string, id: string, data: any) {
+async function updateItem<T extends Data>(collectionName: string, id: string, data: T) {
   try {
     const docRef = doc(db, collectionName, id);
     await updateDoc(docRef, data);

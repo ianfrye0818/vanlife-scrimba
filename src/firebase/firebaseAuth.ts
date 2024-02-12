@@ -64,4 +64,4 @@ async function logoutUser() {
   }
 }
 
-export { auth, createUser, logoutUser, signInUser, signInWithGoogle, signInWithGithub };
+export { createUser, logoutUser, signInUser, signInWithGoogle, signInWithGithub };
