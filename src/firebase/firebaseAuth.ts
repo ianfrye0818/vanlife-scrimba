@@ -1,18 +1,17 @@
 //library imports
+
+//custom imports
 import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signOut,
-  GoogleAuthProvider,
   GithubAuthProvider,
+  GoogleAuthProvider,
+  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signInWithPopup,
+  signOut,
 } from 'firebase/auth';
-//custom imports
-import { app } from './firebaseConfig';
+import { auth } from './firebaseConfig';
 
 //global auth instance
-const auth = getAuth(app);
 
 //sign in user with email and password
 async function signInUser(email: string, password: string) {

@@ -1,59 +1,62 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 //library imports
-import { getDatabase, ref, get, set } from 'firebase/database';
-
+import { addDoc, doc, getDoc, collection, updateDoc, deleteDoc } from 'firebase/firestore';
 //custom imports
-import { app } from './firebaseConfig';
 
+import { db } from './firebaseConfig';
 //global database instance
-const db = getDatabase(app);
-
-//get all items from database
-async function getAllItems(collection: string) {
-  try {
-    const items = await get(ref(db, collection));
-    return items.val();
-  } catch (error) {
-    console.log(error);
-  }
-}
 
 //get single item from database
-async function getSingleItem(collection: string, id: string) {
+async function getItem(collectionName: string, id: string) {
   try {
-    const item = await get(ref(db, `${collection}/${id}`));
-    return item.val();
+    const docRef = doc(db, collectionName, id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      return docSnap.data();
+    } else {
+      return { message: 'No such document!' };
+    }
   } catch (error) {
     console.log(error);
+    return { message: 'Error getting document!' };
   }
 }
 
 //add item to database
-async function addItem(collection: string, data: any) {
+async function addItem(collectionName: string, data: any) {
   try {
-    await set(ref(db, collection), data);
+    const docRef = await addDoc(collection(db, collectionName), data);
+    return docRef.id;
   } catch (error) {
-    console.log(error);
+    return { message: 'Error adding document!' };
   }
 }
 
 //update item in database
-async function updateItem(collection: string, id: string, data: any) {
+async function updateItem(collectionName: string, id: string, data: any) {
   try {
-    await set(ref(db, `${collection}/${id}`), data);
+    const docRef = doc(db, collectionName, id);
+    await updateDoc(docRef, data);
+
+    return { message: 'Document updated successfully!' };
   } catch (error) {
     console.log(error);
+    return { message: 'Error updating document!' };
   }
 }
 
 //delete item from database
-async function deleteItem(collection: string, id: string) {
+async function deleteItem(collectionName: string, id: string) {
   try {
-    await set(ref(db, `${collection}/${id}`), null);
+    await deleteDoc(doc(db, collectionName, id));
+    return { message: 'Document deleted successfully!' };
   } catch (error) {
     console.log(error);
+    return { message: 'Error deleting document!' };
   }
 }
 
 //export functions
-export { getAllItems, getSingleItem, addItem, updateItem, deleteItem };
+export { getItem, addItem, updateItem, deleteItem };
