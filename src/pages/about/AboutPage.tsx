@@ -13,7 +13,7 @@ export default function About() {
             alt='Hero Img'
           />
         </div>
-        <div className='flex flex-col justify-between gap-12 p-4 md:px-24 mt-12'>
+        <div className='flex flex-col max-w-[1280px] mx-auto justify-between gap-12 p-4 md:px-24 mt-12'>
           <h1 className='text-3xl md:text-6xl font-bold'>
             Don't squeeze in a sedan when you could relax in a van.
           </h1>
