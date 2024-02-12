@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import { auth } from '../../../firebase/firebaseAuth';
+import { auth } from '../../../firebase/firebaseConfig';
 
 export default function MobileNavBarAuthLinks() {
   //TODO: Replace null with user object
