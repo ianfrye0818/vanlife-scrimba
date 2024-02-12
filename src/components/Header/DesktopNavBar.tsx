@@ -11,7 +11,7 @@ export default function DesktopNavBar() {
     { path: '/vans', text: 'Vans' },
   ];
   //TODO: Replace with user object once auth is set up
-  const user = true;
+  const user = null;
 
   const authLinks = user ? (
     //TODO - refactor authlinks to seperate component to be consistent with mobile nav
