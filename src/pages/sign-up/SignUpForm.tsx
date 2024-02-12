@@ -5,6 +5,8 @@ import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 //component imports
 import { Button, TextField } from '@mui/material';
 import { FaGithub, FaGoogle } from 'react-icons/fa6';
+import { createUser } from '../../firebase/firebaseAuth';
+import { addItem } from '../../firebase/firebaseDatabase';
 
 //TODO: add form submission
 export default function SignUpForm() {
@@ -14,8 +16,22 @@ export default function SignUpForm() {
     formState: { errors },
   } = useForm();
 
-  function onSubmit(data: { email: string; password: string; confirmPassword: string }) {
-    console.log(data.email, data.password, data.confirmPassword);
+  async function onSubmit(data: { email: string; password: string; passwordConfirmation: string }) {
+    if (data.password !== data.passwordConfirmation) {
+      console.error('Passwords to not match');
+      return;
+    }
+
+    const user = await createUser(data.email, data.password);
+    const userDB = await addItem('users', {
+      name: '',
+      email: data.email,
+      hostId: '',
+      hostVans: [],
+      transactions: [],
+    });
+
+    console.log(user, userDB);
   }
 
   return (
