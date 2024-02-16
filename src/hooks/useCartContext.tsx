@@ -26,11 +26,12 @@ const CartContext = createContext<CartContextProps | undefined>(undefined);
 const cartReducer = (state: CartItem[], action: CartAction): CartItem[] => {
   switch (action.type) {
     case 'ADD':
+      console.log(action.payload);
       const itemInCart = state.find((item) => item.id === action.payload.id);
       if (itemInCart) {
         return state.map((item) =>
           item.id === action.payload.id
-            ? { ...item, quantity: item.quantity + 1, price: item.price * item.quantity }
+            ? { ...item, quantity: item.items + 1, price: item.price * item.quantity }
             : item
         );
       }
@@ -83,10 +84,7 @@ function CartProvider({ children }: CartProviderProps) {
           const cartref = await queryItem('carts', 'uid', user.uid);
           if (cartref === null) return;
 
-          await updateItem('carts', cartref[0].id, { items: cart });
-          // cart.forEach(async (item) => {
-          //   await updateItem('carts', cartref[0].id, { items: cart });
-          // });
+          await updateItem('carts', cartref[0].id, { items: [...cart] });
         }
       } catch (error) {
         console.log('Error updating cart', error);

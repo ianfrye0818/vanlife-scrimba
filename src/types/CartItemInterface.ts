@@ -1,12 +1,17 @@
 //extracted this out due to being used in both the add to cart and checkout components
 export interface CartItem {
   id: string;
-  name: string;
-  price: number;
-  description?: string;
-  imgUrl?: string;
-  type?: string;
-  quantity: number;
+  items: {
+    id: string;
+    name: string;
+    price: number;
+    description?: string;
+    imgUrl?: string;
+    type?: string;
+    quantity: number;
+  }[];
+  uid: string;
+
   // Add other properties as needed
 }
 
