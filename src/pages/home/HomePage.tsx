@@ -2,12 +2,12 @@
 import { Link } from 'react-router-dom';
 
 //component imports
-import Layout from '../../layout';
+import Layout from '../../Layout';
 
 export default function Home() {
   return (
     <Layout>
-      <main className='h-screen relative z-2 md:p-28 flex flex-col items-center gap-8 justify-evenly p-4 md:justify-center text-white homepage '>
+      <main className='container h-screen relative z-2 md:p-28 flex flex-col items-center gap-8 justify-evenly p-4 md:justify-center text-white homepage '>
         <div className='h-full max-w-[1280px] flex flex-col justify-evenly md:justify-center gap-12'>
           <h1 className='text-4xl md:text-7xl font-bold '>
             You got the travel plans, we got the travel vans.

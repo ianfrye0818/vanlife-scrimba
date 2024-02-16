@@ -1,14 +1,14 @@
-import Layout from '../../layout';
+import Layout from '../../Layout';
 import CallToActionBox from './CallToActionBox';
 import heroImg from '../../assets/about-hero.png';
 
 export default function About() {
   return (
     <Layout>
-      <main>
+      <main className='container'>
         <div>
           <img
-            className='w-full'
+            className='w-full object-cover'
             src={heroImg}
             alt='Hero Img'
           />

@@ -1,5 +1,4 @@
 //mock server import - TODO: remove this import when the real server is ready
-import './server';
 
 //library imports
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';

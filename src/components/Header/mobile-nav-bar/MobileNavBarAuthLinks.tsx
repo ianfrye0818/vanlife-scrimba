@@ -5,11 +5,11 @@ import { Link } from 'react-router-dom';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import { auth } from '../../../firebase/firebaseConfig';
+import { useContext } from 'react';
+import { AuthContext } from '../../../context/AuthContextProvider';
 
 export default function MobileNavBarAuthLinks() {
-  //TODO: Replace null with user object
-  const user = auth.currentUser ?? null;
+  const { user } = useContext(AuthContext);
 
   //Creates auth links when the user is logged in or signin / sign up links when the user is not logged in.
 

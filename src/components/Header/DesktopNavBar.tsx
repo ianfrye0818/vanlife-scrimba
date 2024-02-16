@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 
 //component imports
 import NavLink from './NavLinks';
+import { logoutUser } from '../../firebase/firebaseAuth';
+import { useContext } from 'react';
+import { AuthContext } from '../../context/AuthContextProvider';
 
 export default function DesktopNavBar() {
   const navLinks = [
@@ -11,19 +14,19 @@ export default function DesktopNavBar() {
     { path: '/vans', text: 'Vans' },
   ];
   //TODO: Replace with user object once auth is set up
-  const user = null;
+  const { user } = useContext(AuthContext);
 
   const authLinks = user ? (
     //TODO - refactor authlinks to seperate component to be consistent with mobile nav
     <>
       <NavLink
-        className='inline-block uppercase p-2 h-10 bg-orange-500 text-gray-100 ml-3 rounded-md font-bold'
+        className='inline-block uppercase no-underline p-2 h-10 bg-orange-500 text-gray-100 ml-3 rounded-md font-bold'
         path={'/host/dashboard'}
         text={'Dashboard'}
       />
       <button
         className='p-2 uppercase bg-gray-900 text-gray-100 rounded-md ml-3 font-bold'
-        onClick={() => console.log('sign out')}
+        onClick={() => logoutUser()}
       >
         Sign Out
       </button>

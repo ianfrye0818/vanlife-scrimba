@@ -2,14 +2,17 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: 'AIzaSyB4E-0R3bm0MBXeYtgTEgwmPn0C4IPgBt8',
-  authDomain: 'vanlife-692c6.firebaseapp.com',
-  projectId: 'vanlife-692c6',
-  storageBucket: 'vanlife-692c6.appspot.com',
-  messagingSenderId: '1005264753839',
-  appId: '1:1005264753839:web:995adf1811db397561f05a',
+  apiKey: 'AIzaSyBDpzIoKjWsUSTikt-fOx-AmtwhJl0jZUc',
+  authDomain: 'vanlife3-7cc12.firebaseapp.com',
+  projectId: 'vanlife3-7cc12',
+  storageBucket: 'vanlife3-7cc12.appspot.com',
+  messagingSenderId: '48542450040',
+  appId: '1:48542450040:web:6b2cbdaf222dd7bc51c88d',
 };
 
 // Initialize Firebase

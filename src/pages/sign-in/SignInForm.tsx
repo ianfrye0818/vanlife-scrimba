@@ -1,5 +1,5 @@
 //library imports
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 
 //component imports
@@ -12,6 +12,7 @@ import { signInUser, signInWithGithub, signInWithGoogle } from '../../firebase/f
 import { addItem, getItem } from '../../firebase/firebaseDatabase';
 
 export default function SignInForm() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -33,6 +34,7 @@ export default function SignInForm() {
         transactions: [],
       });
     }
+    navigate('/host/dashboard');
   }
 
   return (
@@ -47,7 +49,10 @@ export default function SignInForm() {
           display: 'flex',
           gap: '10px',
         }}
-        onClick={() => signInWithGoogle()}
+        onClick={async () => {
+          await signInWithGoogle();
+          navigate('/host/dashboard');
+        }}
       >
         <FaGoogle /> Sign In with Google
       </Button>
@@ -62,7 +67,10 @@ export default function SignInForm() {
           display: 'flex',
           gap: '10px',
         }}
-        onClick={() => signInWithGithub()}
+        onClick={async () => {
+          await signInWithGithub();
+          navigate('/host/dashboard');
+        }}
       >
         <FaGithub /> Sign In with Github
       </Button>
