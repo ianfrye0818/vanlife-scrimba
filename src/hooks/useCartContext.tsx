@@ -5,12 +5,15 @@
 import { createContext, useReducer, useContext, ReactNode, Dispatch, useEffect } from 'react';
 
 //component imports
-import { CartItem } from '../types/CartItemInterface';
+import { CartItem, Cart } from '../types/CartItemInterface';
 import { addItem, queryItem, updateItem } from '../firebase/firebaseDatabase';
 import { AuthContext } from '../context/AuthContextProvider';
 
 // Define the action types
-type CartAction = { type: 'ADD'; payload: CartItem } | { type: 'REMOVE'; payload: { id: string } };
+type CartAction =
+  | { type: 'ADD'; payload: CartItem }
+  | { type: 'REMOVE'; payload: { id: string } }
+  | { type: 'CLEAR'; payload: { id: string } };
 
 // Define the type for your context
 interface CartContextProps {
@@ -24,20 +27,26 @@ const CartContext = createContext<CartContextProps | undefined>(undefined);
 //TODO - Can probably refactor some of the logic below to make it more readable
 // Define the reducer function
 const cartReducer = (state: CartItem[], action: CartAction): CartItem[] => {
+  const itemInCart = state.find((item) => item.id === action.payload.id);
   switch (action.type) {
     case 'ADD':
-      console.log(action.payload);
-      const itemInCart = state.find((item) => item.id === action.payload.id);
       if (itemInCart) {
         return state.map((item) =>
-          item.id === action.payload.id
-            ? { ...item, quantity: item.items + 1, price: item.price * item.quantity }
-            : item
+          item.id === action.payload.id ? { ...item, quantity: item.quantity + 1 } : item
         );
+      } else {
+        return [...state, { ...action.payload, quantity: 1 }];
       }
-      return [...state, action.payload];
     case 'REMOVE':
-      return state.filter((item) => item.id !== action.payload.id);
+      if (itemInCart) {
+        return state.map((item) =>
+          item.id === action.payload.id ? { ...item, quantity: item.quantity - 1 } : item
+        );
+      } else {
+        return state.filter((item) => item.id !== action.payload.id);
+      }
+    case 'CLEAR':
+      return [];
     default:
       return state;
   }
@@ -57,11 +66,9 @@ function CartProvider({ children }: CartProviderProps) {
     const fetchCart = async () => {
       try {
         if (user && user.uid) {
-          const cartSnapshot = (await queryItem('carts', 'uid', user?.uid as string)) as
-            | CartItem[]
-            | null;
+          const cartSnapshot = (await queryItem('carts', 'uid', user.uid)) as [Cart];
           if (cartSnapshot) {
-            cartSnapshot.forEach((item) => {
+            cartSnapshot[0].items.forEach((item: CartItem) => {
               dispatch({ type: 'ADD', payload: item });
             });
           } else {

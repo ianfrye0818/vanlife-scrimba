@@ -30,10 +30,9 @@ export default function VanDetails() {
       return data;
     },
   });
-
   function addToCart() {
     if (van) {
-      dispatch({ type: 'ADD', payload: { ...van, quantity: 1 } as CartItem });
+      dispatch({ type: 'ADD', payload: van as CartItem });
       toast('Item Added to Cart', {
         description: `${van.name} was added to your cart.`,
         action: {

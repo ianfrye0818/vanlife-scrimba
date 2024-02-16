@@ -27,7 +27,7 @@ async function getItembyID(collectionName: string, id: string) {
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      return docSnap.data();
+      return { ...docSnap.data(), id: docSnap.id } as DocumentData;
     } else {
       return null;
     }

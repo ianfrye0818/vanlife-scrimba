@@ -6,24 +6,35 @@ import { useNavigate } from 'react-router-dom';
 import { CardTitle, CardHeader, CardContent, Card, CardFooter } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { useCart } from '../../hooks/useCartContext';
+import { addItem } from '../../firebase/firebaseDatabase';
+import { useContext } from 'react';
+import { AuthContext } from '../../context/AuthContextProvider';
+import { DocumentData } from 'firebase/firestore';
 
 export default function OrderSummaryCard() {
   const { handleSubmit } = useFormContext<FormData>();
   //use cart - custom hook for creating and managing cart for user = TODO: add to local storage to be persisted
   const { cart } = useCart();
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
+  const { dispatch } = useCart();
 
   //reduces the cart array to a single value - the total price of all items in the cart
   const total = cart.reduce((reducer, item) => {
-    return reducer + item.price;
+    return reducer + item.price * item.quantity;
   }, 0);
+  console.log(cart);
 
   //on submit - TODO: replace with actual backend logic to handle payment
   //adds the cart and total to the form data and logs it to the console
   //navigates to the order confirmation page
-  function onSubmit<FormData>(data: FormData) {
-    data = { ...data, cart, total };
-    console.log(data);
+  async function onSubmit<FormData>(data: FormData) {
+    if (!user) alert('Please login to complete your purchase');
+    data = { ...data, cart, user, total };
+    await addItem('orders', data as DocumentData);
+    //clear cart
+    dispatch({ type: 'CLEAR', payload: { id: '' } });
+
     navigate('/order-confirmation');
   }
   return (
@@ -34,11 +45,14 @@ export default function OrderSummaryCard() {
         </CardHeader>
         <CardContent>
           {cart.map((item) => (
-            <div className='flex justify-between'>
+            <div
+              key={item.id}
+              className='flex justify-between'
+            >
               <span>
                 {item.name} x {item.quantity}
               </span>
-              <span>${item.price}</span>
+              <span>${item.price * item.quantity}</span>
             </div>
           ))}
 
