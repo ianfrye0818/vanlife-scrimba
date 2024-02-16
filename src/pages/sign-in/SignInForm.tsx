@@ -9,10 +9,11 @@ import { FaGithub } from 'react-icons/fa';
 
 //custom imports
 import { signInUser, signInWithGithub, signInWithGoogle } from '../../firebase/firebaseAuth';
-import { addItem, getItem } from '../../firebase/firebaseDatabase';
 
 export default function SignInForm() {
   const navigate = useNavigate();
+
+  //react hook form hook
   const {
     register,
     handleSubmit,
@@ -20,20 +21,11 @@ export default function SignInForm() {
   } = useForm();
 
   async function onSubmit(data: { email: string; password: string }) {
+    //sign in the user
     const user = await signInUser(data.email, data.password);
-    if (!user) {
-      throw new Error('User not found');
-    }
-    const userDB = await getItem('users', user?.email as string);
-    if (!userDB) {
-      await addItem('users', {
-        name: '',
-        email: data.email,
-        hostId: '',
-        hostVans: [],
-        transactions: [],
-      });
-    }
+    if (!user) return;
+
+    //after successful login navigate to the dashboard
     navigate('/host/dashboard');
   }
 
@@ -49,6 +41,7 @@ export default function SignInForm() {
           display: 'flex',
           gap: '10px',
         }}
+        //create a function to sign in with google
         onClick={async () => {
           await signInWithGoogle();
           navigate('/host/dashboard');
@@ -67,6 +60,7 @@ export default function SignInForm() {
           display: 'flex',
           gap: '10px',
         }}
+        //create a function to sign in with github
         onClick={async () => {
           await signInWithGithub();
           navigate('/host/dashboard');
@@ -75,6 +69,7 @@ export default function SignInForm() {
         <FaGithub /> Sign In with Github
       </Button>
       <form
+        //uses react hook form to handle form submission
         onSubmit={handleSubmit(onSubmit as SubmitHandler<FieldValues>)}
         className='flex flex-col gap-4 w-full'
       >

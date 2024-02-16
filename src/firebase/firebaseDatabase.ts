@@ -1,7 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 //library imports
-import { addDoc, doc, getDoc, collection, updateDoc, deleteDoc } from 'firebase/firestore';
+import {
+  addDoc,
+  doc,
+  getDoc,
+  collection,
+  updateDoc,
+  deleteDoc,
+  getDocs,
+  where,
+  query,
+} from 'firebase/firestore';
 //custom imports
 
 //global database instance
@@ -10,7 +20,7 @@ import { db } from './firebaseConfig';
 type Data = { [key: string]: any };
 
 //get single item from database
-async function getItem(collectionName: string, id: string) {
+async function getItembyID(collectionName: string, id: string) {
   try {
     const docRef = doc(db, collectionName, id);
     const docSnap = await getDoc(docRef);
@@ -18,11 +28,25 @@ async function getItem(collectionName: string, id: string) {
     if (docSnap.exists()) {
       return docSnap.data();
     } else {
-      return { message: 'No such document!' };
+      return null;
     }
   } catch (error) {
     console.log(error);
     return { message: 'Error getting document!' };
+  }
+}
+
+//query database for item
+async function queryItem(collectionName: string, field: string, value: string) {
+  try {
+    const q = query(collection(db, collectionName), where(field, '==', value));
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) return null;
+    //return documents
+    return querySnapshot.docs.map((doc) => doc.data());
+  } catch (error) {
+    console.log(error);
+    return { message: 'Error querying document!' };
   }
 }
 
@@ -61,4 +85,4 @@ async function deleteItem(collectionName: string, id: string) {
 }
 
 //export functions
-export { getItem, addItem, updateItem, deleteItem };
+export { getItembyID, queryItem, addItem, updateItem, deleteItem };

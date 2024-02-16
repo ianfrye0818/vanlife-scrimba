@@ -1,15 +1,15 @@
 //library imports
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 
 //component imports
 import { Button, TextField } from '@mui/material';
 import { FaGithub, FaGoogle } from 'react-icons/fa6';
-import { createUser } from '../../firebase/firebaseAuth';
-import { addItem } from '../../firebase/firebaseDatabase';
+import { createUser, signInWithGithub, signInWithGoogle } from '../../firebase/firebaseAuth';
 
 //TODO: add form submission
 export default function SignUpForm() {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -18,20 +18,15 @@ export default function SignUpForm() {
 
   async function onSubmit(data: { email: string; password: string; passwordConfirmation: string }) {
     if (data.password !== data.passwordConfirmation) {
-      console.error('Passwords to not match');
+      alert('Passwords do not match');
       return;
     }
-
+    //sign in the user
     const user = await createUser(data.email, data.password);
-    const userDB = await addItem('users', {
-      name: '',
-      email: data.email,
-      hostId: '',
-      hostVans: [],
-      transactions: [],
-    });
+    if (!user) return;
 
-    console.log(user, userDB);
+    //after successful login navigate to the dashboard
+    navigate('/host/dashboard');
   }
 
   return (
@@ -47,6 +42,11 @@ export default function SignUpForm() {
           gap: '10px',
           width: '100%',
         }}
+        onClick={async () => {
+          //create a function to sign in with google
+          await signInWithGoogle();
+          navigate('/host/dashboard');
+        }}
       >
         <FaGoogle /> Sign Up with Google
       </Button>
@@ -61,6 +61,11 @@ export default function SignUpForm() {
           display: 'flex',
           gap: '10px',
           width: '100%',
+        }}
+        onClick={async () => {
+          //create a function to sign in with github
+          await signInWithGithub();
+          navigate('/host/dashboard');
         }}
       >
         <FaGithub /> Sign Up with Github
