@@ -3,7 +3,7 @@ import { createContext, useState } from 'react';
 
 //componet imports
 import Layout from '../../Layout';
-// import Vanslist from './VanList';
+import Vanslist from './VanList';
 import VanTypeFilterList from './VanTypeFilterList';
 
 //type imports
@@ -21,7 +21,7 @@ export default function Vans() {
         <h1 className='w-8/12 text-3xl lg:text-6xl font-bold md:w-full'>Explore Our Van Options</h1>
         <VanFilterContext.Provider value={{ vanFilter, setVanFilter }}>
           <VanTypeFilterList />
-          {/* <Vanslist /> */}
+          <Vanslist />
         </VanFilterContext.Provider>
       </div>
     </Layout>

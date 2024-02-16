@@ -36,6 +36,21 @@ async function getItembyID(collectionName: string, id: string) {
   }
 }
 
+//get all items from collection
+async function getAllItems(collectionName: string) {
+  try {
+    const q = query(collection(db, collectionName));
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) return null;
+    //return documents
+
+    return querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
+
 //query database for item
 async function queryItem(collectionName: string, field: string, value: string) {
   try {
@@ -43,10 +58,10 @@ async function queryItem(collectionName: string, field: string, value: string) {
     const querySnapshot = await getDocs(q);
     if (querySnapshot.empty) return null;
     //return documents
-    return querySnapshot.docs.map((doc) => doc.data());
+    return querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
   } catch (error) {
     console.log(error);
-    return { message: 'Error querying document!' };
+    return null;
   }
 }
 
@@ -85,4 +100,4 @@ async function deleteItem(collectionName: string, id: string) {
 }
 
 //export functions
-export { getItembyID, queryItem, addItem, updateItem, deleteItem };
+export { getItembyID, getAllItems, queryItem, addItem, updateItem, deleteItem };

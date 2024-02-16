@@ -3,27 +3,30 @@ import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 
 //component imports
 import ReactLoading from 'react-loading';
 
 //type imports
-import { Van } from '../../types/VanInterfaces';
 import { VanFilterEnum } from '../../types/VanEnums';
 
 //context imports
 import { VanFilterContext } from './VansPage';
+import { getAllItems } from '../../firebase/firebaseDatabase';
 
 export default function Vanslist() {
   const { vanFilter } = useContext(VanFilterContext);
   const navigate = useNavigate();
 
   //fetches the vans from the server - uses react-query that also performs caching, refetching, and error/loading states
-  const { data, error, isLoading } = useQuery({
+  const {
+    data: vans,
+    error,
+    isLoading,
+  } = useQuery({
     queryKey: ['vans'],
     queryFn: async () => {
-      const { data } = await axios.get<{ vans: Van[] }>('/api/vans');
+      const data = await getAllItems('vans');
       return data;
     },
   });
@@ -48,14 +51,13 @@ export default function Vanslist() {
   }
 
   //if data does not exisist return null and redirec to 404 not found page
-  if (data === null || data === undefined) {
+  if (vans === null || vans === undefined) {
     navigate('/not-found');
     return null;
   }
 
   //extract vans out of data.vans
   //TODO: refactor this logic into the fetch funciton
-  const vans = data.vans;
 
   //filter the vans based on the vanFilter context
   const filteredVans =
@@ -73,7 +75,7 @@ export default function Vanslist() {
           <div className='p-5 rounded-xl flex flex-col justify-between gap-3 h-full md:border-1 md:border'>
             <img
               className='w-full bg-cover rounded-xl'
-              src={van.imageUrl}
+              src={van.imageURL}
               alt={van.name}
             />
             <div className='flex justify-between items-center'>
