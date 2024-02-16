@@ -78,6 +78,7 @@ async function addItem<T extends Data>(collectionName: string, data: T) {
 
 //update item in database
 async function updateItem<T extends Data>(collectionName: string, id: string, data: T) {
+  console.log(id);
   try {
     const docRef = doc(db, collectionName, id);
     await updateDoc(docRef, data);

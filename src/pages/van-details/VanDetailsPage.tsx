@@ -9,12 +9,15 @@ import { toast } from 'sonner';
 //interface imports
 //component imports
 import Layout from '../../Layout';
+import { useCart } from '../../hooks/useCartContext';
 import { getItembyID } from '../../firebase/firebaseDatabase';
+import { CartItem } from '../../types/CartItemInterface';
 
 //TODO: refactor this component to be more readable
 export default function VanDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { dispatch } = useCart();
 
   const {
     data: van,
@@ -29,11 +32,12 @@ export default function VanDetails() {
   });
   function addToCart() {
     if (van) {
+      dispatch({ type: 'ADD', payload: van as CartItem });
       toast('Item Added to Cart', {
         description: `${van.name} was added to your cart.`,
         action: {
           label: 'Remove',
-          onClick: () => {},
+          onClick: () => dispatch({ type: 'REMOVE', payload: { id: van.id } }),
         },
       });
     }

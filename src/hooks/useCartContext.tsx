@@ -95,8 +95,7 @@ function CartProvider({ children }: CartProviderProps) {
         if (user && user.uid) {
           const cartref = await queryItem('carts', 'uid', user.uid);
           if (cartref === null) return;
-
-          await updateItem('carts', cart.id, { items: cart.items });
+          await updateItem('carts', cartref[0].id, { items: cart.items });
         }
       } catch (error) {
         console.log('Error updating cart', error);
