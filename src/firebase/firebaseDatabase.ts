@@ -11,6 +11,7 @@ import {
   getDocs,
   where,
   query,
+  DocumentData,
 } from 'firebase/firestore';
 //custom imports
 
@@ -58,7 +59,7 @@ async function queryItem(collectionName: string, field: string, value: string) {
     const querySnapshot = await getDocs(q);
     if (querySnapshot.empty) return null;
     //return documents
-    return querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+    return querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id } as DocumentData));
   } catch (error) {
     console.log(error);
     return null;

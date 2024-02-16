@@ -1,23 +1,23 @@
 //library imports
 import { useParams } from 'react-router-dom';
-// import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import ReactLoading from 'react-loading';
 import { useQuery } from '@tanstack/react-query';
-// import { toast } from 'sonner';
+import { toast } from 'sonner';
 
 //interface imports
 //component imports
 import Layout from '../../Layout';
-// import { useCart } from '../../hooks/useCartContext';
+import { useCart } from '../../hooks/useCartContext';
 import { getItembyID } from '../../firebase/firebaseDatabase';
+import { CartItem } from '../../types/CartItemInterface';
 
 //TODO: refactor this component to be more readable
 export default function VanDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  // const { dispatch } = useCart();
+  const { dispatch } = useCart();
 
   const {
     data: van,
@@ -31,18 +31,18 @@ export default function VanDetails() {
     },
   });
 
-  // function addToCart() {
-  //   if (data) {
-  //     dispatch({ type: 'ADD', payload: { ...data.vans, quantity: 1 } });
-  //   }
-  //   toast('Item Added to Cart', {
-  //     description: `${van.name} was added to your cart.`,
-  //     action: {
-  //       label: 'Remove',
-  //       onClick: () => dispatch({ type: 'REMOVE', payload: { id: van.id } }),
-  //     },
-  //   });
-  // }
+  function addToCart() {
+    if (van) {
+      dispatch({ type: 'ADD', payload: { ...van, quantity: 1 } as CartItem });
+      toast('Item Added to Cart', {
+        description: `${van.name} was added to your cart.`,
+        action: {
+          label: 'Remove',
+          onClick: () => dispatch({ type: 'REMOVE', payload: { id: van.id } }),
+        },
+      });
+    }
+  }
 
   if (isLoading) {
     return (
@@ -89,7 +89,7 @@ export default function VanDetails() {
             <p className='font-bold'>Price: ${van.price}/day</p>
             <p className='leading-6'>{van.description}</p>
             <button
-              // onClick={addToCart}
+              onClick={addToCart}
               className='bg-green-500 text-white p-3 rounded-md hover:bg-green-600 transition-all duration-300 ease-in-out w-40 text-center cursor-pointer'
             >
               Rent this van

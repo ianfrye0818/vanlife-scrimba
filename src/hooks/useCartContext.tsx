@@ -2,10 +2,12 @@
 /* eslint-disable no-case-declarations */
 
 //library imports
-import { createContext, useReducer, useContext, ReactNode, Dispatch } from 'react';
+import { createContext, useReducer, useContext, ReactNode, Dispatch, useEffect } from 'react';
 
 //component imports
 import { CartItem } from '../types/CartItemInterface';
+import { addItem, queryItem, updateItem } from '../firebase/firebaseDatabase';
+import { AuthContext } from '../context/AuthContextProvider';
 
 // Define the action types
 type CartAction = { type: 'ADD'; payload: CartItem } | { type: 'REMOVE'; payload: { id: string } };
@@ -48,6 +50,52 @@ interface CartProviderProps {
 // Create the CartProvider component
 function CartProvider({ children }: CartProviderProps) {
   const [cart, dispatch] = useReducer(cartReducer, []);
+  const { user } = useContext(AuthContext);
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        if (user && user.uid) {
+          const cartSnapshot = (await queryItem('carts', 'uid', user?.uid as string)) as
+            | CartItem[]
+            | null;
+          if (cartSnapshot) {
+            cartSnapshot.forEach((item) => {
+              dispatch({ type: 'ADD', payload: item });
+            });
+          } else {
+            await addItem('carts', { uid: user.uid, items: [] });
+          }
+        }
+      } catch (error) {
+        console.log('Error fetching cart', error);
+      }
+    };
+    fetchCart();
+  }, [user]);
+
+  useEffect(() => {
+    const updateCart = async () => {
+      try {
+        //update cart in database
+
+        if (user && user.uid) {
+          const cartref = await queryItem('carts', 'uid', user.uid);
+          if (cartref === null) return;
+
+          await updateItem('carts', cartref[0].id, { items: cart });
+          // cart.forEach(async (item) => {
+          //   await updateItem('carts', cartref[0].id, { items: cart });
+          // });
+        }
+      } catch (error) {
+        console.log('Error updating cart', error);
+      }
+    };
+
+    updateCart();
+  }, [cart, user]);
+
   return <CartContext.Provider value={{ cart, dispatch }}>{children}</CartContext.Provider>;
 }
 
