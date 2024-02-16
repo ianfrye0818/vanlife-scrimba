@@ -12,7 +12,7 @@ import {
   Table,
 } from '../../components/ui/table';
 import { Button } from '../../components/ui/button';
-import Layout from '../../layout';
+import Layout from '../../Layout';
 
 //TODO: fetch order from DB and diplay logic
 //TODO: refactor this page

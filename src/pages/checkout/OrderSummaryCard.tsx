@@ -20,10 +20,9 @@ export default function OrderSummaryCard() {
   const { dispatch } = useCart();
 
   //reduces the cart array to a single value - the total price of all items in the cart
-  const total = cart.reduce((reducer, item) => {
-    return reducer + item.price * item.quantity;
-  }, 0);
-  console.log(cart);
+  const total = cart.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
+  //fetch cartid from database
 
   //on submit - TODO: replace with actual backend logic to handle payment
   //adds the cart and total to the form data and logs it to the console
@@ -44,7 +43,7 @@ export default function OrderSummaryCard() {
           <CardTitle>Order Summary</CardTitle>
         </CardHeader>
         <CardContent>
-          {cart.map((item) => (
+          {cart.items.map((item) => (
             <div
               key={item.id}
               className='flex justify-between'

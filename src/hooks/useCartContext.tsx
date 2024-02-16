@@ -17,7 +17,7 @@ type CartAction =
 
 // Define the type for your context
 interface CartContextProps {
-  cart: CartItem[];
+  cart: Cart;
   dispatch: Dispatch<CartAction>;
 }
 
@@ -26,27 +26,32 @@ const CartContext = createContext<CartContextProps | undefined>(undefined);
 
 //TODO - Can probably refactor some of the logic below to make it more readable
 // Define the reducer function
-const cartReducer = (state: CartItem[], action: CartAction): CartItem[] => {
-  const itemInCart = state.find((item) => item.id === action.payload.id);
+const cartReducer = (state: Cart, action: CartAction): Cart => {
   switch (action.type) {
     case 'ADD':
-      if (itemInCart) {
-        return state.map((item) =>
-          item.id === action.payload.id ? { ...item, quantity: item.quantity + 1 } : item
-        );
+      const existingItemIndex = state.items.findIndex((item) => item.id === action.payload.id);
+      if (existingItemIndex !== -1) {
+        const updatedItems = [...state.items];
+        updatedItems[existingItemIndex].quantity += 1;
+        return { ...state, items: updatedItems };
       } else {
-        return [...state, { ...action.payload, quantity: 1 }];
+        return { ...state, items: [...state.items, { ...action.payload, quantity: 1 }] };
       }
     case 'REMOVE':
-      if (itemInCart) {
-        return state.map((item) =>
-          item.id === action.payload.id ? { ...item, quantity: item.quantity - 1 } : item
-        );
+      const itemToRemoveIndex = state.items.findIndex((item) => item.id === action.payload.id);
+      if (itemToRemoveIndex !== -1) {
+        const updatedItems = [...state.items];
+        if (updatedItems[itemToRemoveIndex].quantity > 1) {
+          updatedItems[itemToRemoveIndex].quantity -= 1;
+        } else {
+          updatedItems.splice(itemToRemoveIndex, 1);
+        }
+        return { ...state, items: updatedItems };
       } else {
-        return state.filter((item) => item.id !== action.payload.id);
+        return state;
       }
     case 'CLEAR':
-      return [];
+      return { ...state, items: [] };
     default:
       return state;
   }
@@ -59,7 +64,7 @@ interface CartProviderProps {
 
 // Create the CartProvider component
 function CartProvider({ children }: CartProviderProps) {
-  const [cart, dispatch] = useReducer(cartReducer, []);
+  const [cart, dispatch] = useReducer(cartReducer, { uid: '', items: [], id: '' });
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
@@ -91,7 +96,7 @@ function CartProvider({ children }: CartProviderProps) {
           const cartref = await queryItem('carts', 'uid', user.uid);
           if (cartref === null) return;
 
-          await updateItem('carts', cartref[0].id, { items: [...cart] });
+          await updateItem('carts', cart.id, { items: cart.items });
         }
       } catch (error) {
         console.log('Error updating cart', error);
