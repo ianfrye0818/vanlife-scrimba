@@ -20,7 +20,7 @@ export default function MobileNavBarAuthLinks() {
       <ListItem>
         <ListItemButton>
           <Link
-            className='text-center block w-full p-2'
+            className='text-center block w-full p-2 bg-blue-600'
             to='/host/dashboard'
           >
             <ListItemText primary='Dashboard' />

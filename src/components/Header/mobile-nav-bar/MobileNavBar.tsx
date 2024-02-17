@@ -19,7 +19,7 @@ export default function MobileNavBar() {
     setIsOpen(open);
   };
 
-  //Uses material UI Drawer to create a mobile nav bar - swtiched to ShadCN UI halfway through the project - will come back and refactor to their drawer once project is complete.
+  // Uses material UI Drawer to create a mobile nav bar .
   return (
     <div>
       <nav>

@@ -44,34 +44,36 @@ export default function CartDrawer() {
           >
             <div className='w-full h-full flex flex-col gap-10 p-3 bg-black text-white'>
               <h1 className='text-center text-3xl font-bold'>Cart</h1>
-              {cart.items.map((item) => {
-                return (
+              {cart.items.length === 0 ? (
+                <h2 className='text-center'>Your cart is empty</h2>
+              ) : (
+                cart.items.map((item) => (
                   <div
                     key={item.id}
                     className='flex gap-4 items-center  bg-gray-800 p-3 rounded-md'
                   >
-                    {item.imageURL ? (
-                      <Avatar src={item.imageURL} />
-                    ) : (
-                      <Avatar>{item.name[0]}</Avatar>
-                    )}
-
+                    <Avatar src={item.imageURL}>{item.name[0]}</Avatar>
                     <span>{item.name}</span>
                     <span>Qty: {item.quantity}</span>
                     <span className='ml-auto'>${item.price}</span>
                   </div>
-                );
-              })}
-              <div className='flex justify-between items-center bg-gray-600  p-3'>
-                <h2>Total:</h2>
-                <h2>${total}</h2>
-              </div>
-              <Link
-                className=' p-4 bg-orange-500 text-white w-1/4 text-center mx-auto rounded-md hover:bg-orange-600'
-                to='/cart'
-              >
-                Checkout
-              </Link>
+                ))
+              )}
+              {cart.items.length > 0 && (
+                <>
+                  <div className='flex justify-between items-center bg-gray-600  p-3'>
+                    <h2>Total:</h2>
+                    <h2>${total}</h2>
+                  </div>
+
+                  <Link
+                    className=' p-4 bg-orange-500 text-white  text-center mx-auto rounded-md hover:bg-orange-600'
+                    to='/cart'
+                  >
+                    Checkout
+                  </Link>
+                </>
+              )}
             </div>
             <Button
               sx={{

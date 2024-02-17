@@ -25,6 +25,7 @@ async function checkAndAddUser(email: string, uid: string) {
       hostId: '',
       hostVans: [],
       transactions: [],
+      orders: [],
     });
   }
 }

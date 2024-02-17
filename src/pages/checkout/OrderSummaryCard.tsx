@@ -1,47 +1,73 @@
 //library imports
 import { useFormContext } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
 
 //component imports
 import { CardTitle, CardHeader, CardContent, Card, CardFooter } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
-import { addItem, updateItem } from '../../firebase/firebaseDatabase';
-import { useContext } from 'react';
+import { Avatar } from '@mui/material';
+import RemoveItemDialog from '../../components/RemoveItemAlertDialog';
+
+//custom imports
+import { addItem, getItembyID, updateItem } from '../../firebase/firebaseDatabase';
 import { AuthContext } from '../../context/AuthContextProvider';
 import { CartContext } from '../../context/cartContext';
-//TODO: refactor this component to be more readable
+
+//utility imports
+import protectData from './utils/ProtectData';
+import calculateTotal from './utils/calculateTotal';
+import removeItem from './utils/removeItem';
+
+//type imports
+import { CheckOutFormData, Order } from '../../types/CheckOutFormData';
 
 export default function OrderSummaryCard() {
-  const { handleSubmit } = useFormContext<FormData>();
+  const { handleSubmit } = useFormContext<CheckOutFormData>();
   //use cart - custom hook for creating and managing cart for user = TODO: add to local storage to be persisted
   const cart = useContext(CartContext);
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
 
   //reduces the cart array to a single value - the total price of all items in the cart
-  const total = cart?.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const total = calculateTotal(cart?.items);
 
-  async function onSubmit<FormData>(data: FormData) {
+  async function onSubmit(data: CheckOutFormData) {
+    //if cart was unable to load return from function
     if (!cart) {
-      console.error('No cart found');
+      alert('Something went wrong, please try again');
       return;
     }
-    const { cardNumber, cvc } = data as { cardNumber: string; cvc: string };
+    //protect user data such as cc info
+    const protectedData = protectData(data);
 
-    const protectedCardNumber = '****-****-****-' + cardNumber.slice(-4);
-    const protectedCVC = '**' + cvc.slice(-1);
+    //create a new order
+    const newOrder: Order = {
+      ...protectedData,
+      cart,
+      user: user ? user.uid : '',
+      total,
+    };
 
-    const protectedData = { ...data, cardNumber: protectedCardNumber, cvc: protectedCVC };
-
-    const newOrder = { ...protectedData, cart, user: user ? user.uid : '', total };
+    //upload order to db and get order id
     const orderId = await addItem('orders', newOrder);
-    console.log('orderId', orderId);
     //clear cart
     if (!orderId) {
       alert('Something went wrong, please try again');
       return;
     }
+    //empty user cart
+    //pHs7uGVLMNTOLHGBoTn38E1lpzK2
+
     await updateItem('carts', cart!.id, { items: [] });
+    //add order id to users order array
+    if (user) {
+      const userData = await getItembyID('users', user.uid);
+      if (userData) {
+        await updateItem('users', user.uid, { orders: [...userData.orders, orderId] });
+      }
+    }
+    //navigate to order confirmation page passing along the order id as a param
     navigate('/order-confirmation/' + orderId);
   }
 
@@ -56,16 +82,21 @@ export default function OrderSummaryCard() {
             {cart.items.map((item) => (
               <div
                 key={item.id}
-                className='flex justify-between'
+                className='flex gap-2 items-center mb-4'
               >
+                <Avatar src={item.imageURL}>{item.name[0]}</Avatar>
                 <span>
                   {item.name} x {item.quantity}
                 </span>
-                <span>${item.price * item.quantity}</span>
+                <RemoveItemDialog
+                  removeItem={() => removeItem(item.id, cart)}
+                  itemId={item.id}
+                />
+                <span className='ml-auto'>${item.price * item.quantity}</span>
               </div>
             ))}
 
-            <div className='flex justify-between font-bold'>
+            <div className='flex justify-between font-bold '>
               <span>Total</span>
               {total && (
                 <span>{total.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</span>
