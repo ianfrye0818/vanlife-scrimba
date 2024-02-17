@@ -16,9 +16,9 @@ export default function CartContextProvider({ children }: PropsWithChildren) {
   useEffect(() => {
     async function getCart() {
       if (user) {
-        const cartId = await queryItem('cartss', 'uid', user.uid);
+        const cartId = await queryItem('carts', 'uid', user.uid);
         if (cartId) {
-          const unsubscribe = onSnapshot(doc(db, 'cart', cartId[0].id), (doc) => {
+          const unsubscribe = onSnapshot(doc(db, 'carts', cartId[0].id), (doc) => {
             if (doc.exists()) {
               setCart(doc.data() as Cart);
             }
@@ -27,9 +27,9 @@ export default function CartContextProvider({ children }: PropsWithChildren) {
         }
         //else create cart for user and subscribe to changes
         else {
-          const newCart = await addItem('cart', { items: [], uid: user.uid });
+          const newCart = await addItem('carts', { items: [], uid: user.uid });
           if (newCart) {
-            const unsubscribe = onSnapshot(doc(db, 'cart', newCart), (doc) => {
+            const unsubscribe = onSnapshot(doc(db, 'carts', newCart), (doc) => {
               if (doc.exists()) {
                 setCart(doc.data() as Cart);
               }
@@ -40,9 +40,9 @@ export default function CartContextProvider({ children }: PropsWithChildren) {
       }
       //else if no user create a cart with blank user id and subscribe
       else {
-        const newCart = await addItem('cart', { items: [], uid: '' });
+        const newCart = await addItem('carts', { items: [], uid: '' });
         if (newCart) {
-          const unsubscribe = onSnapshot(doc(db, 'cart', newCart), (doc) => {
+          const unsubscribe = onSnapshot(doc(db, 'carts', newCart), (doc) => {
             if (doc.exists()) {
               setCart(doc.data() as Cart);
             }
@@ -53,6 +53,6 @@ export default function CartContextProvider({ children }: PropsWithChildren) {
     }
 
     getCart();
-  }, [user, setCart]);
+  }, [user]);
   return <CartContext.Provider value={cart}>{children}</CartContext.Provider>;
 }
