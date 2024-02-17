@@ -6,7 +6,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'sonner';
 
 //component imports
-import { CartProvider } from './hooks/useCartContext';
 
 //route imports
 
@@ -24,6 +23,7 @@ import HostVanDetailsPage from './pages/host/vans/van-details/HostVanDetails';
 import CheckOutPage from './pages/checkout/CheckOutPage';
 import OrderConfirmationPage from './pages/order-confirmation/OrderConfirmationPage';
 import { AuthContextProvider } from './context/AuthContextProvider';
+import CartContextProvider from './context/cartContext';
 
 //crate react query client to fetch data and handle async state
 const queryClient = new QueryClient();
@@ -53,11 +53,11 @@ export default function App() {
   return (
     <AuthContextProvider>
       <QueryClientProvider client={queryClient}>
-        <CartProvider>
+        <CartContextProvider>
           <RouterProvider router={router} />
           {/* add toast to any pages - can set custom message for toast within page */}
           <Toaster />
-        </CartProvider>
+        </CartContextProvider>
       </QueryClientProvider>
     </AuthContextProvider>
   );

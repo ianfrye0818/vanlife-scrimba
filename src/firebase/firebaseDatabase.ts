@@ -72,7 +72,7 @@ async function addItem<T extends Data>(collectionName: string, data: T) {
     const docRef = await addDoc(collection(db, collectionName), data);
     return docRef.id;
   } catch (error) {
-    return { message: 'Error adding document!' };
+    null;
   }
 }
 
