@@ -34,7 +34,7 @@ export default function MobileNavBar() {
         </Drawer>
       </nav>
 
-      <div className='md:hidden z-50 absolute right-4 top-4 ml-auto bg-white p-1 rounded-full '>
+      <div className='lg:hidden z-50 absolute right-4 top-4 ml-auto bg-white p-1 rounded-full '>
         <IoIosMenu
           className={`z-50 h-9 w-9 text-3xl cursor-pointer text-orange-600`}
           onClick={toggleMobileNav(true)}

@@ -6,6 +6,7 @@ import NavLink from './NavLinks';
 import { logoutUser } from '../../firebase/firebaseAuth';
 import { useContext } from 'react';
 import { AuthContext } from '../../context/AuthContextProvider';
+import CartIcon from './CartIcon';
 
 export default function DesktopNavBar() {
   const navLinks = [
@@ -18,35 +19,28 @@ export default function DesktopNavBar() {
 
   const authLinks = user ? (
     //TODO - refactor authlinks to seperate component to be consistent with mobile nav
-    <>
+    <div className='flex gap-2 items-center'>
       <NavLink
-        className='inline-block uppercase no-underline p-2 h-10 bg-orange-500 text-gray-100 ml-3 rounded-md font-bold'
+        className='text-[#5a5858] text-xl'
         path={'/host/dashboard'}
         text={'Dashboard'}
       />
       <button
-        className='p-2 uppercase bg-gray-900 text-gray-100 rounded-md ml-3 font-bold'
+        className='p-2  bg-orange-500 text-gray-100 rounded-md'
         onClick={() => logoutUser()}
       >
         Sign Out
       </button>
-    </>
+    </div>
   ) : (
-    <>
-      <NavLink
-        className='text-white bg-orange-500 p-2 rounded-md font-bold ml-2 no-underline'
-        path={'/sign-in'}
-        text={'Sign In'}
-      />
-      <NavLink
-        className='text-white bg-gray-600 p-2 rounded-md font-bold ml-2 no-underline'
-        path={'/sign-up'}
-        text={'Sign Up'}
-      />
-    </>
+    <NavLink
+      className='text-white bg-orange-500 p-2 rounded-md font-bold ml-2 no-underline'
+      path={'/sign-in'}
+      text={'Sign In'}
+    />
   );
   return (
-    <nav className='hidden md:flex p-3 min-h-28 items-center'>
+    <nav className='hidden lg:flex p-3 min-h-28 items-center'>
       <div>
         <Link
           className='font-black text-4xl uppercase'
@@ -55,7 +49,7 @@ export default function DesktopNavBar() {
           #vanlife
         </Link>
       </div>
-      <ul className='flex gap-6 mr-5 text-xl ml-auto list-none items-center'>
+      <ul className='flex gap-6 mr-5 ml-auto list-none items-center'>
         {navLinks.map((link) => (
           <NavLink
             className='text-[#5a5858] text-xl'
@@ -64,11 +58,13 @@ export default function DesktopNavBar() {
             text={link.text}
           />
         ))}
+        <div className='auth-links'>{authLinks}</div>
+        <div>
+          <Link to={'/cart'}>
+            <CartIcon />
+          </Link>
+        </div>
       </ul>
-      <div className='auth-links'>{authLinks}</div>
-      <div>
-        <Link to={'/cart'}>Cart</Link>
-      </div>
     </nav>
   );
 }

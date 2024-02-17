@@ -18,7 +18,7 @@ export default function VanDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { cart } = useCart();
-  console.log(cart);
+
   const {
     data: van,
     error,

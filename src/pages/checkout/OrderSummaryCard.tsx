@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 //component imports
 import { CardTitle, CardHeader, CardContent, Card, CardFooter } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
-import { addItem, updateItem } from '../../firebase/firebaseDatabase';
+import { addItem, deleteItem } from '../../firebase/firebaseDatabase';
 import { useContext } from 'react';
 import { AuthContext } from '../../context/AuthContextProvider';
 import { DocumentData } from 'firebase/firestore';
@@ -17,24 +17,20 @@ export default function OrderSummaryCard() {
   const { cart } = useCart();
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
+  console.log(cart.id);
 
   //reduces the cart array to a single value - the total price of all items in the cart
   const total = cart.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   async function onSubmit<FormData>(data: FormData) {
-    if (!user) {
-      alert('Please login to complete your purchase');
-      return;
-    }
-    data = { ...data, cart, user, total };
-    const orderID = await addItem('orders', data as DocumentData);
+    const newOrder = { ...data, cart, user: user ? user : '', total };
+    const orderID = await addItem('orders', newOrder as DocumentData);
     //clear cart
     if (!orderID) {
       alert('Something went wrong, please try again');
       return;
     }
-    await updateItem('carts', cart.id, { items: [] });
-    // await updateItem('users', user.uid, { orders: [...user.orders, orderID] });
+    await deleteItem('carts', cart.id);
     navigate('/order-confirmation');
   }
   return (

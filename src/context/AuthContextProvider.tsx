@@ -3,9 +3,7 @@ import { User, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase/firebaseConfig';
 
 //create the context
-export const AuthContext = createContext({
-  user: null as User | null,
-});
+export const AuthContext = createContext<{ user: User | null }>({ user: null });
 
 type AuthContextProviderProps = {
   children: React.ReactNode;
@@ -21,5 +19,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
 
     return unsubscribe;
   }, []);
+  console.log(user);
+
   return <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>;
 };

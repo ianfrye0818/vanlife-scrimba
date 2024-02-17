@@ -1,72 +1,93 @@
-import { PropsWithChildren, createContext, useContext, useEffect, useState } from 'react';
+import { PropsWithChildren, createContext, useContext, useEffect, useState, useRef } from 'react';
 import { addItem, queryItem, updateItem } from '../firebase/firebaseDatabase'; // Assuming you have an updateItem function
 import { AuthContext } from './AuthContextProvider';
 import { Timestamp, doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase/firebaseConfig';
-import { Cart } from '../types/CartItemInterface';
+import { Cart, CartItem } from '../types/CartItemInterface';
 
 export const CartContext = createContext<Cart | null>(null);
+
+export type newCart = {
+  items: CartItem[] | [];
+  uid: string;
+  updatedAt: Timestamp;
+  createdAt: Timestamp;
+};
 
 export default function CartContextProvider({ children }: PropsWithChildren) {
   const { user } = useContext(AuthContext);
   const [cart, setCart] = useState<Cart | null>(null);
+  const [cartLoaded, setCartLoaded] = useState(false);
+  const cartId = useRef<string | null>(null);
 
   useEffect(() => {
-    async function initializeCart() {
-      try {
-        let cartId: string;
-        // Check if user is logged in
-        if (user) {
-          // Query cart based on user ID
-          const cartQuery = await queryItem('carts', 'uid', user.uid);
+    const storedCartId = localStorage.getItem('cartId');
+    if (storedCartId) {
+      cartId.current = storedCartId;
+    }
+  }, []);
 
-          if (cartQuery && cartQuery.length > 0) {
-            // Cart already exists, set it as current cart
-            cartId = cartQuery[0].id;
-          } else {
-            // Cart doesn't exist, create a new one
-            const newCart = await addItem('carts', { items: [], uid: user.uid });
-            cartId = newCart as string;
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const isMounted = true;
+    async function createCartFromExistingCart(userCartId: string) {
+      const unsubscribe = onSnapshot(doc(db, 'carts', userCartId), (doc) => {
+        if (doc.exists()) {
+          setCart({ ...doc.data(), id: doc.id } as Cart);
+        }
+      });
+      return unsubscribe;
+    }
+
+    async function createNewCart() {
+      //if there is no cart create new cart
+      const newCart = {
+        items: [],
+        uid: '',
+        updatedAt: Timestamp.now(),
+        createdAt: Timestamp.now(),
+      };
+      const newCartId = await addItem('carts', newCart);
+      if (newCartId) {
+        cartId.current = newCartId;
+        localStorage.setItem('cartId', newCartId);
+        setCartLoaded(true);
+        const unsubscribe = onSnapshot(doc(db, 'carts', newCartId), (doc) => {
+          if (doc.exists()) {
+            setCart({ ...doc.data(), id: doc.id } as Cart);
           }
-        } else {
-          // User not logged in, create a cart with blank user ID
-          const newCart = await addItem('carts', { items: [], uid: '' });
-          cartId = newCart as string;
-        }
-
-        if (cartId) {
-          const unsubscribe = onSnapshot(doc(db, 'carts', cartId), (snapshot) => {
-            if (snapshot.exists()) {
-              setCart({ ...snapshot.data(), id: cartId, updatedAt: Timestamp.toString() } as Cart);
-            }
-          });
-          return () => unsubscribe();
-        }
-      } catch (error) {
-        console.error('Error initializing cart:', error);
-        // Handle error (e.g., show a notification to the user)
+        });
+        return unsubscribe;
       }
     }
 
-    initializeCart();
-  }, [user]);
-
-  // When the user changes, update the cart with the new user ID
-  useEffect(() => {
-    async function updateCartWithUser() {
-      try {
-        if (user && cart && cart.uid !== user.uid) {
-          // Update cart with user ID
-          await updateItem('carts', cart.id, { uid: user.uid });
-        }
-      } catch (error) {
-        console.error('Error updating cart with user:', error);
-        // Handle error (e.g., show a notification to the user)
+    async function getUserCart() {
+      const userCartId = await queryItem('carts', 'uid', user!.uid);
+      if (userCartId) {
+        cartId.current = userCartId[0].id;
+        localStorage.setItem('cartId', userCartId[0].id);
+        setCartLoaded(true);
+        return createCartFromExistingCart(userCartId[0].id);
+      } else {
+        return createNewCart();
       }
     }
+    console.log(cart);
 
-    updateCartWithUser();
-  }, [user, cart]);
+    //if user is logged in, grab their cart from the database
+    if (user && !cartLoaded) {
+      getUserCart();
+    }
+
+    if (!user && !cartLoaded && cartId.current) {
+      createCartFromExistingCart(cartId.current);
+      setCartLoaded(true);
+    }
+
+    if (user && cartLoaded && cartId.current && cart && cart.uid !== user.uid) {
+      updateItem('carts', cartId.current, { uid: user.uid, updatedAt: Timestamp.now() });
+    }
+  }, [user, cartLoaded, cart]);
 
   return <CartContext.Provider value={cart}>{children}</CartContext.Provider>;
 }
