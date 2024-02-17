@@ -68,6 +68,7 @@ async function queryItem(collectionName: string, field: string, value: string) {
 
 //add item to database
 async function addItem<T extends Data>(collectionName: string, data: T) {
+  console.log(collectionName, data);
   try {
     const docRef = await addDoc(collection(db, collectionName), data);
     return docRef.id;

@@ -1,5 +1,5 @@
 //librairies import
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 //components import
 import { CardTitle, CardHeader, CardContent, CardFooter, Card } from '../../components/ui/card';
@@ -13,11 +13,71 @@ import {
 } from '../../components/ui/table';
 import { Button } from '../../components/ui/button';
 import Layout from '../../Layout';
+import { useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { getItembyID } from '../../firebase/firebaseDatabase';
+import ReactLoading from 'react-loading';
+import { Cart } from '../../types/CartItemInterface';
+import { Avatar } from '@mui/material';
 
 //TODO: fetch order from DB and diplay logic
 //TODO: refactor this page
 
+type Order = {
+  id: string;
+  cardName: string;
+  cardNumber: string;
+  expiryDate: string;
+  city: string;
+  cvc: string;
+  email: string;
+  name: string;
+  state: string;
+  street: string;
+  total: number;
+  user?: string;
+  zip: string;
+  cart: Cart;
+};
+
 export default function OrderConfirmationPage() {
+  const { orderId } = useParams();
+  const navigate = useNavigate();
+
+  const {
+    data: order,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ['orders', orderId],
+    queryFn: async () => {
+      const data = await getItembyID('orders', orderId as string);
+      return data as Order;
+    },
+  });
+
+  if (isLoading) {
+    return (
+      <div className='h-screen flex items-center justify-center'>
+        <ReactLoading
+          type='bubbles'
+          color='green'
+          height={300}
+          width={375}
+        />
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div>Something went wrong</div>;
+  }
+  if (order === null || order === undefined) {
+    navigate('/not-found');
+    return null;
+  }
+
+  console.log(order);
   return (
     <Layout>
       <div className='h-screen flex flex-col'>
@@ -38,21 +98,23 @@ export default function OrderConfirmationPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    <TableRow>
-                      <TableCell>Acme T-Shirt</TableCell>
-                      <TableCell>2</TableCell>
-                      <TableCell className='text-right'>$40.00</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Acme Jeans</TableCell>
-                      <TableCell>1</TableCell>
-                      <TableCell className='text-right'>$60.00</TableCell>
-                    </TableRow>
+                    {order.cart.items.map((item) => {
+                      return (
+                        <TableRow>
+                          <TableCell>
+                            <Avatar src={item.imageURL}>{item.name[0]}</Avatar>
+                          </TableCell>
+                          <TableCell>{item.name}</TableCell>
+                          <TableCell>{item.quantity}</TableCell>
+                          <TableCell className='text-right'>{item.price * item.quantity}</TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
               </CardContent>
               <CardFooter className='flex items-center justify-end'>
-                <div className='text-lg font-medium'>Total: $100.00</div>
+                <div className='text-lg font-medium'>Total: ${order.total.toFixed(2)}</div>
               </CardFooter>
             </Card>
             <Card>
@@ -61,11 +123,11 @@ export default function OrderConfirmationPage() {
               </CardHeader>
               <CardContent>
                 <p className='text-sm'>
-                  John Doe
+                  {order.name}
                   <br />
-                  123 Main St.
+                  {order.street}
                   <br />
-                  Anytown, CA 12345
+                  {order.city}, {order.state} {order.zip}
                 </p>
               </CardContent>
             </Card>
@@ -75,9 +137,9 @@ export default function OrderConfirmationPage() {
               </CardHeader>
               <CardContent>
                 <p className='text-sm'>
-                  Visa ending in 1234
+                  Visa ending in {order.cardNumber.slice(-4)}
                   <br />
-                  Expiration: 01/23
+                  Expiration: {order.expiryDate}
                 </p>
               </CardContent>
             </Card>

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { IoIosMenu } from 'react-icons/io';
 import Drawer from '@mui/material/Drawer';
 import MobileNavBarLinks from './MobileNavBarLinks';
+import { Button } from '@mui/material';
 
 export default function MobileNavBar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,14 +24,27 @@ export default function MobileNavBar() {
     <div>
       <nav>
         <Drawer
+          sx={{ position: 'relative' }}
           anchor='right'
           open={isOpen}
           onClose={toggleMobileNav(false)}
         >
-          <div className='logo'>
-            <h1 className='text-center bg-[#1f1f1f] text-white py-5'>VanLife</h1>
+          <div className=''>
+            <h1 className='text-center bg-[#1f1f1f] text-3xl font-bold text-white py-5'>VanLife</h1>
           </div>
           <MobileNavBarLinks toggleMobileNav={toggleMobileNav} />
+          <Button
+            sx={{
+              position: 'absolute',
+              top: '10px',
+              right: '10px',
+              fontSize: '1rem',
+              color: 'white',
+            }}
+            onClick={toggleMobileNav(false)}
+          >
+            X
+          </Button>
         </Drawer>
       </nav>
 

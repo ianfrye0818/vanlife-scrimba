@@ -7,6 +7,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import { useContext } from 'react';
 import { AuthContext } from '../../../context/AuthContextProvider';
+import { logoutUser } from '../../../firebase/firebaseAuth';
 
 export default function MobileNavBarAuthLinks() {
   const { user } = useContext(AuthContext);
@@ -19,7 +20,7 @@ export default function MobileNavBarAuthLinks() {
       <ListItem>
         <ListItemButton>
           <Link
-            className='text-center block w-full p-2 bg-orange-500 rounded-md'
+            className='text-center block w-full p-2'
             to='/host/dashboard'
           >
             <ListItemText primary='Dashboard' />
@@ -30,7 +31,7 @@ export default function MobileNavBarAuthLinks() {
         <ListItemButton>
           <button
             className='text-center block w-full p-2 bg-red-500 rounded-md'
-            onClick={() => {}}
+            onClick={logoutUser}
           >
             <ListItemText primary='Logout' />
           </button>

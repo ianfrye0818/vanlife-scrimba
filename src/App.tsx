@@ -46,7 +46,7 @@ const router = createBrowserRouter([
   { path: '/host/vans', element: <HostVanDetailsPage /> },
   { path: '/host/vans/:id', element: <HostVanDetailsPage /> },
   { path: '/cart', element: <CheckOutPage /> },
-  { path: '/order-confirmation', element: <OrderConfirmationPage /> },
+  { path: '/order-confirmation/:orderId', element: <OrderConfirmationPage /> },
 ]);
 
 export default function App() {

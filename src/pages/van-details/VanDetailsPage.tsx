@@ -11,13 +11,14 @@ import { toast } from 'sonner';
 import Layout from '../../Layout';
 import { getItembyID, updateItem } from '../../firebase/firebaseDatabase';
 import { CartItem } from '../../types/CartItemInterface';
-import { useCart } from '../../context/cartContext';
+import { CartContext } from '../../context/cartContext';
+import { useContext } from 'react';
 
 //TODO: refactor this component to be more readable
 export default function VanDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { cart } = useCart();
+  const cart = useContext(CartContext);
 
   const {
     data: van,
@@ -42,7 +43,7 @@ export default function VanDetails() {
 
   async function addToCart() {
     const itemInCart = checkIfItemIsInCart();
-    if (van) {
+    if (van && cart) {
       //if item is already in cart add 1 to quanity
       if (itemInCart) {
         const itemUpdated = await updateItem('carts', cart.id, {
@@ -144,7 +145,6 @@ export default function VanDetails() {
             >
               Rent this van
             </button>
-            <Link to='/cart'>Go To Cart</Link>
           </div>
         </div>
       </main>

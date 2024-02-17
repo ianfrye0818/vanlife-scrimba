@@ -16,7 +16,6 @@ import { queryItem } from './firebaseDatabase';
 import { doc, setDoc } from 'firebase/firestore';
 
 async function checkAndAddUser(email: string, uid: string) {
-  console.log('email: ', email);
   const dbUser = await queryItem('users', 'email', email);
   if (!dbUser) {
     await setDoc(doc(db, 'users', uid), {
@@ -47,8 +46,7 @@ async function createUser(email: string, password: string) {
 async function signInUser(email: string, password: string) {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const userdb = await checkAndAddUser(email, userCredential.user.uid);
-    console.log(userdb);
+    await checkAndAddUser(email, userCredential.user.uid);
     return userCredential.user;
   } catch (error) {
     console.log(error);

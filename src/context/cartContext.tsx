@@ -72,7 +72,6 @@ export default function CartContextProvider({ children }: PropsWithChildren) {
         return createNewCart();
       }
     }
-    console.log(cart);
 
     //if user is logged in, grab their cart from the database
     if (user && !cartLoaded) {
@@ -92,10 +91,10 @@ export default function CartContextProvider({ children }: PropsWithChildren) {
   return <CartContext.Provider value={cart}>{children}</CartContext.Provider>;
 }
 
-export function useCart() {
-  const cart = useContext(CartContext);
-  if (!cart) {
-    throw new Error('useCart must be used within a CartContextProvider');
-  }
-  return { cart };
-}
+// export function useCart() {
+//   const cart = useContext(CartContext);
+//   if (!cart) {
+//     throw new Error('useCart must be used within a CartContextProvider');
+//   }
+//   return { cart };
+// }

@@ -59,11 +59,7 @@ export default function DesktopNavBar() {
           />
         ))}
         <div className='auth-links'>{authLinks}</div>
-        <div>
-          <Link to={'/cart'}>
-            <CartIcon />
-          </Link>
-        </div>
+        <CartIcon />
       </ul>
     </nav>
   );
