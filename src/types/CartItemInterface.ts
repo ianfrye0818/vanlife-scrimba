@@ -13,6 +13,8 @@ export interface Cart {
   id: string;
   items: CartItem[];
   uid: string;
+  updatedAt: string;
+  createdAt: string;
 }
 
 //currenlty not being used but could be used to add total in confirmation page or checkout page

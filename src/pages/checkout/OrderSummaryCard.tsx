@@ -5,11 +5,11 @@ import { useNavigate } from 'react-router-dom';
 //component imports
 import { CardTitle, CardHeader, CardContent, Card, CardFooter } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
-import { useCart } from '../../hooks/useCartContext';
-import { addItem } from '../../firebase/firebaseDatabase';
+import { addItem, updateItem } from '../../firebase/firebaseDatabase';
 import { useContext } from 'react';
 import { AuthContext } from '../../context/AuthContextProvider';
 import { DocumentData } from 'firebase/firestore';
+import { useCart } from '../../context/cartContext';
 
 export default function OrderSummaryCard() {
   const { handleSubmit } = useFormContext<FormData>();
@@ -17,23 +17,24 @@ export default function OrderSummaryCard() {
   const { cart } = useCart();
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
-  const { dispatch } = useCart();
 
   //reduces the cart array to a single value - the total price of all items in the cart
   const total = cart.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
-  //fetch cartid from database
-
-  //on submit - TODO: replace with actual backend logic to handle payment
-  //adds the cart and total to the form data and logs it to the console
-  //navigates to the order confirmation page
   async function onSubmit<FormData>(data: FormData) {
-    if (!user) alert('Please login to complete your purchase');
+    if (!user) {
+      alert('Please login to complete your purchase');
+      return;
+    }
     data = { ...data, cart, user, total };
-    await addItem('orders', data as DocumentData);
+    const orderID = await addItem('orders', data as DocumentData);
     //clear cart
-    dispatch({ type: 'CLEAR', payload: { id: '' } });
-
+    if (!orderID) {
+      alert('Something went wrong, please try again');
+      return;
+    }
+    await updateItem('carts', cart.id, { items: [] });
+    // await updateItem('users', user.uid, { orders: [...user.orders, orderID] });
     navigate('/order-confirmation');
   }
   return (

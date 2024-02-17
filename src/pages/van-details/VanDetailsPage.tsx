@@ -9,16 +9,16 @@ import { toast } from 'sonner';
 //interface imports
 //component imports
 import Layout from '../../Layout';
-import { useCart } from '../../hooks/useCartContext';
-import { getItembyID } from '../../firebase/firebaseDatabase';
+import { getItembyID, updateItem } from '../../firebase/firebaseDatabase';
 import { CartItem } from '../../types/CartItemInterface';
+import { useCart } from '../../context/cartContext';
 
 //TODO: refactor this component to be more readable
 export default function VanDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { dispatch } = useCart();
-
+  const { cart } = useCart();
+  console.log(cart);
   const {
     data: van,
     error,
@@ -30,16 +30,67 @@ export default function VanDetails() {
       return data;
     },
   });
-  function addToCart() {
+
+  function checkIfItemIsInCart() {
+    if (cart && van) {
+      const item = cart.items.find((item: CartItem) => item.id === van.id);
+      if (item) return item;
+      return null;
+    }
+    return null;
+  }
+
+  async function addToCart() {
+    const itemInCart = checkIfItemIsInCart();
     if (van) {
-      dispatch({ type: 'ADD', payload: van as CartItem });
-      toast('Item Added to Cart', {
-        description: `${van.name} was added to your cart.`,
-        action: {
-          label: 'Remove',
-          onClick: () => dispatch({ type: 'REMOVE', payload: { id: van.id } }),
-        },
-      });
+      //if item is already in cart add 1 to quanity
+      if (itemInCart) {
+        const itemUpdated = await updateItem('carts', cart.id, {
+          items: cart.items.map((item: CartItem) =>
+            item.id === van.id ? { ...item, quantity: item.quantity + 1 } : item
+          ),
+        });
+        if (itemUpdated) {
+          toast('Item Added to Cart', {
+            description: `${van.name} was added to your cart.`,
+            action: {
+              label: 'Remove',
+              onClick: async () => {
+                await updateItem('carts', cart.id, {
+                  items: cart.items.filter((item: CartItem) => item.id !== van.id),
+                });
+              },
+            },
+          });
+        } else {
+          toast('Error', {
+            description: 'Something went wrong, please try again',
+          });
+        }
+      }
+      //if item is not in cart add item to cart and set quantity to 1
+      else {
+        const itemAdded = await updateItem('carts', cart.id, {
+          items: [...cart.items, { ...van, quantity: 1 }],
+        });
+        if (itemAdded) {
+          toast('Item Added to Cart', {
+            description: `${van.name} was added to your cart.`,
+            action: {
+              label: 'Remove',
+              onClick: async () => {
+                await updateItem('carts', cart.id, {
+                  items: cart.items.filter((item: CartItem) => item.id !== van.id),
+                });
+              },
+            },
+          });
+        } else {
+          toast('Error', {
+            description: 'Something went wrong, please try again',
+          });
+        }
+      }
     }
   }
 

@@ -11,14 +11,15 @@ import {
 } from 'firebase/auth';
 
 //global auth instance
-import { auth } from './firebaseConfig';
-import { addItem, queryItem } from './firebaseDatabase';
+import { auth, db } from './firebaseConfig';
+import { queryItem } from './firebaseDatabase';
+import { doc, setDoc } from 'firebase/firestore';
 
 async function checkAndAddUser(email: string, uid: string) {
   console.log('email: ', email);
   const dbUser = await queryItem('users', 'email', email);
   if (!dbUser) {
-    await addItem('users', {
+    await setDoc(doc(db, 'users', uid), {
       name: '',
       uid,
       email: email,

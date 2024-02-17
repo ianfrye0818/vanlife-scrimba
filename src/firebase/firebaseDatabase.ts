@@ -72,13 +72,12 @@ async function addItem<T extends Data>(collectionName: string, data: T) {
     const docRef = await addDoc(collection(db, collectionName), data);
     return docRef.id;
   } catch (error) {
-    null;
+    return null;
   }
 }
 
 //update item in database
 async function updateItem<T extends Data>(collectionName: string, id: string, data: T) {
-  console.log(id);
   try {
     const docRef = doc(db, collectionName, id);
     await updateDoc(docRef, data);
@@ -86,7 +85,7 @@ async function updateItem<T extends Data>(collectionName: string, id: string, da
     return { message: 'Document updated successfully!' };
   } catch (error) {
     console.log(error);
-    return { message: 'Error updating document!' };
+    return null;
   }
 }
 
