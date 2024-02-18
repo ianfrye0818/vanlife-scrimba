@@ -57,7 +57,6 @@ export default function OrderSummaryCard() {
       return;
     }
     //empty user cart
-    //pHs7uGVLMNTOLHGBoTn38E1lpzK2
 
     await updateItem('carts', cart!.id, { items: [] });
     //add order id to users order array
