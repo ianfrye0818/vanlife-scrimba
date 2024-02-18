@@ -6,8 +6,8 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import { useContext } from 'react';
-import { AuthContext } from '../../../context/AuthContextProvider';
-import { logoutUser } from '../../../firebase/firebaseAuth';
+import { AuthContext } from '../../../../context/AuthContextProvider';
+import { logoutUser } from '../../../../firebase/firebaseAuth';
 
 export default function MobileNavBarAuthLinks() {
   const { user } = useContext(AuthContext);

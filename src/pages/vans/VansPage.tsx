@@ -3,8 +3,8 @@ import { createContext, useState } from 'react';
 
 //componet imports
 import Layout from '../../Layout';
-import Vanslist from './VanList';
-import VanTypeFilterList from './VanTypeFilterList';
+import Vanslist from './components/VanList';
+import VanTypeFilterList from './components/VanTypeFilterList';
 
 //type imports
 import { VanFilterContextType } from '../../types/VanInterfaces';

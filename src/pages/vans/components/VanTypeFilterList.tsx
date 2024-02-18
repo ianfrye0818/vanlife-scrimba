@@ -2,14 +2,19 @@
 import { useContext } from 'react';
 
 //component imports
-import { VanFilterContext } from './VansPage';
+import { VanFilterContext } from '../VansPage';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 //type imports
-import { VanFilterEnum } from '../../types/VanEnums';
+import { VanFilterEnum } from '../../../types/VanEnums';
+
+// export interface VanFilterContextType {
+//   vanFilter: VanFilterEnum[];
+//   setVanFilter: React.Dispatch<React.SetStateAction<VanFilterEnum[]>>;
+// }
 
 //TODO: refactor to use shadow ui for more consistent styling
 export default function VanTypeFilterList() {

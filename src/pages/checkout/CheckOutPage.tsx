@@ -3,8 +3,8 @@ import { useForm, FormProvider } from 'react-hook-form';
 
 //component imports
 import Layout from '../../Layout';
-import CheckOutForm from './CheckOutForm';
-import OrderSummaryCard from './OrderSummaryCard';
+import CheckOutForm from './components/CheckOutForm';
+import OrderSummaryCard from './components/OrderSummaryCard';
 import { useContext } from 'react';
 import { CartContext } from '../../context/cartContext';
 import NoCartPage from './NoCartPage';

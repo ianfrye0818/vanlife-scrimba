@@ -4,23 +4,23 @@ import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 
 //component imports
-import { CardTitle, CardHeader, CardContent, Card, CardFooter } from '../../components/ui/card';
-import { Button } from '../../components/ui/button';
+import { CardTitle, CardHeader, CardContent, Card, CardFooter } from '../../../components/ui/card';
+import { Button } from '../../../components/ui/button';
 import { Avatar } from '@mui/material';
-import RemoveItemDialog from '../../components/RemoveItemAlertDialog';
+import RemoveItemDialog from './RemoveItemAlertDialog';
 
 //custom imports
-import { addItem, getItembyID, updateItem } from '../../firebase/firebaseDatabase';
-import { AuthContext } from '../../context/AuthContextProvider';
-import { CartContext } from '../../context/cartContext';
+import { addItem, getItembyID, updateItem } from '../../../firebase/firebaseDatabase';
+import { AuthContext } from '../../../context/AuthContextProvider';
+import { CartContext } from '../../../context/cartContext';
 
 //utility imports
-import protectData from './utils/ProtectData';
-import calculateTotal from './utils/calculateTotal';
-import removeItem from './utils/removeItem';
+import protectData from '../utils/ProtectData';
+import calculateTotal from '../utils/calculateTotal';
+import removeItem from '../utils/removeItem';
 
 //type imports
-import { CheckOutFormData, Order } from '../../types/CheckOutFormData';
+import { CheckOutFormData, Order } from '../../../types/CheckOutFormData';
 
 export default function OrderSummaryCard() {
   const { handleSubmit } = useFormContext<CheckOutFormData>();

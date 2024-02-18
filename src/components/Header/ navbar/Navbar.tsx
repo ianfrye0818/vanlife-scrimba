@@ -2,7 +2,7 @@
 
 //component imports
 import MobileNavBar from './mobile-nav-bar/MobileNavBar';
-import DesktopNavBar from './DesktopNavBar';
+import DesktopNavBar from './desktop-nav-bar/DesktopNavBar';
 
 export default function Navbar() {
   return (

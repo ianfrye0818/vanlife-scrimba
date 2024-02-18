@@ -1,5 +1,3 @@
-//mock server import - TODO: remove this import when the real server is ready
-
 //library imports
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -8,7 +6,6 @@ import { Toaster } from 'sonner';
 //component imports
 
 //route imports
-
 import Home from './pages/home/HomePage';
 import AboutPage from './pages/about/AboutPage';
 import VansPage from './pages/vans/VansPage';

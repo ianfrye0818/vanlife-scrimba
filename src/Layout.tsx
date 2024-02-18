@@ -2,7 +2,7 @@
 import { PropsWithChildren } from 'react';
 
 //component imports
-import Navbar from './components/Header/Navbar';
+import Navbar from './components/Header/ navbar/Navbar';
 import Footer from './components/Footer/Footer';
 
 //default layout for entire file - adds navbar and footer to all pages

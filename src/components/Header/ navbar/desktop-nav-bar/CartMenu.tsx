@@ -1,7 +1,7 @@
 import { Box, Drawer, Avatar, Button } from '@mui/material';
 import { useContext, useState } from 'react';
 import { MdShoppingCart } from 'react-icons/md';
-import { CartContext } from '../../context/cartContext';
+import { CartContext } from '../../../../context/cartContext';
 import { Link } from 'react-router-dom';
 
 export default function CartDrawer() {

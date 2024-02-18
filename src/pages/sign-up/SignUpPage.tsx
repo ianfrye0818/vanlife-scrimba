@@ -3,7 +3,7 @@
 //component imports
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../Layout';
-import SignUpForm from './SignUpForm';
+import SignUpForm from './components/SignUpForm';
 import { useContext, useEffect } from 'react';
 import { AuthContext } from '../../context/AuthContextProvider';
 

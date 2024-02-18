@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 
 //component imports
 import NavLink from './NavLinks';
-import { logoutUser } from '../../firebase/firebaseAuth';
+import { logoutUser } from '../../../../firebase/firebaseAuth';
 import { useContext } from 'react';
-import { AuthContext } from '../../context/AuthContextProvider';
-import CartIcon from './CartIcon';
+import { AuthContext } from '../../../../context/AuthContextProvider';
+import CartIcon from './CartMenu';
 
 export default function DesktopNavBar() {
   const navLinks = [

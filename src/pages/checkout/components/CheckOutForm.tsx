@@ -2,12 +2,12 @@
 import { useFormContext } from 'react-hook-form';
 
 //component imports
-import { Label } from '../../components/ui/label';
-import { CardTitle, CardHeader, CardContent, Card } from '../../components/ui/card';
-import { Input } from '../../components/ui/input';
+import { Label } from '../../../components/ui/label';
+import { CardTitle, CardHeader, CardContent, Card } from '../../../components/ui/card';
+import { Input } from '../../../components/ui/input';
 
 //type imports
-import { FormData } from '../../types/FormDataInterfaces';
+import { FormData } from '../../../types/FormDataInterfaces';
 
 //TODO - could maybe refactor this to make it more readable - could create an object with all the form inputs and then map over them to create the form
 

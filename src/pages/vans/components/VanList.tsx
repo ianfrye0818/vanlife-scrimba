@@ -8,11 +8,12 @@ import { useQuery } from '@tanstack/react-query';
 import ReactLoading from 'react-loading';
 
 //type imports
-import { VanFilterEnum } from '../../types/VanEnums';
+import { VanFilterEnum } from '../../../types/VanEnums';
 
 //context imports
-import { VanFilterContext } from './VansPage';
-import { getAllItems } from '../../firebase/firebaseDatabase';
+import { VanFilterContext } from '../VansPage';
+import { getAllItems } from '../../../firebase/firebaseDatabase';
+import { Van } from '../../../types/VanInterfaces';
 
 export default function Vanslist() {
   const { vanFilter } = useContext(VanFilterContext);
@@ -27,7 +28,7 @@ export default function Vanslist() {
     queryKey: ['vans'],
     queryFn: async () => {
       const data = await getAllItems('vans');
-      return data;
+      return data as Van[];
     },
   });
 

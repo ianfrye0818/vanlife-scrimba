@@ -8,7 +8,7 @@ import { FaGoogle } from 'react-icons/fa6';
 import { FaGithub } from 'react-icons/fa';
 
 //custom imports
-import { signInUser, signInWithGithub, signInWithGoogle } from '../../firebase/firebaseAuth';
+import { signInUser, signInWithGithub, signInWithGoogle } from '../../../firebase/firebaseAuth';
 
 export default function SignInForm() {
   const navigate = useNavigate();
