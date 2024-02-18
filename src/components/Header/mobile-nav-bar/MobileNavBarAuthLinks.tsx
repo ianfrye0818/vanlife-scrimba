@@ -50,16 +50,6 @@ export default function MobileNavBarAuthLinks() {
           </Link>
         </ListItemButton>
       </ListItem>
-      <ListItem>
-        <ListItemButton>
-          <Link
-            className='bg-blue-700 p-2 rounded-md w-full text-center uppercase font-bold'
-            to='/sign-up'
-          >
-            <ListItemText primary='Sign Up' />
-          </Link>
-        </ListItemButton>
-      </ListItem>
     </>
   );
   return authLinks;
