@@ -1,6 +1,6 @@
 import { Order } from './CheckOutFormData';
 
-export interface UserData {
+export type UserData = {
   name: string;
   email: string;
   password: string;
@@ -8,4 +8,4 @@ export interface UserData {
   hostVans: string[];
   orders: Order[];
   transactions: string[];
-}
+};

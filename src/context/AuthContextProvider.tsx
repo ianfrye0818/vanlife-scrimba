@@ -11,6 +11,7 @@ type AuthContextProviderProps = {
 //create the provider
 export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
+  console.log(user);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {

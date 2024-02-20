@@ -80,7 +80,7 @@ export default function OrderConfirmationPage() {
   console.log(order);
   return (
     <Layout>
-      <div className='h-screen flex flex-col'>
+      <div className='h-screen flex flex-col container'>
         <main className='flex-1 p-6 md:p-12'>
           <h1 className='text-2xl font-semibold mb-6'>Order Confirmation</h1>
           <div className='grid gap-6 md:grid-cols-2'>

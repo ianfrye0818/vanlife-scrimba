@@ -18,8 +18,6 @@ import {
 //global database instance
 import { db } from './firebaseConfig';
 
-type Data = { [key: string]: any };
-
 //get single item from database
 async function getItembyID(collectionName: string, id: string) {
   try {
@@ -67,7 +65,7 @@ async function queryItem(collectionName: string, field: string, value: string) {
 }
 
 //add item to database
-async function addItem<T extends Data>(collectionName: string, data: T) {
+async function addItem(collectionName: string, data: DocumentData) {
   console.log(collectionName, data);
   try {
     const docRef = await addDoc(collection(db, collectionName), data);
@@ -78,7 +76,7 @@ async function addItem<T extends Data>(collectionName: string, data: T) {
 }
 
 //update item in database
-async function updateItem<T extends Data>(collectionName: string, id: string, data: T) {
+async function updateItem(collectionName: string, id: string, data: DocumentData) {
   try {
     const docRef = doc(db, collectionName, id);
     await updateDoc(docRef, data);

@@ -1,65 +1,131 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 //library imports
 import {
-  deleteObject,
-  getDownloadURL,
-  getStorage,
-  listAll,
   ref,
-  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+  listAll,
+  getMetadata,
+  uploadBytesResumable,
+  UploadTaskSnapshot,
 } from 'firebase/storage';
+import { v4 as uuidv4 } from 'uuid';
 
 //custom imports
-import { app } from './firebaseConfig';
+import { storage } from './firebaseConfig';
 
-//global storage instance
-const storage = getStorage(app);
-
-//get file from storage
-async function downloadFile(path: string) {
+export const uploadImage = async (
+  files: File[],
+  id: string,
+  setUploadProgress: (progress: number) => void
+) => {
   try {
-    const storageRef = ref(storage, path);
-    // Get the download URL
-    const url = await getDownloadURL(storageRef);
+    const urls = await Promise.all(
+      files.map(async (file) => {
+        const storageRef = ref(storage, `images/${id}/${uuidv4()}${file.name}`);
+
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        // Set up progress listener
+        uploadTask.on(
+          'state_changed',
+          (snapshot: UploadTaskSnapshot) => {
+            const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+            setUploadProgress(progress);
+          },
+          (error: Error) => {
+            console.error(error);
+          }
+        );
+
+        await uploadTask;
+
+        const url = await getDownloadURL(storageRef);
+        return url;
+      })
+    );
+    return urls;
+  } catch (error) {
+    console.error(error);
+    return 'Something went wrong! Please try again.';
+  }
+};
+
+//get download url from storage bucket
+export async function getDownloadUrl(path: string) {
+  try {
+    const imageRef = ref(storage, path);
+    const url = await getDownloadURL(imageRef);
     return url;
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return 'Something went wrong! Please try again.';
   }
 }
 
-//upload file to storage
-async function uploadFile(path: string, file: any) {
-  const fileName = file.name + Date.now();
+//getdownload urls and metadata from storage bucket (sorted by date modified)
+export async function getAllDownloadUrlsFromUserFolder(id: string) {
   try {
-    const storageRef = ref(storage, path);
-    await uploadBytes(storageRef, fileName);
+    const listRef = ref(storage, `images/${id}`);
+    const listResult = await listAll(listRef);
+
+    // Fetching URLs and metadata in parallel
+    const urlAndMetadataList = await Promise.all(
+      listResult.items.map(async (itemRef) => {
+        const url = await getDownloadURL(itemRef);
+        const metadata = await getMetadata(itemRef);
+        return { url, metadata };
+      })
+    );
+
+    // Sort by date modified
+    const sortedUrlList = urlAndMetadataList.sort((a, b) => {
+      // Parse date modified from metadata
+      const dateA = new Date(a.metadata.updated);
+      const dateB = new Date(b.metadata.updated);
+      // Compare dates
+      return dateB.getTime() - dateA.getTime(); // descending order
+    });
+
+    return sortedUrlList;
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return 'Something went wrong! Please try again.';
   }
 }
 
-//delete file from storage
-async function deleteFile(path: string) {
+//delete image from storage
+export async function deleteImage(path: string) {
   try {
-    const storageRef = ref(storage, path);
-    // Delete the file
-    await deleteObject(storageRef);
+    const imageRef = ref(storage, path);
+    await deleteObject(imageRef);
+    return 'Image deleted successfully!';
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return 'Something went wrong! Please try again.';
   }
 }
 
-//list files in storage
-async function listFiles(path: string) {
+//delete all images from storage
+export async function deleteAllImages(id: string) {
   try {
-    const storageRef = ref(storage, path);
-    // Find all the prefixes and items.
-    const res = await listAll(storageRef);
-    return res;
+    const listRef = ref(storage, `images/${id}`);
+    const listResult = await listAll(listRef);
+    await Promise.all(listResult.items.map((itemRef) => deleteObject(itemRef)));
+    return 'All images deleted successfully!';
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return 'Something went wrong! Please try again.';
   }
 }
 
-//export functions
-export { downloadFile, uploadFile, deleteFile, listFiles };
+//delete user folder from storage
+export async function deleteUserFolder(id: string) {
+  try {
+    const folderRef = ref(storage, `images/${id}`);
+    await deleteObject(folderRef);
+    return 'User folder deleted successfully!';
+  } catch (error) {
+    console.error(error);
+    return 'Something went wrong! Please try again.';
+  }
+}

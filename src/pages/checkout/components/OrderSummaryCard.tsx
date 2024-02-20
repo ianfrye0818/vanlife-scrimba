@@ -11,8 +11,8 @@ import RemoveItemDialog from './RemoveItemAlertDialog';
 
 //custom imports
 import { addItem, getItembyID, updateItem } from '../../../firebase/firebaseDatabase';
-import { AuthContext } from '../../../context/AuthContextProvider';
 import { CartContext } from '../../../context/cartContext';
+import { useUser } from '../../../hooks/useUser';
 
 //utility imports
 import protectData from '../utils/ProtectData';
@@ -27,7 +27,7 @@ export default function OrderSummaryCard() {
   //use cart - custom hook for creating and managing cart for user = TODO: add to local storage to be persisted
   const cart = useContext(CartContext);
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
+  const { user } = useUser();
 
   //reduces the cart array to a single value - the total price of all items in the cart
   const total = calculateTotal(cart?.items);
@@ -56,9 +56,7 @@ export default function OrderSummaryCard() {
       alert('Something went wrong, please try again');
       return;
     }
-    //empty user cart
 
-    await updateItem('carts', cart!.id, { items: [] });
     //add order id to users order array
     if (user) {
       const userData = await getItembyID('users', user.uid);
@@ -67,6 +65,8 @@ export default function OrderSummaryCard() {
       }
     }
     //navigate to order confirmation page passing along the order id as a param
+    updateItem('carts', cart!.id, { items: [] });
+    //empty user cart
     navigate('/order-confirmation/' + orderId);
   }
 
