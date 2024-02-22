@@ -5,7 +5,7 @@ import heroImg from '../../assets/about-hero.png';
 export default function About() {
   return (
     <Layout>
-      <main className='container'>
+      <main className='md:container'>
         <div>
           <img
             className='w-full object-cover'

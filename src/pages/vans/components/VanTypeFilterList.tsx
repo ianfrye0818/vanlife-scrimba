@@ -11,10 +11,10 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 //type imports
 import { VanFilterEnum } from '../../../types/VanEnums';
 
-// export interface VanFilterContextType {
-//   vanFilter: VanFilterEnum[];
-//   setVanFilter: React.Dispatch<React.SetStateAction<VanFilterEnum[]>>;
-// }
+export interface VanFilterContextType {
+  vanFilter: VanFilterEnum[];
+  setVanFilter: React.Dispatch<React.SetStateAction<VanFilterEnum[]>>;
+}
 
 //TODO: refactor to use shadow ui for more consistent styling
 export default function VanTypeFilterList() {

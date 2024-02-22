@@ -19,11 +19,11 @@ export default function DesktopNavBar() {
 
   const authLinks = user ? (
     //TODO - refactor authlinks to seperate component to be consistent with mobile nav
-    <div className='flex gap-2 items-center'>
+    <div className='flex gap-4 items-center'>
       <NavLink
         className='text-[#5a5858] text-xl'
         path={'/host/dashboard'}
-        text={'Dashboard'}
+        text={'Host'}
       />
       <button
         className='p-2  bg-orange-500 text-gray-100 rounded-md'

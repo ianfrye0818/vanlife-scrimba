@@ -4,10 +4,10 @@ import { createContext, useState } from 'react';
 //componet imports
 import Layout from '../../Layout';
 import Vanslist from './components/VanList';
-import VanTypeFilterList from './components/VanTypeFilterList';
+import VanTypeFilterList, { VanFilterContextType } from './components/VanTypeFilterList';
 
 //type imports
-import { VanFilterContextType } from '../../types/VanInterfaces';
+
 import { VanFilterEnum } from '../../types/VanEnums';
 
 //create context for the filter so that it can be used in the filter list and the van list
@@ -17,8 +17,10 @@ export default function Vans() {
   const [vanFilter, setVanFilter] = useState<VanFilterEnum[]>([]);
   return (
     <Layout>
-      <div className='container'>
-        <h1 className='w-8/12 text-3xl lg:text-6xl font-bold md:w-full'>Explore Our Van Options</h1>
+      <div className='md:container '>
+        <h1 className='w-8/12 text-3xl lg:text-6xl font-bold md:w-full p-2'>
+          Explore Our Van Options
+        </h1>
         <VanFilterContext.Provider value={{ vanFilter, setVanFilter }}>
           <VanTypeFilterList />
           <Vanslist />

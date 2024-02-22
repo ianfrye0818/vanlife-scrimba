@@ -55,7 +55,7 @@ export default function OrderConfirmationPage() {
       return data as Order;
     },
   });
-
+  //loading show loading spinner
   if (isLoading) {
     return (
       <div className='h-screen flex items-center justify-center'>
@@ -68,16 +68,16 @@ export default function OrderConfirmationPage() {
       </div>
     );
   }
-
+  //error show error message
   if (error) {
     return <div>Something went wrong</div>;
   }
+  //if order is not found show not found page
   if (order === null || order === undefined) {
     navigate('/not-found');
     return null;
   }
 
-  console.log(order);
   return (
     <Layout>
       <div className='h-screen flex flex-col container'>
