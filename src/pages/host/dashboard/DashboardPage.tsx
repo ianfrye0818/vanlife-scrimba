@@ -6,9 +6,11 @@ export default function Dashboard() {
   //TODO: build out this component
   return (
     <HostPageLayout>
-      <SummaryComponent />
-      <ReviewSummary />
-      <VanListSummary />
+      <div className='h-full'>
+        <SummaryComponent />
+        <ReviewSummary />
+        <VanListSummary />
+      </div>
     </HostPageLayout>
   );
 }

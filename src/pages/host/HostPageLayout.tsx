@@ -20,7 +20,7 @@ export default function Host({ children }: React.PropsWithChildren) {
 
   return (
     <Layout>
-      <main className='container'>
+      <main className='md:container h-screen md:h-full'>
         <HostNavBar />
         {children}
       </main>
