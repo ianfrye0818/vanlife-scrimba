@@ -20,7 +20,7 @@ import HostVanDetailsPage from './pages/host/vans/van-details/HostVanDetails';
 import CheckOutPage from './pages/checkout/CheckOutPage';
 import OrderConfirmationPage from './pages/order-confirmation/OrderConfirmationPage';
 import { AuthContextProvider } from './context/AuthContextProvider';
-import CartContextProvider from './context/cartContext';
+import CartContextProvider from './context/CartContextProvider';
 
 //crate react query client to fetch data and handle async state
 const queryClient = new QueryClient();

@@ -83,6 +83,7 @@ async function signInWithGithub() {
 async function logoutUser() {
   try {
     await signOut(auth);
+    localStorage.removeItem('cartId');
   } catch (error) {
     if (error instanceof Error) alert(error.message);
     console.log(error);

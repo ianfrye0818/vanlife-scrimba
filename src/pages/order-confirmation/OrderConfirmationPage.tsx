@@ -82,7 +82,8 @@ export default function OrderConfirmationPage() {
     <Layout>
       <div className='h-screen flex flex-col container'>
         <main className='flex-1 p-6 md:p-12'>
-          <h1 className='text-2xl font-semibold mb-6'>Order Confirmation</h1>
+          <h1 className='text-2xl font-semibold mb-2'>Order Confirmation</h1>
+          <h2 className='text-xl text-gray-500 mb-6'>OrderID: {order.id}</h2>
           <div className='grid gap-6 md:grid-cols-2'>
             <Card>
               <CardHeader>

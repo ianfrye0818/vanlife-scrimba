@@ -11,7 +11,7 @@ import RemoveItemDialog from './RemoveItemAlertDialog';
 
 //custom imports
 import { addItem, getItembyID, updateItem } from '../../../firebase/firebaseDatabase';
-import { CartContext } from '../../../context/cartContext';
+import { CartContext } from '../../../context/CartContextProvider';
 import { useUser } from '../../../hooks/useUser';
 
 //utility imports

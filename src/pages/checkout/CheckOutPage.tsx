@@ -6,7 +6,7 @@ import Layout from '../../Layout';
 import CheckOutForm from './components/CheckOutForm';
 import OrderSummaryCard from './components/OrderSummaryCard';
 import { useContext } from 'react';
-import { CartContext } from '../../context/cartContext';
+import { CartContext } from '../../context/CartContextProvider';
 import NoCartPage from './NoCartPage';
 
 export default function Component() {

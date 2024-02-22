@@ -11,7 +11,7 @@ import { toast } from 'sonner';
 import Layout from '../../Layout';
 import { getItembyID, updateItem } from '../../firebase/firebaseDatabase';
 import { CartItem } from '../../types/CartItemInterface';
-import { CartContext } from '../../context/cartContext';
+import { CartContext } from '../../context/CartContextProvider';
 import { useContext } from 'react';
 
 //TODO: refactor this component to be more readable
@@ -92,6 +92,14 @@ export default function VanDetails() {
           });
         }
       }
+    } else {
+      toast('Oops!', {
+        description: 'Please sign in to add items to your cart.',
+        action: {
+          label: 'Sign In',
+          onClick: () => navigate('/sign-in'),
+        },
+      });
     }
   }
 
