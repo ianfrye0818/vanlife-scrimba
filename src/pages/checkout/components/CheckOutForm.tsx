@@ -5,9 +5,9 @@ import { useFormContext } from 'react-hook-form';
 import { Label } from '../../../components/ui/label';
 import { CardTitle, CardHeader, CardContent, Card } from '../../../components/ui/card';
 import { Input } from '../../../components/ui/input';
+import { CheckOutFormData } from '../../../types/CheckOutFormData';
 
 //type imports
-import { FormData } from '../../../types/FormDataInterfaces';
 
 //TODO - could maybe refactor this to make it more readable - could create an object with all the form inputs and then map over them to create the form
 
@@ -16,7 +16,7 @@ export default function CheckOutForm() {
   const {
     register,
     formState: { errors },
-  } = useFormContext<FormData>();
+  } = useFormContext<CheckOutFormData>();
   return (
     <div className='lg:w-2/3'>
       <Card>
@@ -38,7 +38,9 @@ export default function CheckOutForm() {
                 })}
                 placeholder='Enter your full name'
               />
-              {errors.name && <span className='text-red-500'>{errors.name.message}</span>}
+              {errors.name && (
+                <span className='text-red-500'>{errors.name.message?.toString()}</span>
+              )}
             </div>
             <div className='space-y-2'>
               <Label htmlFor='street'>Street</Label>
@@ -47,7 +49,9 @@ export default function CheckOutForm() {
                 id='street'
                 placeholder='Enter your street'
               />
-              {errors.street && <span className='text-red-500'>{errors.street.message}</span>}
+              {errors.street && (
+                <span className='text-red-500'>{errors.street.message?.toString()}</span>
+              )}
             </div>
             <div className='grid grid-cols-1 lg:grid-cols-3 gap-4'>
               <div className='space-y-2'>
@@ -60,7 +64,9 @@ export default function CheckOutForm() {
                   id='city'
                   placeholder='Enter your city'
                 />
-                {errors.city && <span className='text-red-500'>{errors.city.message}</span>}
+                {errors.city && (
+                  <span className='text-red-500'>{errors.city.message?.toString()}</span>
+                )}
               </div>
               <div className='space-y-2'>
                 <Label htmlFor='state'>State</Label>
@@ -72,7 +78,9 @@ export default function CheckOutForm() {
                   id='state'
                   placeholder='Enter your state'
                 />
-                {errors.state && <span className='text-red-500'>{errors.state.message}</span>}
+                {errors.state && (
+                  <span className='text-red-500'>{errors.state.message?.toString()}</span>
+                )}
               </div>
               <div className='space-y-2'>
                 <Label htmlFor='zip'>Zip Code</Label>
@@ -86,7 +94,9 @@ export default function CheckOutForm() {
                   id='zip'
                   placeholder='Enter your zip code'
                 />
-                {errors.zip && <span className='text-red-500'>{errors.zip.message}</span>}
+                {errors.zip && (
+                  <span className='text-red-500'>{errors.zip.message?.toString()}</span>
+                )}
               </div>
             </div>
             <div className='space-y-2'>
@@ -103,7 +113,9 @@ export default function CheckOutForm() {
                 placeholder='Enter your email'
                 type='email'
               />
-              {errors.email && <span className='text-red-500'>{errors.email.message}</span>}
+              {errors.email && (
+                <span className='text-red-500'>{errors.email.message?.toString()}</span>
+              )}
             </div>
           </form>
         </CardContent>
@@ -127,7 +139,9 @@ export default function CheckOutForm() {
                 id='cardName'
                 placeholder='Enter the name on your card'
               />
-              {errors.cardName && <span className='text-red-500'>{errors.cardName.message}</span>}
+              {errors.cardName && (
+                <span className='text-red-500'>{errors.cardName.message?.toString()}</span>
+              )}
             </div>
             <div className='space-y-2'>
               <Label htmlFor='cardNumber'>Card Number</Label>
@@ -141,7 +155,7 @@ export default function CheckOutForm() {
                 type='text'
               />
               {errors.cardNumber && (
-                <span className='text-red-500'>{errors.cardNumber.message}</span>
+                <span className='text-red-500'>{errors.cardNumber.message?.toString()}</span>
               )}
             </div>
             <div className='grid grid-cols-2 gap-4'>
@@ -162,7 +176,7 @@ export default function CheckOutForm() {
                   type='text'
                 />
                 {errors.expiryDate && (
-                  <span className='text-red-500'>{errors.expiryDate.message}</span>
+                  <span className='text-red-500'>{errors.expiryDate.message?.toString()}</span>
                 )}
               </div>
               <div className='space-y-2'>
@@ -176,7 +190,9 @@ export default function CheckOutForm() {
                   placeholder='Enter your CVC'
                   type='text'
                 />
-                {errors.cvc && <span className='text-red-500'>{errors.cvc.message}</span>}
+                {errors.cvc && (
+                  <span className='text-red-500'>{errors.cvc.message?.toString()}</span>
+                )}
               </div>
             </div>
           </form>

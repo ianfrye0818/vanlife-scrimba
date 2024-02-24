@@ -24,6 +24,7 @@ import CartContextProvider from './context/CartContextProvider';
 import ProtectedRoutes from './routes/ProtectedRoutes';
 import AuthRoutes from './routes/AuthRoutes';
 import HostVansPage from './pages/host/vans/HostVansPage';
+import EditAVan from './pages/host/vans/edit-a-van/EditAVan';
 
 //crate react query client to fetch data and handle async state
 const queryClient = new QueryClient();
@@ -50,6 +51,7 @@ const router = createBrowserRouter([
       { path: 'dashboard', element: <DashboardPage /> },
       { path: 'vans', element: <HostVansPage /> },
       { path: 'vans/:id', element: <HostVanDetailsPage /> },
+      { path: 'vans/:id/edit', element: <EditAVan /> },
     ],
   },
   {
