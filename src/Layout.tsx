@@ -8,7 +8,7 @@ import Footer from './components/Footer/Footer';
 //default layout for entire file - adds navbar and footer to all pages
 export default function Layout({ children }: PropsWithChildren) {
   return (
-    <div>
+    <div className='h-screen'>
       <Navbar />
       {children}
       <Footer />

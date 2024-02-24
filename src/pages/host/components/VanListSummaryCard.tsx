@@ -1,18 +1,23 @@
 import { Link } from 'react-router-dom';
+import { Van } from '../../../types/VanInterfaces';
 
-export default function VanListSummaryCard() {
+type VanListSummaryCardProps = {
+  van: Van;
+};
+
+export default function VanListSummaryCard({ van }: VanListSummaryCardProps) {
   return (
-    <div className='container flex flex-col my-3'>
+    <div className='md:container flex flex-col my-3 px-2'>
       <div className='container bg-white flex items-center gap-4 p-4 md:p-8'>
         <img
-          src='https://images.pexels.com/photos/2832251/pexels-photo-2832251.jpeg?auto=compress&cs=tinysrgb&w=800'
-          alt='Your van'
+          src={van.imageURL}
+          alt={van.name}
           width={100}
           height={100}
         />
         <div>
-          <h3>Modest Explorer</h3>
-          <p>$60/day</p>
+          <h3>{van.name}</h3>
+          <p>${van.price}/day</p>
         </div>
         <Link
           className='text-gray-500 underline ml-auto'
