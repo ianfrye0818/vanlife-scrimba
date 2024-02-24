@@ -25,8 +25,8 @@ export default function SignUpForm() {
     const user = await createUser(data.email, data.password);
     if (!user) return;
 
-    //after successful login navigate to the dashboard
-    navigate('/host/dashboard');
+    //after successful login navigate to the previous page
+    navigate(-1);
   }
 
   return (
@@ -65,7 +65,7 @@ export default function SignUpForm() {
         onClick={async () => {
           //create a function to sign in with github
           await signInWithGithub();
-          navigate('/host/dashboard');
+          navigate(-1);
         }}
       >
         <FaGithub /> Sign Up with Github

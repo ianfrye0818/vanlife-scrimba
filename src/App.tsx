@@ -1,5 +1,5 @@
 //library imports
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'sonner';
 
@@ -21,31 +21,53 @@ import CheckOutPage from './pages/checkout/CheckOutPage';
 import OrderConfirmationPage from './pages/order-confirmation/OrderConfirmationPage';
 import { AuthContextProvider } from './context/AuthContextProvider';
 import CartContextProvider from './context/CartContextProvider';
+import ProtectedRoutes from './routes/ProtectedRoutes';
+import AuthRoutes from './routes/AuthRoutes';
 
 //crate react query client to fetch data and handle async state
 const queryClient = new QueryClient();
 
 //set up routing paths within the application
+
 const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Home />,
-    errorElement: <NotFound />,
-  },
+  { path: '/', element: <Home />, errorElement: <NotFound /> },
   { path: '/about', element: <AboutPage /> },
   { path: '/vans', element: <VansPage /> },
   { path: '/vans/:id', element: <VanDetailsPage /> },
-  { path: '/sign-in', element: <SignInPage /> },
-  { path: '/sign-up', element: <SignUpPage /> },
-  { path: '/host/income', element: <IncomePage /> },
-  { path: '/host/reviews', element: <ReviewsPage /> },
-  { path: '/host/dashboard', element: <DashboardPage /> },
-  { path: '/host/vans', element: <HostVanDetailsPage /> },
-  { path: '/host/vans/:id', element: <HostVanDetailsPage /> },
   { path: '/cart', element: <CheckOutPage /> },
   { path: '/order-confirmation/:orderId', element: <OrderConfirmationPage /> },
+  {
+    path: '/host',
+    element: (
+      <ProtectedRoutes>
+        <Outlet />
+      </ProtectedRoutes>
+    ),
+    children: [
+      { path: 'income', element: <IncomePage /> },
+      { path: 'reviews', element: <ReviewsPage /> },
+      { path: 'dashboard', element: <DashboardPage /> },
+      { path: 'vans', element: <HostVanDetailsPage /> },
+      { path: 'vans/:id', element: <HostVanDetailsPage /> },
+    ],
+  },
+  {
+    path: '/sign-in',
+    element: (
+      <AuthRoutes>
+        <SignInPage />
+      </AuthRoutes>
+    ),
+  },
+  {
+    path: '/sign-up',
+    element: (
+      <AuthRoutes>
+        <SignUpPage />
+      </AuthRoutes>
+    ),
+  },
 ]);
-
 export default function App() {
   return (
     <AuthContextProvider>

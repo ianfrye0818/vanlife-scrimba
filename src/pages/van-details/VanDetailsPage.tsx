@@ -13,9 +13,11 @@ import { getItembyID, updateItem } from '../../firebase/firebaseDatabase';
 import { CartItem } from '../../types/CartItemInterface';
 import { CartContext } from '../../context/CartContextProvider';
 import { useContext } from 'react';
+import { useUser } from '../../hooks/useUser';
 
 //TODO: refactor this component to be more readable
 export default function VanDetails() {
+  const { isSignedIn } = useUser();
   const { id } = useParams();
   const navigate = useNavigate();
   const cart = useContext(CartContext);
@@ -43,7 +45,7 @@ export default function VanDetails() {
 
   async function addToCart() {
     const itemInCart = checkIfItemIsInCart();
-    if (van && cart) {
+    if (van && isSignedIn && cart) {
       //if item is already in cart add 1 to quanity
       if (itemInCart) {
         const itemUpdated = await updateItem('carts', cart.id, {

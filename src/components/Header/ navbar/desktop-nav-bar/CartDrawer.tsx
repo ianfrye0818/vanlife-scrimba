@@ -3,6 +3,8 @@ import { useContext, useState } from 'react';
 import { MdShoppingCart } from 'react-icons/md';
 import { CartContext } from '../../../../context/CartContextProvider';
 import { Link } from 'react-router-dom';
+import RemoveItemDialog from '../../../../pages/checkout/components/RemoveItemAlertDialog';
+import removeItem from '../../../../pages/checkout/utils/removeItem';
 
 export default function CartDrawer() {
   const [isOpen, setIsOpen] = useState(false);
@@ -55,6 +57,12 @@ export default function CartDrawer() {
                     <Avatar src={item.imageURL}>{item.name[0]}</Avatar>
                     <span>{item.name}</span>
                     <span>Qty: {item.quantity}</span>
+                    <span>
+                      <RemoveItemDialog
+                        removeItem={() => removeItem(item.id, cart)}
+                        itemId={item.id}
+                      />
+                    </span>
                     <span className='ml-auto'>${item.price}</span>
                   </div>
                 ))

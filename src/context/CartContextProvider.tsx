@@ -18,7 +18,6 @@ export default function CartContextProvider({ children }: PropsWithChildren) {
   const [cart, setCart] = useState<Cart | null>(null); // State for cart
   const [cartLoaded, setCartLoaded] = useState(false); // State for cart loading status
   const cartId = useRef<string | null>(null); // Reference for cart ID
-
   useEffect(() => {
     // Effect to retrieve cart ID from local storage
     const storedCartId = localStorage.getItem('cartId');

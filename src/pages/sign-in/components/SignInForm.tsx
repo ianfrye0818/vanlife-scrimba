@@ -24,9 +24,8 @@ export default function SignInForm() {
     //sign in the user
     const user = await signInUser(data.email, data.password);
     if (!user) return;
-
-    //after successful login navigate to the dashboard
-    navigate('/host/dashboard');
+    //after successful sign in redirect to previous page
+    navigate(-1);
   }
 
   return (
