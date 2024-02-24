@@ -23,6 +23,7 @@ import { AuthContextProvider } from './context/AuthContextProvider';
 import CartContextProvider from './context/CartContextProvider';
 import ProtectedRoutes from './routes/ProtectedRoutes';
 import AuthRoutes from './routes/AuthRoutes';
+import HostVansPage from './pages/host/vans/HostVansPage';
 
 //crate react query client to fetch data and handle async state
 const queryClient = new QueryClient();
@@ -47,7 +48,7 @@ const router = createBrowserRouter([
       { path: 'income', element: <IncomePage /> },
       { path: 'reviews', element: <ReviewsPage /> },
       { path: 'dashboard', element: <DashboardPage /> },
-      { path: 'vans', element: <HostVanDetailsPage /> },
+      { path: 'vans', element: <HostVansPage /> },
       { path: 'vans/:id', element: <HostVanDetailsPage /> },
     ],
   },

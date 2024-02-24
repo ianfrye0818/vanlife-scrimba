@@ -3,15 +3,16 @@ import { useUser } from '../hooks/useUser';
 import { useNavigate } from 'react-router-dom';
 
 export default function ProtectedRoutes({ children }: PropsWithChildren) {
-  const { isSignedIn } = useUser();
+  const { isSignedIn, isLoading } = useUser();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isSignedIn) {
+    if (!isLoading && !isSignedIn) {
       navigate('/sign-in');
     }
-    console.log('rednered');
-  });
+  }, [isSignedIn, isLoading, navigate]);
+
+  if (isLoading) return null;
   if (!isSignedIn) return null;
 
   return <div>{children}</div>;
