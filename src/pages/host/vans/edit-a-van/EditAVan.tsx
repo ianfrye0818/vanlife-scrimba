@@ -8,12 +8,15 @@ import { Textarea } from '../../../../components/ui/textarea';
 import Layout from '../../../../Layout';
 import { Van } from '../../../../types/VanInterfaces';
 import { VanFilterEnum } from '../../../../types/VanEnums';
+import DragAndDrop from '../../../../components/DragAndDropImage';
+import { useUser } from '../../../../hooks/useUser';
 
 export default function EditAVan() {
   const { vans } = useContext(HostContext);
   const params = useParams();
   // const navigate = useNavigate();
   const { register, handleSubmit } = useForm();
+  const { user } = useUser();
 
   if (!vans) {
     return <p>Loading...</p>;
@@ -29,22 +32,21 @@ export default function EditAVan() {
         <h1>Edit Van: {van?.name}</h1>
       </div>
       <main className='h-full md:container flex flex-col md:flex-row gap-2 p-2'>
-        <div className='img-container flex-1 grid grid-cols-3 gap-2 border border-gray-400 p-2'>
-          {van?.imageUrls?.map((image) => (
-            <img
-              key={image}
-              src={image}
-              alt={van.name}
-              className='rounded-md'
-            />
-          ))}
-          <div className='border'>
-            <input
-              className=''
-              type='file'
-            />
+        <DragAndDrop
+          userId={user?.uid as string}
+          vanId={van?.id as string}
+        >
+          <div className='img-container flex-1 grid grid-cols-3 gap-2 border border-gray-400 p-2'>
+            {van?.imageUrls?.map((image) => (
+              <img
+                key={image}
+                src={image}
+                alt={van.name}
+                className='rounded-md'
+              />
+            ))}
           </div>
-        </div>
+        </DragAndDrop>
         <form
           onSubmit={handleSubmit(onSubmit as SubmitHandler<FieldValues>)}
           className='flex-1 flex flex-col gap-3 px-3'

@@ -13,15 +13,17 @@ import { v4 as uuidv4 } from 'uuid';
 //custom imports
 import { storage } from './firebaseConfig';
 
+//uplaod image to storage bucket`
 export const uploadImage = async (
   files: File[],
-  id: string,
+  path: string,
   setUploadProgress: (progress: number) => void
 ) => {
+  console.log(files);
   try {
     const urls = await Promise.all(
       files.map(async (file) => {
-        const storageRef = ref(storage, `images/${id}/${uuidv4()}${file.name}`);
+        const storageRef = ref(storage, `images/${path}/${uuidv4()}${file.name}`);
 
         const uploadTask = uploadBytesResumable(storageRef, file);
 
