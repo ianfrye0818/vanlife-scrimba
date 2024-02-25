@@ -1,5 +1,6 @@
 import { FileUploader } from 'react-drag-drop-files';
 import { uploadImage } from '../firebase/firebaseStorage';
+import { useEffect, useState } from 'react';
 
 type DragAndDropProps = {
   userId: string;
@@ -8,22 +9,37 @@ type DragAndDropProps = {
   setProgress: (progress: number) => void;
 };
 
-export default function DragAndDrop({ userId, vanId, children, setProgress }: DragAndDropProps) {
-  const handleChange = async (files: File[]) => {
+export default function DragAndDrop({ userId, vanId, setProgress }: DragAndDropProps) {
+  const [files, setFiles] = useState<File[]>([]);
+  const handleChange = async () => {
     //upload files to db
     const metadata = await uploadImage([...files], `${userId}/${vanId}`, setProgress);
     console.log(metadata);
   };
 
   return (
-    <FileUploader
-      handleChange={handleChange}
-      name='file'
-      // types={['.png', '.jpg', '.jpeg']}
-      types={['.PNG', '.JPG', '.JPEG', 'jpeg', 'jpg', 'png']}
-      multiple={true}
-      label='Drag and Drop Images Here'
-      children={children}
-    />
+    <div
+      onDragOver={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+      onDrop={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        handleChange(e.dataTransfer.files);
+      }}
+    >
+      <label htmlFor='file'>
+        <input
+          type='file'
+          id='file'
+          name='file'
+          multiple
+          accept='image/*'
+          className='hidden'
+          onChange={(e) => handleChange(e.target.files)}
+        />
+      </label>
+    </div>
   );
 }
