@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { HostContext } from '../../../../context/HostVanContext';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
@@ -10,8 +10,10 @@ import { Van } from '../../../../types/VanInterfaces';
 import { VanFilterEnum } from '../../../../types/VanEnums';
 import DragAndDrop from '../../../../components/DragAndDropImage';
 import { useUser } from '../../../../hooks/useUser';
+import { Progress } from '../../../../components/ui/progress';
 
 export default function EditAVan() {
+  const [progress, setProgress] = useState(0);
   const { vans } = useContext(HostContext);
   const params = useParams();
   // const navigate = useNavigate();
@@ -24,29 +26,45 @@ export default function EditAVan() {
   const van = vans.find((van) => van.id === params.id);
 
   const onSubmit = (data: Van) => {
+    console.log('clicked');
     console.log(data);
   };
   return (
     <Layout>
-      <div className='mt-14 lg:mt-0 md:container p-2 text-3xl mb-4'>
+      <div className='mt-14 lg:mt-0 md:container p-2 text-3xl flex flex-col gap-3'>
         <h1>Edit Van: {van?.name}</h1>
+        <p className='text-sm'>Drag and drop images below to add</p>
       </div>
-      <main className='h-full md:container flex flex-col md:flex-row gap-2 p-2'>
-        <DragAndDrop
-          userId={user?.uid as string}
-          vanId={van?.id as string}
-        >
-          <div className='img-container flex-1 grid grid-cols-3 gap-2 border border-gray-400 p-2'>
-            {van?.imageUrls?.map((image) => (
-              <img
-                key={image}
-                src={image}
-                alt={van.name}
-                className='rounded-md'
+
+      <main className='min-h-full md:container flex flex-col md:flex-row gap-2 p-2'>
+        <div className='flex-1 min-h-full border border-gray-400 relative '>
+          <span className='absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] text-2xl text-gray-600 -z-[1]'>
+            + Add Images
+          </span>
+          <DragAndDrop
+            userId={user?.uid as string}
+            vanId={van?.id as string}
+            setProgress={setProgress}
+          >
+            {progress > 0 && (
+              <Progress
+                value={progress}
+                className='w-[60%]'
               />
-            ))}
-          </div>
-        </DragAndDrop>
+            )}
+            <div className='grid grid-cols-3 gap-2 border h-full p-2 cursor-pointer'>
+              {van?.imageUrls?.map((image) => (
+                <img
+                  key={image}
+                  src={image}
+                  alt={van.name}
+                  className='rounded-md'
+                />
+              ))}
+            </div>
+          </DragAndDrop>
+        </div>
+
         <form
           onSubmit={handleSubmit(onSubmit as SubmitHandler<FieldValues>)}
           className='flex-1 flex flex-col gap-3 px-3'
@@ -55,7 +73,7 @@ export default function EditAVan() {
           <Input
             id='name'
             defaultValue={van?.name}
-            {...register('name')}
+            {...register('name', { required: 'This field is required' })}
           />
           <Label htmlFor='description'>Description</Label>
           <Textarea
@@ -64,7 +82,7 @@ export default function EditAVan() {
             className='resize-none overflow-scroll'
             id='description'
             defaultValue={van?.description}
-            {...register('description')}
+            {...register('description', { required: 'This field is required' })}
           />
           <Label htmlFor='price'>Price</Label>
           <Input
@@ -98,6 +116,12 @@ export default function EditAVan() {
               {...register('available')}
             />
           </div>
+          <button
+            type='submit'
+            className='p-3 bg-orange-500 hover:bg-orange-600 text-white uppercase'
+          >
+            Submit
+          </button>
         </form>
       </main>
     </Layout>

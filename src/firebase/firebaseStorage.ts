@@ -42,6 +42,7 @@ export const uploadImage = async (
         await uploadTask;
 
         const url = await getDownloadURL(storageRef);
+        setUploadProgress(0);
         return url;
       })
     );

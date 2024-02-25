@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { FileUploader } from 'react-drag-drop-files';
 import { uploadImage } from '../firebase/firebaseStorage';
 
@@ -6,11 +5,10 @@ type DragAndDropProps = {
   userId: string;
   vanId: string;
   children: React.ReactNode;
+  setProgress: (progress: number) => void;
 };
 
-export default function DragAndDrop({ userId, vanId, children }: DragAndDropProps) {
-  const [progress, setProgress] = useState(0);
-
+export default function DragAndDrop({ userId, vanId, children, setProgress }: DragAndDropProps) {
   const handleChange = async (files: File[]) => {
     //upload files to db
     const metadata = await uploadImage([...files], `${userId}/${vanId}`, setProgress);
