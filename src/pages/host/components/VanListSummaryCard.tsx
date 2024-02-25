@@ -21,7 +21,7 @@ export default function VanListSummaryCard({ van }: VanListSummaryCardProps) {
         </div>
         <Link
           className='text-gray-500 underline ml-auto'
-          to=''
+          to={`/host/vans/${van.id}/edit`}
         >
           Edit
         </Link>
