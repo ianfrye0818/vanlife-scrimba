@@ -59,44 +59,14 @@ export default function EditAVan() {
               />
             )}
             <div className='grid grid-cols-3 grid-rows-1 gap-2 border h-full p-2 cursor-pointer justify-start'>
-              {/* {van?.imageUrls?.map((imageUrl) => (
+              {van?.imageUrls?.map((imageUrl) => (
                 <ImageContainer
                   key={imageUrl}
                   imageUrl={imageUrl}
                   name={van.name}
                   handleDelete={() => handleDelete(van?.id)}
                 />
-              ))} */}
-              <ImageContainer
-                imageUrl={van?.imageUrls[0] as string}
-                name={van?.name.toString() as string}
-                handleDelete={() => handleDelete(van?.id as string)}
-              />
-              <ImageContainer
-                imageUrl={van?.imageUrls[0] as string}
-                name={van?.name.toString() as string}
-                handleDelete={() => handleDelete(van?.id as string)}
-              />
-              <ImageContainer
-                imageUrl={van?.imageUrls[0] as string}
-                name={van?.name.toString() as string}
-                handleDelete={() => handleDelete(van?.id as string)}
-              />
-              <ImageContainer
-                imageUrl={van?.imageUrls[0] as string}
-                name={van?.name.toString() as string}
-                handleDelete={() => handleDelete(van?.id as string)}
-              />
-              <ImageContainer
-                imageUrl={van?.imageUrls[0] as string}
-                name={van?.name.toString() as string}
-                handleDelete={() => handleDelete(van?.id as string)}
-              />
-              <ImageContainer
-                imageUrl={van?.imageUrls[0] as string}
-                name={van?.name.toString() as string}
-                handleDelete={() => handleDelete(van?.id as string)}
-              />
+              ))}
             </div>
           </DragAndDrop>
         </div>

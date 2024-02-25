@@ -8,7 +8,8 @@ export const HostContext = createContext<{
   error: string | null;
   isError: boolean;
   isLoading: boolean;
-}>({ vans: [] as Van[], error: null, isError: false, isLoading: true });
+  setVans: (vans: Van[]) => void;
+}>({ vans: [] as Van[], error: null, isError: false, isLoading: true, setVans: () => {} });
 
 export default function HostVanContext({ children }: PropsWithChildren) {
   const [vans, setVans] = useState<Van[]>([]);
@@ -36,7 +37,7 @@ export default function HostVanContext({ children }: PropsWithChildren) {
   }, [user, userIsLoading]);
 
   return (
-    <HostContext.Provider value={{ vans, error, isError, isLoading }}>
+    <HostContext.Provider value={{ vans, error, isError, isLoading, setVans }}>
       {children}
     </HostContext.Provider>
   );
