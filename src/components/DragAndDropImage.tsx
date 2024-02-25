@@ -2,30 +2,38 @@ import { uploadImage } from '../firebase/firebaseStorage';
 import { ReactNode, useEffect, useState } from 'react';
 
 type DragAndDropProps = {
-  userId: string;
-  vanId: string;
-  children: ReactNode;
+  children?: ReactNode;
   setProgress: (progress: number) => void;
+  onFilesUpload: (metaData: string[] | string) => void;
+  uploadedFiles: File[];
+  setUploadedFiles: (files: File[]) => void;
+  path: string;
 };
 
-export default function DragAndDrop({ userId, vanId, setProgress, children }: DragAndDropProps) {
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+export default function DragAndDrop({
+  onFilesUpload,
+  setProgress,
+  path,
+  uploadedFiles,
+  setUploadedFiles,
+  children,
+}: DragAndDropProps) {
   const [isDraggingOver, setIsDraggingOver] = useState(false);
 
   useEffect(() => {
-    const uploadFilesToDb = async () => {
-      const metadata = await uploadImage(uploadedFiles, `${userId}/${vanId}`, setProgress);
-      console.log(metadata);
-    };
-
-    if (uploadedFiles.length > 0) {
-      uploadFilesToDb();
+    async function uploadFilesToDb(files: File[]) {
+      const metaData = await uploadImage(files, path, setProgress);
+      onFilesUpload(metaData);
     }
-  }, [uploadedFiles]);
+    if (uploadedFiles.length > 0) {
+      uploadFilesToDb(uploadedFiles);
+    }
+  }, [path, setProgress, uploadedFiles]);
 
-  const handleChange = async (files: FileList) => {
-    setUploadedFiles(Array.from(files));
-  };
+  function handleChange(files: FileList) {
+    const filesArray = Array.from(files);
+    setUploadedFiles(filesArray);
+  }
 
   return (
     <div

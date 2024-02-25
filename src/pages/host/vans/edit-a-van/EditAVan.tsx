@@ -12,10 +12,12 @@ import DragAndDrop from '../../../../components/DragAndDropImage';
 import { useUser } from '../../../../hooks/useUser';
 import { Progress } from '../../../../components/ui/progress';
 import ImageContainer from '../../../../components/ImageContainer';
+import { updateItem } from '../../../../firebase/firebaseDatabase';
 
 export default function EditAVan() {
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [progress, setProgress] = useState(0);
-  const { vans } = useContext(HostContext);
+  const { vans, setVans } = useContext(HostContext);
   const params = useParams();
   // const navigate = useNavigate();
   const { register, handleSubmit } = useForm();
@@ -26,6 +28,9 @@ export default function EditAVan() {
   }
   const van = vans.find((van) => van.id === params.id);
 
+  if (!van) {
+    return <p>Van not found</p>;
+  }
   const onSubmit = (data: Van) => {
     console.log('clicked');
     console.log(data);
@@ -34,6 +39,13 @@ export default function EditAVan() {
   const handleDelete = (image: string) => {
     console.log('delete', image);
     console.log('vanid', van?.id);
+  };
+
+  const handleFilesUpload = async (metaData: string[] | string) => {
+    const updatedVan = { ...van, imageUrls: [...van.imageUrls, ...metaData] };
+    const updatedVans = vans.map((van) => (van.id === updatedVan.id ? updatedVan : van));
+    updateItem('vans', updatedVan.id, updatedVan);
+    setVans(updatedVans);
   };
   return (
     <Layout>
@@ -48,9 +60,11 @@ export default function EditAVan() {
             + Add Images
           </span>
           <DragAndDrop
-            userId={user?.uid as string}
-            vanId={van?.id as string}
             setProgress={setProgress}
+            uploadedFiles={uploadedFiles}
+            setUploadedFiles={setUploadedFiles}
+            path={`vans/${user?.uid}/${van?.id}`}
+            onFilesUpload={handleFilesUpload}
           >
             {progress > 0 && (
               <Progress

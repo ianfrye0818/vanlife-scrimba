@@ -4,7 +4,7 @@ export type Van = {
   price: number;
   description?: string;
   imageURL?: string;
-  imageUrls?: string[]; //replace imageURL with imageUrls
+  imageUrls: string[]; //replace imageURL with imageUrls
   type: string;
   available: boolean;
 };
