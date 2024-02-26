@@ -5,53 +5,35 @@ import {
   deleteObject,
   listAll,
   getMetadata,
-  uploadBytesResumable,
-  UploadTaskSnapshot,
+  FullMetadata,
+  uploadBytes,
 } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
+export type metaData = {
+  url: string;
+  metadata: FullMetadata;
+};
 
 //custom imports
 import { storage } from './firebaseConfig';
 
 //uplaod image to storage bucket`
-export const uploadImage = async (
-  files: File[],
-  path: string,
-  setUploadProgress: (progress: number) => void
-) => {
-  console.log(files);
+export async function uploadImage(files: File[], path: string) {
   try {
-    const urls = await Promise.all(
+    const metadata = await Promise.all(
       files.map(async (file) => {
         const storageRef = ref(storage, `images/${path}/${uuidv4()}${file.name}`);
-
-        const uploadTask = uploadBytesResumable(storageRef, file);
-
-        // Set up progress listener
-        uploadTask.on(
-          'state_changed',
-          (snapshot: UploadTaskSnapshot) => {
-            const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-            setUploadProgress(progress);
-          },
-          (error: Error) => {
-            console.error(error);
-          }
-        );
-
-        await uploadTask;
-
-        const url = await getDownloadURL(storageRef);
-        setUploadProgress(0);
-        return url;
+        await uploadBytes(storageRef, file);
+        const data = await getAllDownloadUrlsFromUserFolder(path);
+        return data || [];
       })
     );
-    return urls;
+    return metadata.flat() as metaData[];
   } catch (error) {
     console.error(error);
-    return 'Something went wrong! Please try again.';
+    return null;
   }
-};
+}
 
 //get download url from storage bucket
 export async function getDownloadUrl(path: string) {
@@ -69,17 +51,15 @@ export async function getDownloadUrl(path: string) {
 export async function getAllDownloadUrlsFromUserFolder(id: string) {
   try {
     const listRef = ref(storage, `images/${id}`);
-    const listResult = await listAll(listRef);
-
-    // Fetching URLs and metadata in parallel
     const urlAndMetadataList = await Promise.all(
-      listResult.items.map(async (itemRef) => {
+      (
+        await listAll(listRef)
+      ).items.map(async (itemRef) => {
         const url = await getDownloadURL(itemRef);
         const metadata = await getMetadata(itemRef);
         return { url, metadata };
       })
     );
-
     // Sort by date modified
     const sortedUrlList = urlAndMetadataList.sort((a, b) => {
       // Parse date modified from metadata
@@ -92,7 +72,7 @@ export async function getAllDownloadUrlsFromUserFolder(id: string) {
     return sortedUrlList;
   } catch (error) {
     console.error(error);
-    return 'Something went wrong! Please try again.';
+    return null;
   }
 }
 

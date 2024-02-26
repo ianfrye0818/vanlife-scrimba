@@ -1,21 +1,32 @@
+import { doc, updateDoc } from 'firebase/firestore';
 import { uploadImage } from '../firebase/firebaseStorage';
 import { ReactNode, useEffect, useState } from 'react';
+import { db } from '../firebase/firebaseConfig';
 
 type DragAndDropProps = {
   userId: string;
   vanId: string;
   children: ReactNode;
-  setProgress: (progress: number) => void;
 };
 
-export default function DragAndDrop({ userId, vanId, setProgress, children }: DragAndDropProps) {
+export default function DragAndDrop({ userId, vanId, children }: DragAndDropProps) {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
 
   useEffect(() => {
     const uploadFilesToDb = async () => {
-      const metadata = await uploadImage(uploadedFiles, `${userId}/${vanId}`, setProgress);
-      console.log(metadata);
+      try {
+        const metadata = await uploadImage(uploadedFiles, `vans/${userId}/${vanId}`);
+        const docRef = doc(db, 'vans', vanId);
+        if (metadata) {
+          console.log(metadata);
+          await updateDoc(docRef, { images: [...metadata] });
+          console.log('updated');
+          setUploadedFiles([]);
+        }
+      } catch (error) {
+        console.error(error);
+      }
     };
 
     if (uploadedFiles.length > 0) {
@@ -47,24 +58,25 @@ export default function DragAndDrop({ userId, vanId, setProgress, children }: Dr
         setIsDraggingOver(false);
       }}
     >
-      {isDraggingOver && (
+      {isDraggingOver ? (
         <div className='absolute top-0 left-0 w-full h-full bg-gray-100 opacity-50 z-10' />
+      ) : (
+        <label
+          htmlFor='file'
+          className='w-full h-full flex items-center justify-center cursor-pointer'
+        >
+          <input
+            type='file'
+            id='file'
+            name='file'
+            multiple
+            accept='image/*'
+            className='hidden'
+            onChange={(e) => handleChange(e.target.files as FileList)}
+          />
+          {children}
+        </label>
       )}
-      <label
-        htmlFor='file'
-        className='w-full h-full flex items-center justify-center cursor-pointer'
-      >
-        <input
-          type='file'
-          id='file'
-          name='file'
-          multiple
-          accept='image/*'
-          className='hidden'
-          onChange={(e) => handleChange(e.target.files as FileList)}
-        />
-        {children}
-      </label>
     </div>
   );
 }

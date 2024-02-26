@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { HostContext } from '../../../../context/HostVanContext';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
@@ -10,11 +10,9 @@ import { Van } from '../../../../types/VanInterfaces';
 import { VanFilterEnum } from '../../../../types/VanEnums';
 import DragAndDrop from '../../../../components/DragAndDropImage';
 import { useUser } from '../../../../hooks/useUser';
-import { Progress } from '../../../../components/ui/progress';
 import ImageContainer from '../../../../components/ImageContainer';
 
 export default function EditAVan() {
-  const [progress, setProgress] = useState(0);
   const { vans } = useContext(HostContext);
   const params = useParams();
   // const navigate = useNavigate();
@@ -50,19 +48,12 @@ export default function EditAVan() {
           <DragAndDrop
             userId={user?.uid as string}
             vanId={van?.id as string}
-            setProgress={setProgress}
           >
-            {progress > 0 && (
-              <Progress
-                value={progress}
-                className='w-[60%]'
-              />
-            )}
             <div className='grid grid-cols-3 grid-rows-1 gap-2 border h-full p-2 cursor-pointer justify-start'>
-              {van?.imageUrls?.map((imageUrl) => (
+              {van?.imageUrls?.map((data) => (
                 <ImageContainer
-                  key={imageUrl}
-                  imageUrl={imageUrl}
+                  key={data.url}
+                  imageUrl={data.url}
                   name={van.name}
                   handleDelete={() => handleDelete(van?.id)}
                 />
