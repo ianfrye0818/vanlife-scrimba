@@ -7,8 +7,14 @@ import {
   getMetadata,
   uploadBytesResumable,
   UploadTaskSnapshot,
+  FullMetadata,
 } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
+
+export type metaData = {
+  url: string;
+  metadata: FullMetadata;
+};
 
 //custom imports
 import { storage } from './firebaseConfig';
@@ -19,9 +25,8 @@ export const uploadImage = async (
   path: string,
   setUploadProgress: (progress: number) => void
 ) => {
-  console.log(files);
   try {
-    const urls = await Promise.all(
+    const metaData = await Promise.all(
       files.map(async (file) => {
         const storageRef = ref(storage, `images/${path}/${uuidv4()}${file.name}`);
 
@@ -39,20 +44,17 @@ export const uploadImage = async (
           }
         );
 
-        await uploadTask;
-
-        const url = await getDownloadURL(storageRef);
-        setUploadProgress(0);
-        return url;
+        const data = await getAllDownloadUrlsFromUserFolder(path);
+        return data || [];
       })
     );
-    return urls;
+    const flattenedMetaData = metaData.flat();
+    return flattenedMetaData as metaData[];
   } catch (error) {
     console.error(error);
-    return 'Something went wrong! Please try again.';
+    return null;
   }
 };
-
 //get download url from storage bucket
 export async function getDownloadUrl(path: string) {
   try {
@@ -61,14 +63,14 @@ export async function getDownloadUrl(path: string) {
     return url;
   } catch (error) {
     console.error(error);
-    return 'Something went wrong! Please try again.';
+    return null;
   }
 }
 
 //getdownload urls and metadata from storage bucket (sorted by date modified)
-export async function getAllDownloadUrlsFromUserFolder(id: string) {
+export async function getAllDownloadUrlsFromUserFolder(path: string) {
   try {
-    const listRef = ref(storage, `images/${id}`);
+    const listRef = ref(storage, `images/${path}`);
     const listResult = await listAll(listRef);
 
     // Fetching URLs and metadata in parallel
@@ -92,7 +94,7 @@ export async function getAllDownloadUrlsFromUserFolder(id: string) {
     return sortedUrlList;
   } catch (error) {
     console.error(error);
-    return 'Something went wrong! Please try again.';
+    return null;
   }
 }
 
@@ -101,10 +103,8 @@ export async function deleteImage(path: string) {
   try {
     const imageRef = ref(storage, path);
     await deleteObject(imageRef);
-    return 'Image deleted successfully!';
   } catch (error) {
     console.error(error);
-    return 'Something went wrong! Please try again.';
   }
 }
 
@@ -117,7 +117,7 @@ export async function deleteAllImages(id: string) {
     return 'All images deleted successfully!';
   } catch (error) {
     console.error(error);
-    return 'Something went wrong! Please try again.';
+    return null;
   }
 }
 

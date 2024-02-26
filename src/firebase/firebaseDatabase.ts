@@ -80,8 +80,8 @@ async function updateItem(collectionName: string, id: string, data: DocumentData
   try {
     const docRef = doc(db, collectionName, id);
     await updateDoc(docRef, data);
-
-    return { message: 'Document updated successfully!' };
+    const document = await getDoc(docRef);
+    return document;
   } catch (error) {
     console.log(error);
     return null;

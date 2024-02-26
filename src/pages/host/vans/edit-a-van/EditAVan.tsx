@@ -13,6 +13,7 @@ import { useUser } from '../../../../hooks/useUser';
 import { Progress } from '../../../../components/ui/progress';
 import ImageContainer from '../../../../components/ImageContainer';
 import { updateItem } from '../../../../firebase/firebaseDatabase';
+import { deleteImage, metaData } from '../../../../firebase/firebaseStorage';
 
 export default function EditAVan() {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
@@ -31,18 +32,25 @@ export default function EditAVan() {
   if (!van) {
     return <p>Van not found</p>;
   }
+  console.log(van);
   const onSubmit = (data: Van) => {
     console.log('clicked');
-    console.log(data);
+    console.log({ ...data, imageUrls: van.imageUrls });
   };
 
-  const handleDelete = (image: string) => {
-    console.log('delete', image);
-    console.log('vanid', van?.id);
+  //TODO fix this function
+  const handleDelete = async (path: string, vanId: string, metaData: metaData) => {
+    await deleteImage(path);
+    const updatedVan = await updateItem('vans', vanId, { imageUrls: metaData });
+    if (updatedVan) {
+      const updatedVans = vans.map((van) => (van.id === vanId ? updatedVan : van));
+      setVans(updatedVans);
+    }
   };
 
-  const handleFilesUpload = async (metaData: string[] | string) => {
-    const updatedVan = { ...van, imageUrls: [...van.imageUrls, ...metaData] };
+  const handleFilesUpload = async (metaData: metaData[]) => {
+    console.log(metaData);
+    const updatedVan = { ...van, imageUrls: metaData };
     const updatedVans = vans.map((van) => (van.id === updatedVan.id ? updatedVan : van));
     updateItem('vans', updatedVan.id, updatedVan);
     setVans(updatedVans);
@@ -55,10 +63,7 @@ export default function EditAVan() {
       </div>
 
       <main className='min-h-full md:container flex flex-col md:flex-row gap-2 p-2'>
-        <div className='flex-1 min-h-full border border-gray-400 relative '>
-          <span className='absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] text-2xl text-gray-600 -z-[1]'>
-            + Add Images
-          </span>
+        <div className='flex-1 m-h-full relative overflow-scroll'>
           <DragAndDrop
             setProgress={setProgress}
             uploadedFiles={uploadedFiles}
@@ -72,13 +77,13 @@ export default function EditAVan() {
                 className='w-[60%]'
               />
             )}
-            <div className='grid grid-cols-3 grid-rows-1 gap-2 border h-full p-2 cursor-pointer justify-start'>
-              {van?.imageUrls?.map((imageUrl) => (
+            <div className=' grid grid-cols-3 gap-2 w-fulljustify-center'>
+              {van?.imageUrls?.map((metaData) => (
                 <ImageContainer
-                  key={imageUrl}
-                  imageUrl={imageUrl}
+                  key={metaData.url}
+                  imageUrl={metaData.url}
                   name={van.name}
-                  handleDelete={() => handleDelete(van?.id)}
+                  handleDelete={() => handleDelete(metaData.metadata.fullPath, van.id, metaData)}
                 />
               ))}
             </div>

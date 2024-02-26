@@ -1,10 +1,10 @@
-import { uploadImage } from '../firebase/firebaseStorage';
+import { metaData, uploadImage } from '../firebase/firebaseStorage';
 import { ReactNode, useEffect, useState } from 'react';
 
 type DragAndDropProps = {
   children?: ReactNode;
   setProgress: (progress: number) => void;
-  onFilesUpload: (metaData: string[] | string) => void;
+  onFilesUpload: (metaData: metaData[]) => void;
   uploadedFiles: File[];
   setUploadedFiles: (files: File[]) => void;
   path: string;
@@ -23,7 +23,9 @@ export default function DragAndDrop({
   useEffect(() => {
     async function uploadFilesToDb(files: File[]) {
       const metaData = await uploadImage(files, path, setProgress);
-      onFilesUpload(metaData);
+      if (metaData) {
+        onFilesUpload(metaData);
+      }
     }
     if (uploadedFiles.length > 0) {
       uploadFilesToDb(uploadedFiles);
@@ -60,7 +62,7 @@ export default function DragAndDrop({
       )}
       <label
         htmlFor='file'
-        className='w-full h-full flex items-center justify-center cursor-pointer'
+        className='w-full h-full cursor-pointer border-dashed border-2 border-gray-400 flex justify-start items-start gap-2 p-2 flex-wrap'
       >
         <input
           type='file'
