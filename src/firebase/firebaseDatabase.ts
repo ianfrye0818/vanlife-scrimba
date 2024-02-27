@@ -66,11 +66,13 @@ async function queryItem(collectionName: string, field: string, value: string) {
 
 //add item to database
 async function addItem(collectionName: string, data: DocumentData) {
-  console.log(collectionName, data);
   try {
+    console.log(collectionName, data);
     const docRef = await addDoc(collection(db, collectionName), data);
+    console.log('docrefid: ', docRef.id);
     return docRef.id;
   } catch (error) {
+    console.error(error);
     return null;
   }
 }

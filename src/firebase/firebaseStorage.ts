@@ -22,13 +22,13 @@ import { storage } from './firebaseConfig';
 //uplaod image to storage bucket`
 export const uploadImage = async (
   files: File[],
-  path: string,
+  id: string,
   setUploadProgress: (progress: number) => void
 ) => {
   try {
-    const metaData = await Promise.all(
+    const data = await Promise.all(
       files.map(async (file) => {
-        const storageRef = ref(storage, `images/${path}/${uuidv4()}${file.name}`);
+        const storageRef = ref(storage, `images/${id}/${uuidv4()}${file.name}`);
 
         const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -44,26 +44,29 @@ export const uploadImage = async (
           }
         );
 
-        const data = await getAllDownloadUrlsFromUserFolder(path);
-        return data || [];
+        await uploadTask;
+
+        const url = await getDownloadURL(storageRef);
+        const metaData = await getMetadata(storageRef);
+        return { url, metaData };
       })
     );
-    const flattenedMetaData = metaData.flat();
-    return flattenedMetaData as metaData[];
+    return data;
   } catch (error) {
     console.error(error);
     return null;
   }
 };
+
 //get download url from storage bucket
 export async function getDownloadUrl(path: string) {
   try {
-    const imageRef = ref(storage, path);
+    const imageRef = ref(storage, `images/${path}`);
     const url = await getDownloadURL(imageRef);
     return url;
   } catch (error) {
     console.error(error);
-    return null;
+    return 'Something went wrong! Please try again.';
   }
 }
 
