@@ -35,7 +35,6 @@ export default function HostVanContext({ children }: PropsWithChildren) {
       setVans([]);
     }
   }, [user, userIsLoading]);
-  console.log(vans);
   return (
     <HostContext.Provider value={{ vans, error, isError, isLoading, setVans }}>
       {children}

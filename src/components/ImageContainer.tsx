@@ -13,6 +13,7 @@ export default function ImageContainer({ imageUrl, name, handleDelete }: ImageCo
     <div
       onMouseEnter={() => setShowTrashCan(true)}
       onMouseLeave={() => setShowTrashCan(false)}
+      onClick={(e) => e.stopPropagation()}
       className=' flex justify-center items-center relative'
     >
       <img

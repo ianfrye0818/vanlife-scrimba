@@ -1,74 +1,63 @@
 import { useContext } from 'react';
-import { useParams } from 'react-router-dom';
-import { HostContext } from '../../../../context/HostVanContext';
-import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
-import { Input } from '../../../../components/ui/input';
-import { Label } from '../../../../components/ui/label';
-import { Textarea } from '../../../../components/ui/textarea';
 import Layout from '../../../../Layout';
-import { Van } from '../../../../types/VanInterfaces';
+import { HostContext } from '../../../../context/HostVanContext';
+import { useParams } from 'react-router-dom';
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  deleteImage,
+  getAllDownloadUrlsFromUserFolder,
+  uploadImage,
+} from '../../../../firebase/firebaseStorage';
+import { Label } from '../../../../components/ui/label';
+import { Input } from '../../../../components/ui/input';
+import { Textarea } from '../../../../components/ui/textarea';
 import { VanFilterEnum } from '../../../../types/VanEnums';
-import ImageContainer from '../../../../components/ImageContainer';
-import { updateItem } from '../../../../firebase/firebaseDatabase';
-import { deleteImage, uploadImage } from '../../../../firebase/firebaseStorage';
 import { DragAndDropImage } from '../../../../components/DragAndDropImage';
+import ImageContainer from '../../../../components/ImageContainer';
+import { FullMetadata } from 'firebase/storage';
+import { Van } from '../../../../types/VanInterfaces';
 
 export default function EditAVan() {
-  const [progress, setProgress] = useState(0);
-  const { vans, setVans } = useContext(HostContext);
+  const { vans } = useContext(HostContext);
   const params = useParams();
-  // const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { register, handleSubmit } = useForm();
-
-  if (!vans) {
-    return <p>Loading...</p>;
-  }
   const van = vans.find((van) => van.id === params.id);
 
-  if (!van) {
-    return <p>Van not found</p>;
+  //query to get all get image metadata from van folder
+  //TODO: rename this function
+  const { data: imageData } = useQuery({
+    queryKey: ['van'],
+    queryFn: async () => {
+      return (await getAllDownloadUrlsFromUserFolder(`${van?.imageBucketPath}`)) as {
+        url: string;
+        metadata: FullMetadata;
+      }[];
+    },
+    enabled: van !== undefined,
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (fullImagePath: string) => await deleteImage(fullImagePath),
+  });
+
+  const addImgMutation = useMutation({
+    mutationFn: async (files: File[]) => await uploadImage(files, van?.imageBucketPath as string),
+  });
+
+  async function handleDelete(fullImagePath: string) {
+    await deleteMutation.mutateAsync(fullImagePath);
+    queryClient.invalidateQueries({ queryKey: ['van'] });
   }
-  const onSubmit = (data: Van) => {
-    console.log(data);
-    console.log('clicked');
-  };
 
-  //TODO fix this function
-  const handleDelete = async (path: string, vanId: string, metaData: metaData) => {
-    await deleteImage(path);
-    const updatedVan = await updateItem('vans', vanId, { imageUrls: metaData });
-    if (updatedVan) {
-      const updatedVans = vans.map((van) => (van.id === vanId ? updatedVan : van) as Van);
-      setVans(updatedVans);
-    }
-  };
-
-  const handleFilesUpload = async (acceptedFiles: File[]) => {
-    const data = await uploadImage(acceptedFiles, 'vans/' + van.id, setProgress);
-    if (data) {
-      const newobj = data.map((item) => {
-        return {
-          url: item.url,
-          metadata: {
-            name: item.metaData.name,
-            bucket: item.metaData.bucket,
-            contentType: item.metaData.contentType,
-            fullPath: item.metaData.fullPath,
-            size: item.metaData.size,
-            timeCreated: item.metaData.timeCreated,
-            updated: item.metaData.updated,
-          },
-        };
-      });
-      const updatedVanImages = [...van.images, ...newobj];
-      const updatedVan = { ...van, images: updatedVanImages };
-      const updatedItem = await updateItem('vans', van.id, { images: updatedVanImages });
-      setVans(vans.map((van) => (van.id === van.id ? updatedVan : van)) as Van[]);
-      console.log('db item: ', updatedItem);
-      console.log('context item', vans);
-    }
-  };
-
+  async function handleFilesUpload(files: File[]) {
+    await addImgMutation.mutateAsync(files);
+    queryClient.invalidateQueries({ queryKey: ['van'] });
+  }
+  function onSubmit(submitData: Van) {
+    console.log(submitData);
+  }
   return (
     <Layout>
       <div className='mt-14 lg:mt-0 md:container p-2 text-3xl flex flex-col gap-3'>
@@ -77,7 +66,18 @@ export default function EditAVan() {
 
       <main className='h-full md:container flex flex-col md:flex-row gap-2 p-2'>
         <div className='flex-1 h-full '>
-          <DragAndDropImage handleFilesUpload={handleFilesUpload} />
+          <DragAndDropImage handleFilesUpload={handleFilesUpload}>
+            <div className='grid grid-cols-3 w-full gap-3'>
+              {imageData?.map((image, index) => (
+                <ImageContainer
+                  key={index}
+                  imageUrl={image.url}
+                  name={image.metadata.name}
+                  handleDelete={() => handleDelete(image.metadata.fullPath)}
+                />
+              ))}
+            </div>
+          </DragAndDropImage>
         </div>
         <form
           onSubmit={handleSubmit(onSubmit as SubmitHandler<FieldValues>)}

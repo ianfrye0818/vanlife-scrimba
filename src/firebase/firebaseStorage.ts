@@ -5,9 +5,8 @@ import {
   deleteObject,
   listAll,
   getMetadata,
-  uploadBytesResumable,
-  UploadTaskSnapshot,
   FullMetadata,
+  uploadBytes,
 } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -20,32 +19,12 @@ export type metaData = {
 import { storage } from './firebaseConfig';
 
 //uplaod image to storage bucket`
-export const uploadImage = async (
-  files: File[],
-  id: string,
-  setUploadProgress: (progress: number) => void
-) => {
+export const uploadImage = async (files: File[], path: string) => {
   try {
     const data = await Promise.all(
       files.map(async (file) => {
-        const storageRef = ref(storage, `images/${id}/${uuidv4()}${file.name}`);
-
-        const uploadTask = uploadBytesResumable(storageRef, file);
-
-        // Set up progress listener
-        uploadTask.on(
-          'state_changed',
-          (snapshot: UploadTaskSnapshot) => {
-            const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-            setUploadProgress(progress);
-          },
-          (error: Error) => {
-            console.error(error);
-          }
-        );
-
-        await uploadTask;
-
+        const storageRef = ref(storage, `${path}/${uuidv4()}${file.name}`);
+        await uploadBytes(storageRef, file);
         const url = await getDownloadURL(storageRef);
         const metaData = await getMetadata(storageRef);
         return { url, metaData };
@@ -73,19 +52,18 @@ export async function getDownloadUrl(path: string) {
 //getdownload urls and metadata from storage bucket (sorted by date modified)
 export async function getAllDownloadUrlsFromUserFolder(path: string) {
   try {
-    const listRef = ref(storage, `images/${path}`);
+    const listRef = ref(storage, path);
     const listResult = await listAll(listRef);
 
     // Fetching URLs and metadata in parallel
     const urlAndMetadataList = await Promise.all(
-      (
-        await listAll(listRef)
-      ).items.map(async (itemRef) => {
+      listResult.items.map(async (itemRef) => {
         const url = await getDownloadURL(itemRef);
         const metadata = await getMetadata(itemRef);
         return { url, metadata };
       })
     );
+
     // Sort by date modified
     const sortedUrlList = urlAndMetadataList.sort((a, b) => {
       // Parse date modified from metadata
