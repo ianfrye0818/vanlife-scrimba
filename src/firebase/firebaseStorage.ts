@@ -5,10 +5,12 @@ import {
   deleteObject,
   listAll,
   getMetadata,
+  uploadBytesResumable,
+  UploadTaskSnapshot,
   FullMetadata,
-  uploadBytes,
 } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
+
 export type metaData = {
   url: string;
   metadata: FullMetadata;
@@ -18,27 +20,48 @@ export type metaData = {
 import { storage } from './firebaseConfig';
 
 //uplaod image to storage bucket`
-export async function uploadImage(files: File[], path: string) {
+export const uploadImage = async (
+  files: File[],
+  id: string,
+  setUploadProgress: (progress: number) => void
+) => {
   try {
-    const metadata = await Promise.all(
+    const data = await Promise.all(
       files.map(async (file) => {
-        const storageRef = ref(storage, `images/${path}/${uuidv4()}${file.name}`);
-        await uploadBytes(storageRef, file);
-        const data = await getAllDownloadUrlsFromUserFolder(path);
-        return data || [];
+        const storageRef = ref(storage, `images/${id}/${uuidv4()}${file.name}`);
+
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        // Set up progress listener
+        uploadTask.on(
+          'state_changed',
+          (snapshot: UploadTaskSnapshot) => {
+            const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+            setUploadProgress(progress);
+          },
+          (error: Error) => {
+            console.error(error);
+          }
+        );
+
+        await uploadTask;
+
+        const url = await getDownloadURL(storageRef);
+        const metaData = await getMetadata(storageRef);
+        return { url, metaData };
       })
     );
-    return metadata.flat() as metaData[];
+    return data;
   } catch (error) {
     console.error(error);
     return null;
   }
-}
+};
 
 //get download url from storage bucket
 export async function getDownloadUrl(path: string) {
   try {
-    const imageRef = ref(storage, path);
+    const imageRef = ref(storage, `images/${path}`);
     const url = await getDownloadURL(imageRef);
     return url;
   } catch (error) {
@@ -48,9 +71,12 @@ export async function getDownloadUrl(path: string) {
 }
 
 //getdownload urls and metadata from storage bucket (sorted by date modified)
-export async function getAllDownloadUrlsFromUserFolder(id: string) {
+export async function getAllDownloadUrlsFromUserFolder(path: string) {
   try {
-    const listRef = ref(storage, `images/${id}`);
+    const listRef = ref(storage, `images/${path}`);
+    const listResult = await listAll(listRef);
+
+    // Fetching URLs and metadata in parallel
     const urlAndMetadataList = await Promise.all(
       (
         await listAll(listRef)
@@ -81,10 +107,8 @@ export async function deleteImage(path: string) {
   try {
     const imageRef = ref(storage, path);
     await deleteObject(imageRef);
-    return 'Image deleted successfully!';
   } catch (error) {
     console.error(error);
-    return 'Something went wrong! Please try again.';
   }
 }
 
@@ -97,7 +121,7 @@ export async function deleteAllImages(id: string) {
     return 'All images deleted successfully!';
   } catch (error) {
     console.error(error);
-    return 'Something went wrong! Please try again.';
+    return null;
   }
 }
 

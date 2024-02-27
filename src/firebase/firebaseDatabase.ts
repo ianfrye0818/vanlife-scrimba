@@ -66,11 +66,13 @@ async function queryItem(collectionName: string, field: string, value: string) {
 
 //add item to database
 async function addItem(collectionName: string, data: DocumentData) {
-  console.log(collectionName, data);
   try {
+    console.log(collectionName, data);
     const docRef = await addDoc(collection(db, collectionName), data);
+    console.log('docrefid: ', docRef.id);
     return docRef.id;
   } catch (error) {
+    console.error(error);
     return null;
   }
 }
@@ -80,8 +82,8 @@ async function updateItem(collectionName: string, id: string, data: DocumentData
   try {
     const docRef = doc(db, collectionName, id);
     await updateDoc(docRef, data);
-
-    return { message: 'Document updated successfully!' };
+    const document = await getDoc(docRef);
+    return document;
   } catch (error) {
     console.log(error);
     return null;

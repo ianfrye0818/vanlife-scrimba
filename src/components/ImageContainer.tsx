@@ -13,12 +13,12 @@ export default function ImageContainer({ imageUrl, name, handleDelete }: ImageCo
     <div
       onMouseEnter={() => setShowTrashCan(true)}
       onMouseLeave={() => setShowTrashCan(false)}
-      className='relative bg-green-300 flex items-start h-max bg-green-300'
+      className=' flex justify-center items-center relative'
     >
       <img
         src={imageUrl}
         alt={name}
-        className='rounded-md'
+        className='rounded-md object-cover block w-full h-full'
       />
       {showTrashCan && (
         <FaRegTrashAlt

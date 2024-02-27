@@ -1,81 +1,39 @@
-import { doc, updateDoc } from 'firebase/firestore';
-import { uploadImage } from '../firebase/firebaseStorage';
-import { ReactNode, useEffect, useState } from 'react';
-import { db } from '../firebase/firebaseConfig';
+import { useCallback } from 'react';
+import { useDropzone } from 'react-dropzone';
 
-type DragAndDropProps = {
-  userId: string;
-  vanId: string;
-  children: ReactNode;
+type DragAndDropImageProps = {
+  handleFilesUpload: (files: File[]) => void;
 };
 
-export default function DragAndDrop({ userId, vanId, children }: DragAndDropProps) {
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-  const [isDraggingOver, setIsDraggingOver] = useState(false);
-
-  useEffect(() => {
-    const uploadFilesToDb = async () => {
-      try {
-        const metadata = await uploadImage(uploadedFiles, `vans/${userId}/${vanId}`);
-        const docRef = doc(db, 'vans', vanId);
-        if (metadata) {
-          console.log(metadata);
-          await updateDoc(docRef, { images: [...metadata] });
-          console.log('updated');
-          setUploadedFiles([]);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    if (uploadedFiles.length > 0) {
-      uploadFilesToDb();
-    }
-  }, [uploadedFiles]);
-
-  const handleChange = async (files: FileList) => {
-    setUploadedFiles(Array.from(files));
-  };
+export function DragAndDropImage({ handleFilesUpload }: DragAndDropImageProps) {
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      handleFilesUpload(acceptedFiles);
+    },
+    [handleFilesUpload]
+  );
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   return (
     <div
-      className='relative h-full w-full border-dashed flex items-center justify-center'
-      onDragOver={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setIsDraggingOver(true);
-      }}
-      onDragLeave={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setIsDraggingOver(false);
-      }}
-      onDrop={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        handleChange(e.dataTransfer.files);
-        setIsDraggingOver(false);
-      }}
+      {...getRootProps({
+        className: 'border-2 border-dashed border-gray-300 p-4 rounded-lg h-full',
+      })}
     >
-      {isDraggingOver ? (
-        <div className='absolute top-0 left-0 w-full h-full bg-gray-100 opacity-50 z-10' />
+      <input {...getInputProps()} />
+      {isDragActive ? (
+        <p>Drop the files here ...</p>
       ) : (
-        <label
-          htmlFor='file'
-          className='w-full h-full flex items-center justify-center cursor-pointer'
-        >
-          <input
-            type='file'
-            id='file'
-            name='file'
-            multiple
-            accept='image/*'
-            className='hidden'
-            onChange={(e) => handleChange(e.target.files as FileList)}
-          />
-          {children}
-        </label>
+        <div className='grid grid-cols-3 justify-center items-center'>
+          <div className='relative'>
+            <img
+              src='https://images.pexels.com/photos/19682307/pexels-photo-19682307/free-photo-of-pink-flowers-on-a-shrub.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load'
+              alt=''
+              className='w-full h-full object-cover rounded-lg'
+            />
+            <button className='absolute top-3 right-3 text-red bg-white opacity-45'>Remove</button>
+          </div>
+        </div>
       )}
     </div>
   );

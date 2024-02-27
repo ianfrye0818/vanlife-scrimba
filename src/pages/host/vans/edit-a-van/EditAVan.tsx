@@ -8,60 +8,77 @@ import { Textarea } from '../../../../components/ui/textarea';
 import Layout from '../../../../Layout';
 import { Van } from '../../../../types/VanInterfaces';
 import { VanFilterEnum } from '../../../../types/VanEnums';
-import DragAndDrop from '../../../../components/DragAndDropImage';
-import { useUser } from '../../../../hooks/useUser';
 import ImageContainer from '../../../../components/ImageContainer';
+import { updateItem } from '../../../../firebase/firebaseDatabase';
+import { deleteImage, uploadImage } from '../../../../firebase/firebaseStorage';
+import { DragAndDropImage } from '../../../../components/DragAndDropImage';
 
 export default function EditAVan() {
-  const { vans } = useContext(HostContext);
+  const [progress, setProgress] = useState(0);
+  const { vans, setVans } = useContext(HostContext);
   const params = useParams();
   // const navigate = useNavigate();
   const { register, handleSubmit } = useForm();
-  const { user } = useUser();
 
   if (!vans) {
     return <p>Loading...</p>;
   }
   const van = vans.find((van) => van.id === params.id);
 
+  if (!van) {
+    return <p>Van not found</p>;
+  }
   const onSubmit = (data: Van) => {
-    console.log('clicked');
     console.log(data);
+    console.log('clicked');
   };
 
-  const handleDelete = (image: string) => {
-    console.log('delete', image);
-    console.log('vanid', van?.id);
+  //TODO fix this function
+  const handleDelete = async (path: string, vanId: string, metaData: metaData) => {
+    await deleteImage(path);
+    const updatedVan = await updateItem('vans', vanId, { imageUrls: metaData });
+    if (updatedVan) {
+      const updatedVans = vans.map((van) => (van.id === vanId ? updatedVan : van) as Van);
+      setVans(updatedVans);
+    }
   };
+
+  const handleFilesUpload = async (acceptedFiles: File[]) => {
+    const data = await uploadImage(acceptedFiles, 'vans/' + van.id, setProgress);
+    if (data) {
+      const newobj = data.map((item) => {
+        return {
+          url: item.url,
+          metadata: {
+            name: item.metaData.name,
+            bucket: item.metaData.bucket,
+            contentType: item.metaData.contentType,
+            fullPath: item.metaData.fullPath,
+            size: item.metaData.size,
+            timeCreated: item.metaData.timeCreated,
+            updated: item.metaData.updated,
+          },
+        };
+      });
+      const updatedVanImages = [...van.images, ...newobj];
+      const updatedVan = { ...van, images: updatedVanImages };
+      const updatedItem = await updateItem('vans', van.id, { images: updatedVanImages });
+      setVans(vans.map((van) => (van.id === van.id ? updatedVan : van)) as Van[]);
+      console.log('db item: ', updatedItem);
+      console.log('context item', vans);
+    }
+  };
+
   return (
     <Layout>
       <div className='mt-14 lg:mt-0 md:container p-2 text-3xl flex flex-col gap-3'>
         <h1>Edit Van: {van?.name}</h1>
-        <p className='text-sm'>Drag and drop images below to add</p>
       </div>
 
-      <main className='min-h-full md:container flex flex-col md:flex-row gap-2 p-2'>
-        <div className='flex-1 min-h-full border border-gray-400 relative '>
-          <span className='absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] text-2xl text-gray-600 -z-[1]'>
-            + Add Images
-          </span>
-          <DragAndDrop
-            userId={user?.uid as string}
-            vanId={van?.id as string}
-          >
-            <div className='grid grid-cols-3 grid-rows-1 gap-2 border h-full p-2 cursor-pointer justify-start'>
-              {van?.imageUrls?.map((data) => (
-                <ImageContainer
-                  key={data.url}
-                  imageUrl={data.url}
-                  name={van.name}
-                  handleDelete={() => handleDelete(van?.id)}
-                />
-              ))}
-            </div>
-          </DragAndDrop>
+      <main className='h-full md:container flex flex-col md:flex-row gap-2 p-2'>
+        <div className='flex-1 h-full '>
+          <DragAndDropImage handleFilesUpload={handleFilesUpload} />
         </div>
-
         <form
           onSubmit={handleSubmit(onSubmit as SubmitHandler<FieldValues>)}
           className='flex-1 flex flex-col gap-3 px-3'
