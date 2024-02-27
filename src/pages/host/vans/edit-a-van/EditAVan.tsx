@@ -1,7 +1,8 @@
-import { useContext } from 'react';
+//TODO: Refactor this page into smaller components
+
+import { useEffect, useState } from 'react';
 import Layout from '../../../../Layout';
-import { HostContext } from '../../../../context/HostVanContext';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
@@ -15,25 +16,49 @@ import { Textarea } from '../../../../components/ui/textarea';
 import { VanFilterEnum } from '../../../../types/VanEnums';
 import { DragAndDropImage } from '../../../../components/DragAndDropImage';
 import ImageContainer from '../../../../components/ImageContainer';
-import { FullMetadata } from 'firebase/storage';
 import { Van } from '../../../../types/VanInterfaces';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+} from '../../../../components/ui/select';
+import { queryItem, updateItem } from '../../../../firebase/firebaseDatabase';
+import { Timestamp } from 'firebase/firestore';
+import { useUser } from '../../../../hooks/useUser';
 
 export default function EditAVan() {
-  const { vans } = useContext(HostContext);
+  const [defaultImage, setDefaultImage] = useState<string>('');
+  const { user } = useUser();
   const params = useParams();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { register, handleSubmit } = useForm();
-  const van = vans.find((van) => van.id === params.id);
+
+  const { data: vans } = useQuery({
+    queryKey: ['hostedVans'],
+    queryFn: async () => {
+      return (await queryItem('vans', 'uid', user?.uid as string)) as Van[];
+    },
+    enabled: user !== undefined && user !== null,
+  });
+
+  const van = vans?.find((van) => van.id === params.id);
+
+  useEffect(() => {
+    setDefaultImage(van?.imageURL as string);
+  }, [van]);
 
   //query to get all get image metadata from van folder
   //TODO: rename this function
   const { data: imageData } = useQuery({
     queryKey: ['van'],
     queryFn: async () => {
-      return (await getAllDownloadUrlsFromUserFolder(`${van?.imageBucketPath}`)) as {
-        url: string;
-        metadata: FullMetadata;
-      }[];
+      const metadata = await getAllDownloadUrlsFromUserFolder(van?.imageBucketPath as string);
+      return metadata;
     },
     enabled: van !== undefined,
   });
@@ -46,6 +71,12 @@ export default function EditAVan() {
     mutationFn: async (files: File[]) => await uploadImage(files, van?.imageBucketPath as string),
   });
 
+  const updateVanMutation = useMutation({
+    mutationFn: async (updatedVan: Van) => {
+      await updateItem('vans', van?.id as string, updatedVan);
+    },
+  });
+
   async function handleDelete(fullImagePath: string) {
     await deleteMutation.mutateAsync(fullImagePath);
     queryClient.invalidateQueries({ queryKey: ['van'] });
@@ -55,8 +86,17 @@ export default function EditAVan() {
     await addImgMutation.mutateAsync(files);
     queryClient.invalidateQueries({ queryKey: ['van'] });
   }
-  function onSubmit(submitData: Van) {
-    console.log(submitData);
+
+  async function onSubmit(submitData: Van) {
+    const updatedVan = {
+      ...van,
+      ...submitData,
+      imageURL: defaultImage,
+      updatedAt: Timestamp.now(),
+    };
+    await updateVanMutation.mutateAsync(updatedVan);
+    queryClient.invalidateQueries({ queryKey: ['hostedVans'] });
+    navigate('/host/vans');
   }
   return (
     <Layout>
@@ -129,6 +169,35 @@ export default function EditAVan() {
               defaultChecked={van?.available}
               {...register('available')}
             />
+          </div>
+          <div className='w-full'>
+            <label htmlFor='default-image'>Default Image</label>
+            {imageData && imageData?.length > 0 && (
+              <Select
+                defaultValue={van?.imageURL}
+                onValueChange={(value) => setDefaultImage(value as string)}
+              >
+                <SelectTrigger className='w-[180px] h-[100px]'>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup className='bg-white '>
+                    <SelectLabel>Van Image</SelectLabel>
+                    {imageData.map((image, index) => (
+                      <SelectItem
+                        key={index}
+                        value={image.url}
+                      >
+                        <img
+                          src={image.url}
+                          className='w-[75px] h-[75px] object-contain'
+                        />
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            )}
           </div>
           <button
             type='submit'

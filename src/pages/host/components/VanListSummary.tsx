@@ -1,18 +1,30 @@
 import VanListSummaryCard from './VanListSummaryCard';
 import { Van } from '../../../types/VanInterfaces';
-import { useContext } from 'react';
-import { HostContext } from '../../../context/HostVanContext';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { queryItem } from '../../../firebase/firebaseDatabase';
+import { useUser } from '../../../hooks/useUser';
 
 export default function VanListSummary() {
-  const { vans, isLoading, isError } = useContext(HostContext);
+  const { user } = useUser();
+  const {
+    data: vans,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ['hostedVans'],
+    queryFn: async () => {
+      return (await queryItem('vans', 'uid', user?.uid as string)) as Van[];
+    },
+    enabled: user !== undefined && user !== null,
+  });
 
   if (isLoading) {
     return <p>Loading...</p>;
   }
 
-  if (isError) {
-    return <p>{isError.toString()}</p>;
+  if (error) {
+    return <p>{error.toString()}</p>;
   }
 
   if (!vans || vans.length === 0) {
