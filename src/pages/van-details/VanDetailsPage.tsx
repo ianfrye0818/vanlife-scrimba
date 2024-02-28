@@ -12,10 +12,10 @@ import Layout from '../../Layout';
 import { getItembyID, updateItem } from '../../firebase/firebaseDatabase';
 import { CartItem } from '../../types/CartItemInterface';
 import { CartContext } from '../../context/CartContextProvider';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { useUser } from '../../hooks/useUser';
 import { DialogBox } from '../../components/ui/DialogBox';
-import ReviewVan from '../../components/ReviewVan';
+import ReviewVan from '../../components/ReviewVanForm';
 
 //TODO: refactor this component to be more readable
 export default function VanDetails() {
@@ -23,6 +23,7 @@ export default function VanDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const cart = useContext(CartContext);
+  const [open, setOpen] = useState(false);
 
   const {
     data: van,
@@ -161,8 +162,11 @@ export default function VanDetails() {
               <DialogBox
                 titleText='Leave us a review!'
                 dialogTriggerButton={<button>Leave us a review</button>}
+                header
+                open={open}
+                setOpen={setOpen}
               >
-                <ReviewVan />
+                <ReviewVan setOpen={setOpen} />
               </DialogBox>
             </div>
           </div>

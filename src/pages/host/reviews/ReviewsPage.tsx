@@ -1,4 +1,4 @@
-import ReviewVan from '../../../components/ReviewVan';
+import ReviewVan from '../../../components/ReviewVanForm';
 import HostPageLayout from '../HostPageLayout';
 
 //TODO: build out this component

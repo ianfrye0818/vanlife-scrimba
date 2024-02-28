@@ -1,10 +1,7 @@
-import { Button } from './button';
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -15,6 +12,9 @@ type DialogBoxProps = {
   titleText?: string;
   descriptionText?: string;
   children: React.ReactNode;
+  header?: boolean;
+  open: boolean;
+  setOpen: (open: boolean) => void;
 };
 
 export function DialogBox({
@@ -22,26 +22,24 @@ export function DialogBox({
   titleText,
   descriptionText,
   children,
+  header = false,
+  open,
+  setOpen,
 }: DialogBoxProps) {
   return (
-    <Dialog>
+    <Dialog
+      open={open}
+      onOpenChange={setOpen}
+    >
       <DialogTrigger asChild>{dialogTriggerButton}</DialogTrigger>
       <DialogContent className='bg-white'>
-        <DialogHeader>
-          {titleText && <DialogTitle>{titleText}</DialogTitle>}
-          {descriptionText && <DialogDescription>{descriptionText}</DialogDescription>}
-        </DialogHeader>
+        {header && (
+          <DialogHeader>
+            {titleText && <DialogTitle className='text-3xl'>{titleText}</DialogTitle>}
+            {descriptionText && <DialogDescription>{descriptionText}</DialogDescription>}
+          </DialogHeader>
+        )}
         {children}
-        <DialogFooter className='sm:justify-start'>
-          <DialogClose asChild>
-            <Button
-              type='button'
-              variant='outline'
-            >
-              Close
-            </Button>
-          </DialogClose>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
