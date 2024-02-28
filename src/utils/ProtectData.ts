@@ -1,4 +1,4 @@
-import { CheckOutFormData } from '../../../types/CheckOutFormData';
+import { CheckOutFormData } from '../types/CheckOutFormData';
 
 export default function protectData(data: CheckOutFormData) {
   const { cardNumber, cvc } = data;

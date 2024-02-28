@@ -1,7 +1,7 @@
 //library imports
 //component imports
 import Layout from '../../Layout';
-import HostNavBar from './components/host-navbar/HostNavbar';
+import HostNavBar from '../../components/host-navbar/HostNavbar';
 
 export default function Host({ children }: React.PropsWithChildren) {
   return (

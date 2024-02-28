@@ -1,4 +1,4 @@
-import { CartItem } from '../../../types/CartItemInterface';
+import { CartItem } from '../types/CartItemInterface';
 
 export default function calculateTotal(cartItems: CartItem[] | undefined) {
   if (!cartItems) {

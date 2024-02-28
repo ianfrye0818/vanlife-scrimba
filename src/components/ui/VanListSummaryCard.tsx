@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Van } from '../../../types/VanInterfaces';
+import { Van } from '../../types/VanInterfaces';
 
 type VanListSummaryCardProps = {
   van: Van;

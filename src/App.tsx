@@ -17,7 +17,7 @@ import DashboardPage from './pages/host/dashboard/DashboardPage';
 import IncomePage from './pages/host/income/IncomePage';
 import ReviewsPage from './pages/host/reviews/ReviewsPage';
 import HostVanDetailsPage from './pages/host/vans/van-details/HostVanDetails';
-import CheckOutPage from './pages/checkout/CheckOutPage';
+import CheckOutPage from './pages/cart/CheckOutPage';
 import OrderConfirmationPage from './pages/order-confirmation/OrderConfirmationPage';
 import { AuthContextProvider } from './context/AuthContextProvider';
 import CartContextProvider from './context/CartContextProvider';
@@ -25,6 +25,7 @@ import ProtectedRoutes from './routes/ProtectedRoutes';
 import AuthRoutes from './routes/AuthRoutes';
 import HostVansPage from './pages/host/vans/HostVansPage';
 import EditAVan from './pages/host/vans/edit-a-van/EditAVan';
+import AddAVan from './pages/host/vans/add-a-van/AddAVan';
 
 //crate react query client to fetch data and handle async state
 const queryClient = new QueryClient();
@@ -52,6 +53,7 @@ const router = createBrowserRouter([
       { path: 'vans', element: <HostVansPage /> },
       { path: 'vans/:id', element: <HostVanDetailsPage /> },
       { path: 'vans/:id/edit', element: <EditAVan /> },
+      { path: 'vans/add', element: <AddAVan /> },
     ],
   },
   {

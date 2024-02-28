@@ -2,7 +2,7 @@
 
 //component imports
 import Layout from '../../Layout';
-import SignUpForm from './components/SignUpForm';
+import SignUpForm from '../../components/forms/SignUpForm';
 
 export default function SignUp() {
   return (

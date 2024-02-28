@@ -1,7 +1,7 @@
 //TODO: Refactor this page into smaller components
 //library imports
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 //custom imports
@@ -10,19 +10,20 @@ import {
   getAllDownloadUrlsFromFolder,
   uploadImage,
 } from '../../../../firebase/firebaseStorage';
-import { queryItem } from '../../../../firebase/firebaseDatabase';
+import { deleteItem, queryItem } from '../../../../firebase/firebaseDatabase';
 
 //component imports
-import { DragAndDropImage } from '../../../../components/DragAndDropImage';
+import { DragAndDropImage } from '../../../../components/ui/DragAndDropImage';
 import Layout from '../../../../Layout';
-import ImageContainer from '../../../../components/ImageContainer';
+import ImageContainer from '../../../../components/ui/ImageContainer';
+import RemoveItemDialog from '../../../../components/ui/RemoveItemAlertDialog';
 
 //type imports
 import { Van } from '../../../../types/VanInterfaces';
 
 //custom hooks
 import { useUser } from '../../../../hooks/useUser';
-import EditVanForm from '../../../../components/EditVanForm';
+import EditVanForm from '../../../../components/forms/EditVanForm';
 
 export default function EditAVan() {
   //hooks
@@ -31,6 +32,8 @@ export default function EditAVan() {
   const { user } = useUser();
   const params = useParams();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
   // query db for current user's vans and set the van to be edited in the 'van' variable
   const { data: vans } = useQuery({
     queryKey: ['hostedVans'],
@@ -64,6 +67,12 @@ export default function EditAVan() {
     mutationFn: async (files: File[]) => await uploadImage(files, van?.imageBucketPath as string),
   });
 
+  const deleteVanMutation = useMutation({
+    mutationFn: async (vanId: string) => {
+      await deleteItem('vans', vanId);
+    },
+  });
+
   //handle delete image function - passed to Image Container component
   //invailidates the van query to update the images
   async function handleDelete(fullImagePath: string) {
@@ -77,10 +86,20 @@ export default function EditAVan() {
     queryClient.invalidateQueries({ queryKey: ['van'] });
   }
 
+  async function deleteVan() {
+    await deleteVanMutation.mutateAsync(van?.id as string);
+    navigate('/host/vans');
+  }
+
   return (
     <Layout>
-      <div className='mt-14 lg:mt-0 md:container p-2 text-3xl flex flex-col gap-3'>
-        <h1>Edit Van: {van?.name}</h1>
+      <div className='mt-14 lg:mt-0 md:container p-2 flex justify-between gap-3'>
+        <h1 className='text-3xl'>Edit Van: {van?.name}</h1>
+        <RemoveItemDialog
+          actionCallback={deleteVan}
+          triggerClassNames='text-md p-2 rounded-md bg-red-600 hover:bg-red-700 text-white cursor-pointer'
+          triggerText='Delete Van'
+        />
       </div>
 
       <main className='h-full md:container flex flex-col md:flex-row gap-2 p-2'>

@@ -1,9 +1,9 @@
-import VanListSummaryCard from './VanListSummaryCard';
-import { Van } from '../../../types/VanInterfaces';
+import VanListSummaryCard from '../ui/VanListSummaryCard';
+import { Van } from '../../types/VanInterfaces';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { queryItem } from '../../../firebase/firebaseDatabase';
-import { useUser } from '../../../hooks/useUser';
+import { queryItem } from '../../firebase/firebaseDatabase';
+import { useUser } from '../../hooks/useUser';
 
 export default function VanListSummary() {
   const { user } = useUser();

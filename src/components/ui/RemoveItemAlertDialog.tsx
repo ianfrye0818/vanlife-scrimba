@@ -7,11 +7,16 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { useState } from 'react';
 
 type RemoveItemDialogProps = {
-  removeItem: (itemId: string) => void;
-  itemId: string;
+  actionCallback: () => void;
+  triggerClassNames: string;
+  triggerText: string;
 };
 
-export default function RemoveItemDialog({ removeItem, itemId }: RemoveItemDialogProps) {
+export default function RemoveItemDialog({
+  actionCallback,
+  triggerClassNames,
+  triggerText,
+}: RemoveItemDialogProps) {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -25,10 +30,10 @@ export default function RemoveItemDialog({ removeItem, itemId }: RemoveItemDialo
   return (
     <>
       <span
-        className='text-sm text-gray-500 cursor-pointer underline'
+        className={triggerClassNames}
         onClick={handleClickOpen}
       >
-        Remove
+        {triggerText}
       </span>
       <Dialog
         open={open}
@@ -45,7 +50,7 @@ export default function RemoveItemDialog({ removeItem, itemId }: RemoveItemDialo
         <DialogActions>
           <Button onClick={handleClose}>Close</Button>
           <Button
-            onClick={() => removeItem(itemId)}
+            onClick={actionCallback}
             autoFocus
           >
             Yes

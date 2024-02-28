@@ -2,10 +2,10 @@
 import { useFormContext } from 'react-hook-form';
 
 //component imports
-import { Label } from '../../../components/ui/label';
-import { CardTitle, CardHeader, CardContent, Card } from '../../../components/ui/card';
-import { Input } from '../../../components/ui/input';
-import { CheckOutFormData } from '../../../types/CheckOutFormData';
+import { Label } from '../ui/label';
+import { CardTitle, CardHeader, CardContent, Card } from '../ui/card';
+import { Input } from '../ui/input';
+import { CheckOutFormData } from '../../types/CheckOutFormData';
 
 //type imports
 

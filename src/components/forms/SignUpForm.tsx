@@ -5,7 +5,7 @@ import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 //component imports
 import { Button, TextField } from '@mui/material';
 import { FaGithub, FaGoogle } from 'react-icons/fa6';
-import { createUser, signInWithGithub, signInWithGoogle } from '../../../firebase/firebaseAuth';
+import { createUser, signInWithGithub, signInWithGoogle } from '../../firebase/firebaseAuth';
 
 //TODO: add form submission
 export default function SignUpForm() {

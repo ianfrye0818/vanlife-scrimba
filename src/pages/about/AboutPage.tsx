@@ -1,5 +1,5 @@
 import Layout from '../../Layout';
-import CallToActionBox from './CallToActionBox';
+import CallToActionBox from '../../components/about-page/CallToActionBox';
 import heroImg from '../../assets/about-hero.png';
 
 export default function About() {

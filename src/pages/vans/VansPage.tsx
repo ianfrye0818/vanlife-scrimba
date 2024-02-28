@@ -3,8 +3,10 @@ import { createContext, useState } from 'react';
 
 //componet imports
 import Layout from '../../Layout';
-import Vanslist from './components/VanList';
-import VanTypeFilterList, { VanFilterContextType } from './components/VanTypeFilterList';
+import Vanslist from '../../components/van-list-page-public/VanList';
+import VanTypeFilterList, {
+  VanFilterContextType,
+} from '../../components/van-list-page-public/VanTypeFilterList';
 
 //type imports
 

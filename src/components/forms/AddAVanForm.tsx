@@ -5,40 +5,42 @@ import { useNavigate } from 'react-router-dom';
 import { Timestamp } from 'firebase/firestore';
 
 //component imports
-import SelectImage from './SelectImage';
-import { Textarea } from '../components/ui/textarea';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
+import SelectImage from '../ui/SelectImage';
+import { Textarea } from '../ui/textarea';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
 
 //custom imports
-import { updateItem } from '../firebase/firebaseDatabase';
+import { updateItem } from '../../firebase/firebaseDatabase';
 
 //type imports
-import { metaData } from '../firebase/firebaseStorage';
-import { VanFilterEnum } from '../types/VanEnums';
-import { Van } from '../types/VanInterfaces';
-type EditVanFormProps = {
-  van: Van;
+import { metaData } from '../../firebase/firebaseStorage';
+import { VanFilterEnum } from '../../types/VanEnums';
+import { Van } from '../../types/VanInterfaces';
+import { useUser } from '../../hooks/useUser';
+type AddAVanFormProps = {
   setDefaultImage: (value: string) => void;
   defaultImage: string;
   imageData: metaData[] | undefined | null;
+  vanId: string;
 };
 
-export default function EditVanForm({
-  van,
+export default function AddAVanForm({
   setDefaultImage,
   defaultImage,
+  vanId,
   imageData,
-}: EditVanFormProps) {
+}: AddAVanFormProps) {
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { user } = useUser();
 
   //create a mutation for updating the van in the database
 
-  const updateVanMutation = useMutation({
-    mutationFn: async (updatedVan: Van) => {
-      await updateItem('vans', van?.id as string, updatedVan);
+  const updateVan = useMutation({
+    mutationFn: async (newVan: Van) => {
+      await updateItem('vans', vanId, newVan);
     },
   });
 
@@ -46,15 +48,17 @@ export default function EditVanForm({
   //invailidates the van query to update the images
   //navigates to the vans page
   async function onSubmit(submitData: Van) {
-    const updatedVan = {
-      ...van,
-      ...submitData,
-      imageURL: defaultImage,
-      updatedAt: Timestamp.now(),
-    };
-    await updateVanMutation.mutateAsync(updatedVan);
-    queryClient.invalidateQueries({ queryKey: ['hostedVans'] });
-    navigate('/host/vans');
+    console.log(submitData);
+    // const newVan = {
+    //   ...submitData,
+    //   imageURL: defaultImage,
+    //   uid: user?.uid,
+    //   updatedAt: Timestamp.now(),
+    //   createdAt: Timestamp.now(),
+    // };
+    // await updateVan.mutateAsync(newVan);
+    // queryClient.invalidateQueries({ queryKey: ['newHostedVan'] });
+    // navigate('/host/vans');
   }
 
   return (
@@ -65,7 +69,6 @@ export default function EditVanForm({
       <Label htmlFor='name'>Name</Label>
       <Input
         id='name'
-        defaultValue={van?.name}
         {...register('name', { required: 'This field is required' })}
       />
       <Label htmlFor='description'>Description</Label>
@@ -74,13 +77,11 @@ export default function EditVanForm({
         rows={8}
         className='resize-none overflow-scroll'
         id='description'
-        defaultValue={van?.description}
         {...register('description', { required: 'This field is required' })}
       />
       <Label htmlFor='price'>Price</Label>
       <Input
         id='price'
-        defaultValue={van?.price}
         {...register('price', {
           required: 'This field is required',
           pattern: {
@@ -93,7 +94,6 @@ export default function EditVanForm({
       <select
         id='type'
         className='border border-gray-600 rounded-md p-2'
-        defaultValue={van?.type as VanFilterEnum}
         {...register('type', { required: 'This field is required' })}
       >
         <option value={VanFilterEnum.rugged}>{VanFilterEnum.rugged}</option>
@@ -105,13 +105,11 @@ export default function EditVanForm({
         <input
           id='available'
           type='checkbox'
-          defaultChecked={van?.available}
           {...register('available')}
         />
       </div>
       <SelectImage
         setDefaultImage={setDefaultImage}
-        van={van as Van}
         imageData={imageData as metaData[]}
       />
       <button

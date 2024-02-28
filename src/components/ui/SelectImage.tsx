@@ -6,13 +6,13 @@ import {
   SelectGroup,
   SelectItem,
   SelectLabel,
-} from '../components/ui/select';
-import { metaData } from '../firebase/firebaseStorage';
-import { Van } from '../types/VanInterfaces';
+} from './select';
+import { metaData } from '../../firebase/firebaseStorage';
+import { Van } from '../../types/VanInterfaces';
 
 type SelectImageProps = {
   setDefaultImage: (value: string) => void;
-  van: Van;
+  van?: Van;
   imageData: metaData[];
 };
 
