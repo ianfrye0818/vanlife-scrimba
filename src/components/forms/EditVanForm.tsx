@@ -3,6 +3,7 @@ import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { Timestamp } from 'firebase/firestore';
+import { useState } from 'react';
 
 //component imports
 import SelectImage from '../ui/SelectImage';
@@ -30,7 +31,13 @@ export default function EditVanForm({
   defaultImage,
   imageData,
 }: EditVanFormProps) {
-  const { register, handleSubmit } = useForm();
+  const [defaultImageError, setDefaultImageError] = useState<string | null>(null);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -46,6 +53,10 @@ export default function EditVanForm({
   //invailidates the van query to update the images
   //navigates to the vans page
   async function onSubmit(submitData: Van) {
+    if (!defaultImage) {
+      setDefaultImageError('Please select a default image');
+      return;
+    }
     const updatedVan = {
       ...van,
       ...submitData,
@@ -68,6 +79,7 @@ export default function EditVanForm({
         defaultValue={van?.name}
         {...register('name', { required: 'This field is required' })}
       />
+      {errors.name && <p className='text-red-500 text-md'>{errors.name.message?.toString()}</p>}
       <Label htmlFor='description'>Description</Label>
       <Textarea
         cols={30}
@@ -77,6 +89,9 @@ export default function EditVanForm({
         defaultValue={van?.description}
         {...register('description', { required: 'This field is required' })}
       />
+      {errors.description && (
+        <p className='text-red-500 text-md'>{errors.description.message?.toString()}</p>
+      )}
       <Label htmlFor='price'>Price</Label>
       <Input
         id='price'
@@ -89,12 +104,13 @@ export default function EditVanForm({
           },
         })}
       />
+      {errors.price && <p className='text-red-500 text-md'>{errors.price.message?.toString()}</p>}
       <Label htmlFor='type'>Type</Label>
       <select
         id='type'
         className='border border-gray-600 rounded-md p-2'
         defaultValue={van?.type as VanFilterEnum}
-        {...register('type', { required: 'This field is required' })}
+        {...register('type')}
       >
         <option value={VanFilterEnum.rugged}>{VanFilterEnum.rugged}</option>
         <option value={VanFilterEnum.luxury}>{VanFilterEnum.luxury}</option>
@@ -114,6 +130,7 @@ export default function EditVanForm({
         van={van as Van}
         imageData={imageData as metaData[]}
       />
+      {defaultImageError && <p className='text-red-500 text-md'>{defaultImageError}</p>}
       <button
         type='submit'
         className='p-3 bg-orange-500 hover:bg-orange-600 text-white uppercase'

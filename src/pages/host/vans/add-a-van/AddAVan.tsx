@@ -7,7 +7,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   deleteImage,
   getAllDownloadUrlsFromFolder,
-  metaData,
   uploadImage,
 } from '../../../../firebase/firebaseStorage';
 
@@ -28,7 +27,7 @@ import { Timestamp } from 'firebase/firestore';
 export default function AddAVan() {
   //hooks
   //set the default image for the van when selected - use effect below loads the current default image into the state on load
-  const [defaultImage, setDefaultImage] = useState<string>('');
+  const [defaultImage, setDefaultImage] = useState<string | null>(null);
   const [van, setVan] = useState<Van | null>(null);
   const queryClient = useQueryClient();
   const { user } = useUser();
@@ -51,6 +50,7 @@ export default function AddAVan() {
       const metadata = await getAllDownloadUrlsFromFolder(van?.imageBucketPath as string);
       return metadata;
     },
+    enabled: van !== undefined && van !== null,
   });
   console.log(van);
   //create a mutation for deleting images from the storage bucket

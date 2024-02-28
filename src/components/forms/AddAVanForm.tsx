@@ -3,6 +3,7 @@ import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { Timestamp } from 'firebase/firestore';
+import { useState } from 'react';
 
 //component imports
 import SelectImage from '../ui/SelectImage';
@@ -17,13 +18,16 @@ import { updateItem } from '../../firebase/firebaseDatabase';
 import { metaData } from '../../firebase/firebaseStorage';
 import { VanFilterEnum } from '../../types/VanEnums';
 import { Van } from '../../types/VanInterfaces';
-import { useUser } from '../../hooks/useUser';
+
 type AddAVanFormProps = {
   setDefaultImage: (value: string) => void;
-  defaultImage: string;
+  defaultImage: string | null;
   imageData: metaData[] | undefined | null;
   vanId: string;
 };
+
+//hook imports
+import { useUser } from '../../hooks/useUser';
 
 export default function AddAVanForm({
   setDefaultImage,
@@ -31,7 +35,12 @@ export default function AddAVanForm({
   vanId,
   imageData,
 }: AddAVanFormProps) {
-  const { register, handleSubmit } = useForm();
+  const [defaultImageError, setDefaultImageError] = useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user } = useUser();
@@ -48,6 +57,10 @@ export default function AddAVanForm({
   //invailidates the van query to update the images
   //navigates to the vans page
   async function onSubmit(submitData: Van) {
+    if (!defaultImage) {
+      setDefaultImageError('Please select a default image');
+      return;
+    }
     const newVan = {
       ...submitData,
       imageURL: defaultImage,
@@ -55,8 +68,9 @@ export default function AddAVanForm({
       updatedAt: Timestamp.now(),
     };
     await updateVan.mutateAsync(newVan);
+    console.log('van updated');
     queryClient.invalidateQueries({ queryKey: ['newHostedVan'] });
-    // navigate('/host/vans');
+    navigate('/host/vans');
   }
 
   return (
@@ -69,6 +83,7 @@ export default function AddAVanForm({
         id='name'
         {...register('name', { required: 'This field is required' })}
       />
+      {errors.name && <p className='text-red-500 text-md'>{errors.name.message?.toString()}</p>}
       <Label htmlFor='description'>Description</Label>
       <Textarea
         cols={30}
@@ -77,6 +92,9 @@ export default function AddAVanForm({
         id='description'
         {...register('description', { required: 'This field is required' })}
       />
+      {errors.description && (
+        <p className='text-red-500 text-md'>{errors.description.message?.toString()}</p>
+      )}
       <Label htmlFor='price'>Price</Label>
       <Input
         id='price'
@@ -88,16 +106,18 @@ export default function AddAVanForm({
           },
         })}
       />
+      {errors.price && <p className='text-red-500 text-md'>{errors.price.message?.toString()}</p>}
       <Label htmlFor='type'>Type</Label>
       <select
         id='type'
         className='border border-gray-600 rounded-md p-2'
-        {...register('type', { required: 'This field is required' })}
+        {...register('type')}
       >
         <option value={VanFilterEnum.rugged}>{VanFilterEnum.rugged}</option>
         <option value={VanFilterEnum.luxury}>{VanFilterEnum.luxury}</option>
         <option value={VanFilterEnum.simple}>{VanFilterEnum.simple}</option>
       </select>
+
       <div className='flex gap-3'>
         <label htmlFor='available'>Available?</label>
         <input
@@ -110,6 +130,7 @@ export default function AddAVanForm({
         setDefaultImage={setDefaultImage}
         imageData={imageData as metaData[]}
       />
+      {defaultImageError && <p className='text-red-500 text-md'>{defaultImageError}</p>}
       <button
         type='submit'
         className='p-3 bg-orange-500 hover:bg-orange-600 text-white uppercase'
