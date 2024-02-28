@@ -5,7 +5,11 @@ import { useQuery } from '@tanstack/react-query';
 import { queryItem } from '../../firebase/firebaseDatabase';
 import { useUser } from '../../hooks/useUser';
 
-export default function VanListSummary() {
+type VanListSummaryProps = {
+  isListed?: boolean;
+};
+
+export default function VanListSummary({ isListed = false }: VanListSummaryProps) {
   const { user } = useUser();
   const {
     data: vans,
@@ -37,7 +41,21 @@ export default function VanListSummary() {
       </main>
     );
   }
-
+  if (isListed) {
+    const listedVans = vans.filter((van) => van.available === true);
+    return (
+      <div className='bg-[#FFF7ED] p-2 h-full'>
+        <div>
+          {listedVans.map((van: Van) => (
+            <VanListSummaryCard
+              key={van.id}
+              van={van}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
   return (
     <div className='bg-[#FFF7ED] p-2 h-full'>
       <div>

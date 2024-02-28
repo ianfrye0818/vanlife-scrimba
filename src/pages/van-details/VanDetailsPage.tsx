@@ -14,6 +14,8 @@ import { CartItem } from '../../types/CartItemInterface';
 import { CartContext } from '../../context/CartContextProvider';
 import { useContext } from 'react';
 import { useUser } from '../../hooks/useUser';
+import { DialogBox } from '../../components/ui/DialogBox';
+import ReviewVan from '../../components/ReviewVan';
 
 //TODO: refactor this component to be more readable
 export default function VanDetails() {
@@ -155,6 +157,14 @@ export default function VanDetails() {
             >
               Rent this van
             </button>
+            <div>
+              <DialogBox
+                titleText='Leave us a review!'
+                dialogTriggerButton={<button>Leave us a review</button>}
+              >
+                <ReviewVan />
+              </DialogBox>
+            </div>
           </div>
         </div>
       </main>
