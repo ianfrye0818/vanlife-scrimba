@@ -23,9 +23,12 @@ export default function Dashboard() {
               </Link>
             </p>
           </div>
-          <button className='p-2 bg-orange-600 hover:bg-orange-700 text-white cursor-pointer'>
+          <Link
+            className='p-2 bg-orange-600 hover:bg-orange-700 text-white cursor-pointer'
+            to={'/host/vans/add'}
+          >
             Add a Van
-          </button>
+          </Link>
         </div>
         <VanListSummary isListed />
       </div>

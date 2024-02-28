@@ -12,7 +12,8 @@ import { VanFilterEnum } from '../../types/VanEnums';
 
 //context imports
 import { VanFilterContext } from '../../pages/vans/VansPage';
-import { getAllItems } from '../../firebase/firebaseDatabase';
+import { DocumentData, collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '../../firebase/firebaseConfig';
 import { Van } from '../../types/VanInterfaces';
 
 export default function Vanslist() {
@@ -26,8 +27,11 @@ export default function Vanslist() {
     isLoading,
   } = useQuery({
     queryKey: ['vans'],
+    //query database for vans that are listed as available and assign them to vans variable
     queryFn: async () => {
-      const data = await getAllItems('vans');
+      const q = query(collection(db, 'vans'), where('available', '==', true));
+      const querySnapshot = await getDocs(q);
+      const data = querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id } as DocumentData));
       return data as Van[];
     },
   });

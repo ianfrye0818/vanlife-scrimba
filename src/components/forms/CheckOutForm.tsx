@@ -21,7 +21,7 @@ export default function CheckOutForm() {
     <div className='lg:w-2/3'>
       <Card>
         <CardHeader>
-          <CardTitle>Shipping Information</CardTitle>
+          <CardTitle>Customer Information</CardTitle>
         </CardHeader>
         <CardContent>
           <form className='space-y-4'>
