@@ -50,7 +50,7 @@ export async function getDownloadUrl(path: string) {
 }
 
 //getdownload urls and metadata from storage bucket (sorted by date modified)
-export async function getAllDownloadUrlsFromUserFolder(path: string) {
+export async function getAllDownloadUrlsFromFolder(path: string) {
   try {
     const listRef = ref(storage, path);
     const listResult = await listAll(listRef);

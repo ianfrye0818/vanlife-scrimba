@@ -1,43 +1,37 @@
 //TODO: Refactor this page into smaller components
-
+//library imports
 import { useEffect, useState } from 'react';
-import Layout from '../../../../Layout';
-import { useNavigate, useParams } from 'react-router-dom';
-import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+import { useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+
+//custom imports
 import {
   deleteImage,
-  getAllDownloadUrlsFromUserFolder,
+  getAllDownloadUrlsFromFolder,
   uploadImage,
 } from '../../../../firebase/firebaseStorage';
-import { Label } from '../../../../components/ui/label';
-import { Input } from '../../../../components/ui/input';
-import { Textarea } from '../../../../components/ui/textarea';
-import { VanFilterEnum } from '../../../../types/VanEnums';
+import { queryItem } from '../../../../firebase/firebaseDatabase';
+
+//component imports
 import { DragAndDropImage } from '../../../../components/DragAndDropImage';
+import Layout from '../../../../Layout';
 import ImageContainer from '../../../../components/ImageContainer';
+
+//type imports
 import { Van } from '../../../../types/VanInterfaces';
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-} from '../../../../components/ui/select';
-import { queryItem, updateItem } from '../../../../firebase/firebaseDatabase';
-import { Timestamp } from 'firebase/firestore';
+
+//custom hooks
 import { useUser } from '../../../../hooks/useUser';
+import EditVanForm from '../../../../components/EditVanForm';
 
 export default function EditAVan() {
+  //hooks
+  //set the default image for the van when selected - use effect below loads the current default image into the state on load
   const [defaultImage, setDefaultImage] = useState<string>('');
   const { user } = useUser();
   const params = useParams();
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { register, handleSubmit } = useForm();
-
+  // query db for current user's vans and set the van to be edited in the 'van' variable
   const { data: vans } = useQuery({
     queryKey: ['hostedVans'],
     queryFn: async () => {
@@ -45,59 +39,44 @@ export default function EditAVan() {
     },
     enabled: user !== undefined && user !== null,
   });
-
+  //create a van for the current van
   const van = vans?.find((van) => van.id === params.id);
-
+  //once van is loaded load the default image into the default image state declared above
   useEffect(() => {
     setDefaultImage(van?.imageURL as string);
   }, [van]);
 
   //query to get all get image metadata from van folder
-  //TODO: rename this function
   const { data: imageData } = useQuery({
     queryKey: ['van'],
     queryFn: async () => {
-      const metadata = await getAllDownloadUrlsFromUserFolder(van?.imageBucketPath as string);
+      const metadata = await getAllDownloadUrlsFromFolder(van?.imageBucketPath as string);
       return metadata;
     },
     enabled: van !== undefined,
   });
-
+  //create a mutation for deleting images from the storage bucket
   const deleteMutation = useMutation({
     mutationFn: async (fullImagePath: string) => await deleteImage(fullImagePath),
   });
-
+  //create a mutation for adding images to the storage bucket
   const addImgMutation = useMutation({
     mutationFn: async (files: File[]) => await uploadImage(files, van?.imageBucketPath as string),
   });
 
-  const updateVanMutation = useMutation({
-    mutationFn: async (updatedVan: Van) => {
-      await updateItem('vans', van?.id as string, updatedVan);
-    },
-  });
-
+  //handle delete image function - passed to Image Container component
+  //invailidates the van query to update the images
   async function handleDelete(fullImagePath: string) {
     await deleteMutation.mutateAsync(fullImagePath);
     queryClient.invalidateQueries({ queryKey: ['van'] });
   }
-
+  //handle files upload function - passed to DragAndDropImage component
+  //invailidates the van query to update the images
   async function handleFilesUpload(files: File[]) {
     await addImgMutation.mutateAsync(files);
     queryClient.invalidateQueries({ queryKey: ['van'] });
   }
 
-  async function onSubmit(submitData: Van) {
-    const updatedVan = {
-      ...van,
-      ...submitData,
-      imageURL: defaultImage,
-      updatedAt: Timestamp.now(),
-    };
-    await updateVanMutation.mutateAsync(updatedVan);
-    queryClient.invalidateQueries({ queryKey: ['hostedVans'] });
-    navigate('/host/vans');
-  }
   return (
     <Layout>
       <div className='mt-14 lg:mt-0 md:container p-2 text-3xl flex flex-col gap-3'>
@@ -119,93 +98,12 @@ export default function EditAVan() {
             </div>
           </DragAndDropImage>
         </div>
-        <form
-          onSubmit={handleSubmit(onSubmit as SubmitHandler<FieldValues>)}
-          className='flex-1 flex flex-col gap-3 px-3'
-        >
-          <Label htmlFor='name'>Name</Label>
-          <Input
-            id='name'
-            defaultValue={van?.name}
-            {...register('name', { required: 'This field is required' })}
-          />
-          <Label htmlFor='description'>Description</Label>
-          <Textarea
-            cols={30}
-            rows={8}
-            className='resize-none overflow-scroll'
-            id='description'
-            defaultValue={van?.description}
-            {...register('description', { required: 'This field is required' })}
-          />
-          <Label htmlFor='price'>Price</Label>
-          <Input
-            id='price'
-            defaultValue={van?.price}
-            {...register('price', {
-              required: 'This field is required',
-              pattern: {
-                value: /^\d+(\.\d{1,2})?$/,
-                message: 'Please enter a valid price',
-              },
-            })}
-          />
-          <Label htmlFor='type'>Type</Label>
-          <select
-            id='type'
-            className='border border-gray-600 rounded-md p-2'
-            defaultValue={van?.type as VanFilterEnum}
-            {...register('type', { required: 'This field is required' })}
-          >
-            <option value={VanFilterEnum.rugged}>{VanFilterEnum.rugged}</option>
-            <option value={VanFilterEnum.luxury}>{VanFilterEnum.luxury}</option>
-            <option value={VanFilterEnum.simple}>{VanFilterEnum.simple}</option>
-          </select>
-          <div className='flex gap-3'>
-            <label htmlFor='available'>Available?</label>
-            <input
-              id='available'
-              type='checkbox'
-              defaultChecked={van?.available}
-              {...register('available')}
-            />
-          </div>
-          <div className='w-full'>
-            <label htmlFor='default-image'>Default Image</label>
-            {imageData && imageData?.length > 0 && (
-              <Select
-                defaultValue={van?.imageURL}
-                onValueChange={(value) => setDefaultImage(value as string)}
-              >
-                <SelectTrigger className='w-[180px] h-[100px]'>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup className='bg-white '>
-                    <SelectLabel>Van Image</SelectLabel>
-                    {imageData.map((image, index) => (
-                      <SelectItem
-                        key={index}
-                        value={image.url}
-                      >
-                        <img
-                          src={image.url}
-                          className='w-[75px] h-[75px] object-contain'
-                        />
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            )}
-          </div>
-          <button
-            type='submit'
-            className='p-3 bg-orange-500 hover:bg-orange-600 text-white uppercase'
-          >
-            Submit
-          </button>
-        </form>
+        <EditVanForm
+          van={van as Van}
+          setDefaultImage={setDefaultImage}
+          imageData={imageData}
+          defaultImage={defaultImage}
+        />
       </main>
     </Layout>
   );
