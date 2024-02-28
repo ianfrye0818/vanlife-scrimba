@@ -7,6 +7,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   deleteImage,
   getAllDownloadUrlsFromFolder,
+  metaData,
   uploadImage,
 } from '../../../../firebase/firebaseStorage';
 
@@ -20,8 +21,9 @@ import ImageContainer from '../../../../components/ui/ImageContainer';
 //custom hooks
 import AddAVanForm from '../../../../components/forms/AddAVanForm';
 import { Van } from '../../../../types/VanInterfaces';
-import { addItem, getItembyID } from '../../../../firebase/firebaseDatabase';
+import { addItem, getItembyID, updateItem } from '../../../../firebase/firebaseDatabase';
 import { useUser } from '../../../../hooks/useUser';
+import { Timestamp } from 'firebase/firestore';
 
 export default function AddAVan() {
   //hooks
@@ -34,21 +36,23 @@ export default function AddAVan() {
   useEffect(() => {
     //on initial load create van in db with uid and get the van from the db
     const createVan = async () => {
-      const newVanId = await addItem('vans', { uid: user?.uid });
+      const newVanId = await addItem('vans', { uid: user?.uid, createdAt: Timestamp.now() });
+      await updateItem('vans', newVanId as string, { imageBucketPath: `/images/vans/${newVanId}` });
       const newVan = (await getItembyID('vans', newVanId as string)) as Van;
       setVan(newVan);
     };
     if (user) createVan();
   }, [user]);
-
   //query to get all get image metadata from van folder
   const { data: imageData } = useQuery({
-    queryKey: ['van'],
+    queryKey: ['newHostedVan'],
     queryFn: async () => {
+      console.log(van?.imageBucketPath);
       const metadata = await getAllDownloadUrlsFromFolder(van?.imageBucketPath as string);
       return metadata;
     },
   });
+  console.log(van);
   //create a mutation for deleting images from the storage bucket
   const deleteMutation = useMutation({
     mutationFn: async (fullImagePath: string) => await deleteImage(fullImagePath),
@@ -62,15 +66,14 @@ export default function AddAVan() {
   //invailidates the van query to update the images
   async function handleDelete(fullImagePath: string) {
     await deleteMutation.mutateAsync(fullImagePath);
-    queryClient.invalidateQueries({ queryKey: ['van'] });
+    queryClient.invalidateQueries({ queryKey: ['newHostedVan'] });
   }
   //handle files upload function - passed to DragAndDropImage component
   //invailidates the van query to update the images
   async function handleFilesUpload(files: File[]) {
     await addImgMutation.mutateAsync(files);
-    queryClient.invalidateQueries({ queryKey: ['van'] });
+    queryClient.invalidateQueries({ queryKey: ['newHostedVan'] });
   }
-  console.log(van?.id);
   return (
     <Layout>
       <div className='mt-14 lg:mt-0 md:container p-2 text-3xl flex flex-col gap-3'>

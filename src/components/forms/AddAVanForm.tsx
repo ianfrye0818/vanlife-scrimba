@@ -48,16 +48,14 @@ export default function AddAVanForm({
   //invailidates the van query to update the images
   //navigates to the vans page
   async function onSubmit(submitData: Van) {
-    console.log(submitData);
-    // const newVan = {
-    //   ...submitData,
-    //   imageURL: defaultImage,
-    //   uid: user?.uid,
-    //   updatedAt: Timestamp.now(),
-    //   createdAt: Timestamp.now(),
-    // };
-    // await updateVan.mutateAsync(newVan);
-    // queryClient.invalidateQueries({ queryKey: ['newHostedVan'] });
+    const newVan = {
+      ...submitData,
+      imageURL: defaultImage,
+      uid: user?.uid,
+      updatedAt: Timestamp.now(),
+    };
+    await updateVan.mutateAsync(newVan);
+    queryClient.invalidateQueries({ queryKey: ['newHostedVan'] });
     // navigate('/host/vans');
   }
 

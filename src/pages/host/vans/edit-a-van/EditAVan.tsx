@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 //custom imports
 import {
+  deleteAllImages,
   deleteImage,
   getAllDownloadUrlsFromFolder,
   uploadImage,
@@ -70,6 +71,7 @@ export default function EditAVan() {
   const deleteVanMutation = useMutation({
     mutationFn: async (vanId: string) => {
       await deleteItem('vans', vanId);
+      await deleteAllImages(`/images/vans/${van?.id}`);
     },
   });
 
@@ -88,6 +90,7 @@ export default function EditAVan() {
 
   async function deleteVan() {
     await deleteVanMutation.mutateAsync(van?.id as string);
+    queryClient.invalidateQueries({ queryKey: ['hostedVans', 'vans'] });
     navigate('/host/vans');
   }
 

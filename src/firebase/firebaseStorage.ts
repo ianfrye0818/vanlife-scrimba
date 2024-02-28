@@ -91,9 +91,9 @@ export async function deleteImage(path: string) {
 }
 
 //delete all images from storage
-export async function deleteAllImages(id: string) {
+export async function deleteAllImages(path: string) {
   try {
-    const listRef = ref(storage, `images/${id}`);
+    const listRef = ref(storage, path);
     const listResult = await listAll(listRef);
     await Promise.all(listResult.items.map((itemRef) => deleteObject(itemRef)));
     return 'All images deleted successfully!';
@@ -104,9 +104,9 @@ export async function deleteAllImages(id: string) {
 }
 
 //delete user folder from storage
-export async function deleteUserFolder(id: string) {
+export async function deleteImageFolder(path: string) {
   try {
-    const folderRef = ref(storage, `images/${id}`);
+    const folderRef = ref(storage, path);
     await deleteObject(folderRef);
     return 'User folder deleted successfully!';
   } catch (error) {
