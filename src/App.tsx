@@ -15,7 +15,6 @@ import SignInPage from './pages/sign-in/SignInPage';
 import SignUpPage from './pages/sign-up/SignUpPage';
 import DashboardPage from './pages/host/dashboard/DashboardPage';
 import IncomePage from './pages/host/income/IncomePage';
-import ReviewsPage from './pages/host/reviews/ReviewsPage';
 import HostVanDetailsPage from './pages/host/vans/van-details/HostVanDetails';
 import CheckOutPage from './pages/cart/CheckOutPage';
 import OrderConfirmationPage from './pages/order-confirmation/OrderConfirmationPage';
@@ -48,7 +47,6 @@ const router = createBrowserRouter([
     ),
     children: [
       { path: 'income', element: <IncomePage /> },
-      { path: 'reviews', element: <ReviewsPage /> },
       { path: 'dashboard', element: <DashboardPage /> },
       { path: 'vans', element: <HostVansPage /> },
       { path: 'vans/:id', element: <HostVanDetailsPage /> },

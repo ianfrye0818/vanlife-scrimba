@@ -5,6 +5,9 @@ import { Label } from './ui/label';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { toast } from 'sonner';
+import { updateItem } from '../firebase/firebaseDatabase';
+import { Van } from '../types/VanInterfaces';
+import { useQueryClient } from '@tanstack/react-query';
 
 type reviewFormData = {
   name: string;
@@ -12,21 +15,35 @@ type reviewFormData = {
 };
 type reviewVanFormProps = {
   setOpen: (open: boolean) => void;
+  van: Van;
 };
-export default function ReviewVan({ setOpen }: reviewVanFormProps) {
+export default function ReviewVanForm({ setOpen, van }: reviewVanFormProps) {
   const [value, setValue] = useState<number>(5);
   const {
     handleSubmit,
     register,
     formState: { errors },
+    reset,
   } = useForm();
+  const queryClient = useQueryClient();
 
   async function onSubmit(data: reviewFormData) {
+    //create a new review object
     const newReview = { ...data, reviewStars: value };
+    //add review object to reviews array in the van collection
+    const response = await updateItem('vans', van.id, { reviews: [...van.reviews, newReview] });
+    if (!response) {
+      toast('Error Submitting Review', {
+        description: 'There was an error submitting your review.',
+      });
+      return;
+    }
     console.log(newReview);
     toast('Review Submitted Successfully', {
       description: 'Thank you for your review!',
     });
+    reset();
+    queryClient.invalidateQueries({ queryKey: ['van', van.id] });
     //close dialog box
     setOpen(false);
   }

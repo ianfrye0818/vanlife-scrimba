@@ -29,11 +29,7 @@
   background-color: #161616;
 }
 
-/* mobile styles */
-/* @media (max-width: 700px) {
-  .homepage {
-    justify-content: space-evenly;
-    padding: 50px;
-    height: 100%;
-  }
-} */
+.custom-scroll-bar {
+  scrollbar-width: thin;
+  scrollbar-color: #999 transparent;
+}

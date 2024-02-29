@@ -1,6 +1,5 @@
 import HostPageLayout from '../HostPageLayout';
 import SummaryComponent from '../../../components/van-list-host/SummaryComponent';
-import ReviewSummary from '../../../components/van-list-host/ReviewSummary';
 import VanListSummary from '../../../components/van-list-host/VanListSummary';
 import { Link } from 'react-router-dom';
 export default function Dashboard() {
@@ -8,7 +7,6 @@ export default function Dashboard() {
     <HostPageLayout>
       <div className='h-full'>
         <SummaryComponent />
-        <ReviewSummary />
         <div className='flex justify-between items-center p-3'>
           <div>
             <h2 className='4xl font-bold'>Your Listed vans</h2>

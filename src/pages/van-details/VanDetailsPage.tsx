@@ -15,11 +15,15 @@ import { CartContext } from '../../context/CartContextProvider';
 import { useContext, useState } from 'react';
 import { useUser } from '../../hooks/useUser';
 import { DialogBox } from '../../components/ui/DialogBox';
-import ReviewVan from '../../components/ReviewVanForm';
+import ReviewVanForm from '../../components/ReviewVanForm';
+import { StarIcon } from 'lucide-react';
+import { Van } from '../../types/VanInterfaces';
+import { ImageCarousel } from '../../components/ui/imageCarousel';
+import Reviews from '../../components/Reviews';
 
 //TODO: refactor this component to be more readable
 export default function VanDetails() {
-  const { isSignedIn } = useUser();
+  const { isSignedIn, user } = useUser();
   const { id } = useParams();
   const navigate = useNavigate();
   const cart = useContext(CartContext);
@@ -33,7 +37,7 @@ export default function VanDetails() {
     queryKey: ['van', id],
     queryFn: async () => {
       const data = await getItembyID('vans', id as string);
-      return data;
+      return data as Van;
     },
   });
 
@@ -128,6 +132,8 @@ export default function VanDetails() {
     navigate('/not-found');
     return null;
   }
+  console.log('van userid ', van.uid);
+  console.log('user id', user?.uid);
 
   return (
     <Layout>
@@ -135,41 +141,65 @@ export default function VanDetails() {
         <div className='underline mb-5 mt-14 pl-5'>
           <Link to='/vans'>{'<- Back to Vans'}</Link>
         </div>
-        <div className='flex flex-col gap-8 p-3 lg:flex-row min-h-screen md:h-auto mb-12 pb-9'>
-          <div className='flex-1'>
-            <img
-              className='w-full bg-cover rounded-2xl'
-              src={van.imageURL}
-              alt={van.name}
-            />
-          </div>
-          <div className='flex-1 md:p-12 flex flex-col gap-10'>
-            <div
-              className={`p-3 text-[#ffead0] inline max-w-28 text-center rounded-xl text-xl ${van.type}`}
-            >
-              {van.type}
+        <div className=' flex flex-col gap-4 min-h-screen md:h-auto mb-5'>
+          <div className='flex flex-col gap-8 p-3 lg:flex-row pb-9 '>
+            <div className='flex-1'>
+              <div className='w-full flex justify-center items-center '>
+                <ImageCarousel
+                  mainImage={van.imageURL as string}
+                  imageBucketPath={van.imageBucketPath}
+                />
+              </div>
             </div>
-            <h2 className='text-2xl font-bold'>{van.name}</h2>
-            <p className='font-bold'>Price: ${van.price}/day</p>
-            <p className='leading-6'>{van.description}</p>
-            <button
-              onClick={addToCart}
-              className='bg-green-500 text-white p-3 rounded-md hover:bg-green-600 transition-all duration-300 ease-in-out w-40 text-center cursor-pointer'
-            >
-              Rent this van
-            </button>
-            <div>
-              <DialogBox
-                titleText='Leave us a review!'
-                dialogTriggerButton={<button>Leave us a review</button>}
-                header
-                open={open}
-                setOpen={setOpen}
+            <div className='flex-1 md:p-x-12 flex flex-col gap-10'>
+              <div
+                className={`p-3 text-[#ffead0] inline max-w-28 text-center rounded-xl text-xl ${van.type}`}
               >
-                <ReviewVan setOpen={setOpen} />
-              </DialogBox>
+                {van.type}
+              </div>
+              <h2 className='text-2xl font-bold'>{van.name}</h2>
+              <p className='font-bold'>Price: ${van.price}/day</p>
+              <p className='leading-6'>{van.description}</p>
+              {van.uid === user?.uid ? (
+                <Link to={`/host/vans/${van.id}/edit`}>
+                  <button className='bg-orange-500 text-white p-3 rounded-md hover:bg-green-600 transition-all duration-300 ease-in-out w-40 text-center cursor-pointer'>
+                    Edit Van
+                  </button>
+                </Link>
+              ) : (
+                <button
+                  onClick={addToCart}
+                  className='bg-green-500 text-white p-3 rounded-md hover:bg-green-600 transition-all duration-300 ease-in-out w-40 text-center cursor-pointer'
+                >
+                  Rent this van
+                </button>
+              )}
+
+              <div>
+                <DialogBox
+                  titleText='Leave us a review!'
+                  dialogTriggerButton={
+                    <button className='underline text-gray-600 cursor-pointer flex gap-2'>
+                      Leave us a review{' '}
+                      <StarIcon
+                        className='text-yellow-500 '
+                        fill='currentColor'
+                      />
+                    </button>
+                  }
+                  header
+                  open={open}
+                  setOpen={setOpen}
+                >
+                  <ReviewVanForm
+                    van={van}
+                    setOpen={setOpen}
+                  />
+                </DialogBox>
+              </div>
             </div>
           </div>
+          <div>{van.reviews && van.reviews.length > 0 && <Reviews van={van} />}</div>
         </div>
       </main>
     </Layout>

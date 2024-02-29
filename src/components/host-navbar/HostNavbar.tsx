@@ -9,7 +9,6 @@ export default function HostNavBar() {
     { path: '/host/dashboard', text: 'Dashboard' },
     { path: '/host/income', text: 'Income' },
     { path: '/host/vans', text: 'Vans' },
-    { path: '/host/reviews', text: 'Reviews' },
   ];
 
   return (

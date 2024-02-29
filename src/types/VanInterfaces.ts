@@ -8,6 +8,8 @@ export type Van = {
   imageBucketPath: string; //replace imageURL with imageUrls
   type: string;
   available: boolean;
+  reviews: Review[];
+  uid: string;
 };
 
 export type customMetaData = {
@@ -21,4 +23,10 @@ export type customMetaData = {
     timeCreated: string;
     updated: string;
   };
+};
+
+export type Review = {
+  name: string;
+  review: string;
+  reviewStars: number;
 };

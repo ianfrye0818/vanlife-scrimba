@@ -63,8 +63,9 @@ export default function AddAVanForm({
     }
     const newVan = {
       ...submitData,
+      reviews: [],
       imageURL: defaultImage,
-      uid: user?.uid,
+      uid: user?.uid || '',
       updatedAt: Timestamp.now(),
     };
     await updateVan.mutateAsync(newVan);
