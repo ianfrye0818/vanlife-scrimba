@@ -24,7 +24,7 @@ import { CheckOutFormData, Order } from '../../types/CheckOutFormData';
 
 export default function OrderSummaryCard() {
   const { handleSubmit } = useFormContext<CheckOutFormData>();
-  //use cart - custom hook for creating and managing cart for user = TODO: add to local storage to be persisted
+  //use cart - custom hook for creating and managing cart for user
   const cart = useContext(CartContext);
   const navigate = useNavigate();
   const { user } = useUser();

@@ -15,7 +15,6 @@ export default function DesktopNavBar() {
     { path: '/about', text: 'About' },
     { path: '/vans', text: 'Vans' },
   ];
-  //TODO: Replace with user object once auth is set up
   const { user } = useContext(AuthContext);
 
   const authLinks = user ? (
@@ -34,11 +33,6 @@ export default function DesktopNavBar() {
       </button>
     </div>
   ) : (
-    // <NavLink
-    //   className='text-white bg-orange-500 p-2 rounded-md font-bold ml-2 no-underline'
-    //   path={'/sign-in'}
-    //   text={'Sign In'}
-    // />
     <SignInModal />
   );
   return (

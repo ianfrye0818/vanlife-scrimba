@@ -1,5 +1,3 @@
-//TODO: type key props to remove the warning below
-/* eslint-disable @typescript-eslint/no-explicit-any */
 //library imports
 import { Link, useLocation } from 'react-router-dom';
 
@@ -9,7 +7,7 @@ type NavLinkProps = {
   text: string;
   path: string;
   className?: string;
-  [key: string]: any;
+  [key: string]: object | string | undefined;
 };
 
 export default function NavLink({ path, text, className = '', ...rest }: NavLinkProps) {

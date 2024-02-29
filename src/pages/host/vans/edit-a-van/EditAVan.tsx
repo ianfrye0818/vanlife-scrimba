@@ -1,4 +1,3 @@
-//TODO: Refactor this page into smaller components
 //library imports
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -43,8 +42,10 @@ export default function EditAVan() {
     },
     enabled: user !== undefined && user !== null,
   });
+
   //create a van for the current van
   const van = vans?.find((van) => van.id === params.id);
+
   //once van is loaded load the default image into the default image state declared above
   useEffect(() => {
     setDefaultImage(van?.imageURL as string);
@@ -59,15 +60,18 @@ export default function EditAVan() {
     },
     enabled: van !== undefined,
   });
+
   //create a mutation for deleting images from the storage bucket
   const deleteMutation = useMutation({
     mutationFn: async (fullImagePath: string) => await deleteImage(fullImagePath),
   });
+
   //create a mutation for adding images to the storage bucket
   const addImgMutation = useMutation({
     mutationFn: async (files: File[]) => await uploadImage(files, van?.imageBucketPath as string),
   });
 
+  //create mutation for deleting the van from the database and storage bucket
   const deleteVanMutation = useMutation({
     mutationFn: async (vanId: string) => {
       await deleteItem('vans', vanId);
@@ -81,6 +85,7 @@ export default function EditAVan() {
     await deleteMutation.mutateAsync(fullImagePath);
     queryClient.invalidateQueries({ queryKey: ['van'] });
   }
+
   //handle files upload function - passed to DragAndDropImage component
   //invailidates the van query to update the images
   async function handleFilesUpload(files: File[]) {
@@ -88,6 +93,9 @@ export default function EditAVan() {
     queryClient.invalidateQueries({ queryKey: ['van'] });
   }
 
+  //deletes the van from the database and storage bucket
+  //invailidates the hostedVans query to update the van list
+  //navigates to the van list page
   async function deleteVan() {
     await deleteVanMutation.mutateAsync(van?.id as string);
     queryClient.invalidateQueries({ queryKey: ['hostedVans', 'vans'] });

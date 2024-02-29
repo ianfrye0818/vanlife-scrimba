@@ -1,5 +1,5 @@
 //library imports
-import HostNavLinks from './HostNavLinks';
+import NavLink from '../Header/ navbar/desktop-nav-bar/NavLinks';
 
 //component imports
 
@@ -12,11 +12,10 @@ export default function HostNavBar() {
   ];
 
   return (
-    //TODO: can probably refactor this to use the NavLink component instead of having a HostNavLinks component that does the same thing
     <nav style={{ padding: '20px' }}>
       <ul className='flex gap-3'>
         {navLinks.map((link) => (
-          <HostNavLinks
+          <NavLink
             key={link.path}
             path={link.path}
             text={link.text}

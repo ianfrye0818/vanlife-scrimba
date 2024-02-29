@@ -10,7 +10,6 @@ type SignUpFormProps = {
   setSignup: (signup: boolean) => void;
 };
 
-//TODO: add form submission
 export default function SignUpForm({ setSignup }: SignUpFormProps) {
   const {
     register,
@@ -24,10 +23,7 @@ export default function SignUpForm({ setSignup }: SignUpFormProps) {
       return;
     }
     //sign in the user
-    const user = await createUser(data.email, data.password);
-    if (!user) return;
-
-    //after successful login navigate to the previous page
+    await createUser(data.email, data.password);
   }
 
   return (

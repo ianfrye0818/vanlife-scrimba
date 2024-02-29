@@ -9,7 +9,7 @@ import { CheckOutFormData } from '../../types/CheckOutFormData';
 
 //type imports
 
-//TODO - could maybe refactor this to make it more readable - could create an object with all the form inputs and then map over them to create the form
+//TODO - could maybe refactor this to make it more readable -
 
 //Check out form - incldues all imputs for checkout - name, street, city, state, zip, email, cardName, cardNumber, expiryDate, cvc
 export default function CheckOutForm() {

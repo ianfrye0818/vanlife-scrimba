@@ -5,31 +5,36 @@ import { Link } from 'react-router-dom';
 import ReactLoading from 'react-loading';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { useContext, useState } from 'react';
 
-//interface imports
 //component imports
 import Layout from '../../Layout';
-import { getItembyID, updateItem } from '../../firebase/firebaseDatabase';
-import { CartItem } from '../../types/CartItemInterface';
-import { CartContext } from '../../context/CartContextProvider';
-import { useContext, useState } from 'react';
-import { useUser } from '../../hooks/useUser';
 import { DialogBox } from '../../components/ui/DialogBox';
 import ReviewVanForm from '../../components/ReviewVanForm';
 import { StarIcon } from 'lucide-react';
-import { Van } from '../../types/VanInterfaces';
 import { ImageCarousel } from '../../components/ui/imageCarousel';
 import Reviews from '../../components/Reviews';
 import SignInModal from '../../components/SignInModal';
 
-//TODO: refactor this component to be more readable
+//custom imports
+import { getItembyID, updateItem } from '../../firebase/firebaseDatabase';
+
+//context & hook imports
+import { CartContext } from '../../context/CartContextProvider';
+import { useUser } from '../../hooks/useUser';
+
+//type imports
+import { Van } from '../../types/VanInterfaces';
+import { CartItem } from '../../types/CartItemInterface';
+
 export default function VanDetails() {
+  const [open, setOpen] = useState(false);
   const { isSignedIn, user } = useUser();
   const { id } = useParams();
   const navigate = useNavigate();
   const cart = useContext(CartContext);
-  const [open, setOpen] = useState(false);
 
+  //query db and get van by id
   const {
     data: van,
     error,
@@ -42,6 +47,7 @@ export default function VanDetails() {
     },
   });
 
+  //check if items are already in teh cart
   function checkIfItemIsInCart() {
     if (cart && van) {
       const item = cart.items.find((item: CartItem) => item.id === van.id);
@@ -51,6 +57,7 @@ export default function VanDetails() {
     return null;
   }
 
+  //add items to teh cart
   async function addToCart() {
     const itemInCart = checkIfItemIsInCart();
     if (van && isSignedIn && cart) {
@@ -65,11 +72,9 @@ export default function VanDetails() {
           toast('Item Added to Cart', {
             description: `${van.name} was added to your cart.`,
             action: {
-              label: 'Remove',
-              onClick: async () => {
-                await updateItem('carts', cart.id, {
-                  items: cart.items.filter((item: CartItem) => item.id !== van.id),
-                });
+              label: 'Go to Cart',
+              onClick: () => {
+                navigate('/cart');
               },
             },
           });
@@ -88,11 +93,9 @@ export default function VanDetails() {
           toast('Item Added to Cart', {
             description: `${van.name} was added to your cart.`,
             action: {
-              label: 'Remove',
-              onClick: async () => {
-                await updateItem('carts', cart.id, {
-                  items: cart.items.filter((item: CartItem) => item.id !== van.id),
-                });
+              label: 'Go to Cart',
+              onClick: () => {
+                navigate('/cart');
               },
             },
           });
@@ -114,6 +117,7 @@ export default function VanDetails() {
     }
   }
 
+  //while loading - show loading spinner
   if (isLoading) {
     return (
       <div className='h-screen flex items-center justify-center'>
@@ -127,9 +131,12 @@ export default function VanDetails() {
     );
   }
 
+  //if there is an error, show the error message
   if (error) {
     return <div>Something went wrong</div>;
   }
+
+  //if data does not exisist return null and redirec to 404 not found page
   if (van === null || van === undefined) {
     navigate('/not-found');
     return null;

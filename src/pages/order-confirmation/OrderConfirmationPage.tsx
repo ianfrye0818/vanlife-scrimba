@@ -20,9 +20,6 @@ import ReactLoading from 'react-loading';
 import { Cart } from '../../types/CartItemInterface';
 import { Avatar } from '@mui/material';
 
-//TODO: fetch order from DB and diplay logic
-//TODO: refactor this page
-
 type Order = {
   id: string;
   cardName: string;

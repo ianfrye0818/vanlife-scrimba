@@ -1,4 +1,3 @@
-//TODO: Refactor this page into smaller components
 //library imports
 import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';

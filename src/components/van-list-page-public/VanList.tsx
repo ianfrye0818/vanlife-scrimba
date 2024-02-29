@@ -62,7 +62,6 @@ export default function Vanslist() {
   }
 
   //extract vans out of data.vans
-  //TODO: refactor this logic into the fetch funciton
 
   //filter the vans based on the vanFilter context
   const filteredVans =
