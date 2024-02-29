@@ -1,5 +1,4 @@
 //library imports
-import { Link, useNavigate } from 'react-router-dom';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 
 //component imports
@@ -7,9 +6,12 @@ import { Button, TextField } from '@mui/material';
 import { FaGithub, FaGoogle } from 'react-icons/fa6';
 import { createUser, signInWithGithub, signInWithGoogle } from '../../firebase/firebaseAuth';
 
+type SignUpFormProps = {
+  setSignup: (signup: boolean) => void;
+};
+
 //TODO: add form submission
-export default function SignUpForm() {
-  const navigate = useNavigate();
+export default function SignUpForm({ setSignup }: SignUpFormProps) {
   const {
     register,
     handleSubmit,
@@ -26,7 +28,6 @@ export default function SignUpForm() {
     if (!user) return;
 
     //after successful login navigate to the previous page
-    navigate(-1);
   }
 
   return (
@@ -45,7 +46,6 @@ export default function SignUpForm() {
         onClick={async () => {
           //create a function to sign in with google
           await signInWithGoogle();
-          navigate('/host/dashboard');
         }}
       >
         <FaGoogle /> Sign Up with Google
@@ -65,7 +65,6 @@ export default function SignUpForm() {
         onClick={async () => {
           //create a function to sign in with github
           await signInWithGithub();
-          navigate(-1);
         }}
       >
         <FaGithub /> Sign Up with Github
@@ -121,12 +120,12 @@ export default function SignUpForm() {
         </Button>
         <p>
           Already have an account?{' '}
-          <Link
+          <button
             style={{ color: 'blue', textDecoration: 'underline' }}
-            to={'/sign-in'}
+            onClick={() => setSignup(false)}
           >
             Log In
-          </Link>
+          </button>
         </p>
       </form>
     </div>

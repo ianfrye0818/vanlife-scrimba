@@ -7,6 +7,7 @@ import { logoutUser } from '../../../../firebase/firebaseAuth';
 import { useContext } from 'react';
 import { AuthContext } from '../../../../context/AuthContextProvider';
 import CartIcon from './CartDrawer';
+import SignInModal from '../../../SignInModal';
 
 export default function DesktopNavBar() {
   const navLinks = [
@@ -33,11 +34,12 @@ export default function DesktopNavBar() {
       </button>
     </div>
   ) : (
-    <NavLink
-      className='text-white bg-orange-500 p-2 rounded-md font-bold ml-2 no-underline'
-      path={'/sign-in'}
-      text={'Sign In'}
-    />
+    // <NavLink
+    //   className='text-white bg-orange-500 p-2 rounded-md font-bold ml-2 no-underline'
+    //   path={'/sign-in'}
+    //   text={'Sign In'}
+    // />
+    <SignInModal />
   );
   return (
     <nav className='hidden lg:flex p-3 min-h-28 items-center'>

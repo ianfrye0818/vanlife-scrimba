@@ -20,6 +20,7 @@ import { StarIcon } from 'lucide-react';
 import { Van } from '../../types/VanInterfaces';
 import { ImageCarousel } from '../../components/ui/imageCarousel';
 import Reviews from '../../components/Reviews';
+import SignInModal from '../../components/SignInModal';
 
 //TODO: refactor this component to be more readable
 export default function VanDetails() {
@@ -103,11 +104,12 @@ export default function VanDetails() {
       }
     } else {
       toast('Oops!', {
-        description: 'Please sign in to add items to your cart.',
-        action: {
-          label: 'Sign In',
-          onClick: () => navigate('/sign-in'),
-        },
+        duration: 3000,
+        description: (
+          <div className='flex gap-2 items-center'>
+            Please sign in to rent this van. <SignInModal />
+          </div>
+        ),
       });
     }
   }

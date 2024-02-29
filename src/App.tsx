@@ -11,8 +11,6 @@ import AboutPage from './pages/about/AboutPage';
 import VansPage from './pages/vans/VansPage';
 import VanDetailsPage from './pages/van-details/VanDetailsPage';
 import NotFound from './pages/not-found/NotFoundPage';
-import SignInPage from './pages/sign-in/SignInPage';
-import SignUpPage from './pages/sign-up/SignUpPage';
 import DashboardPage from './pages/host/dashboard/DashboardPage';
 import IncomePage from './pages/host/income/IncomePage';
 import HostVanDetailsPage from './pages/host/vans/van-details/HostVanDetails';
@@ -21,7 +19,6 @@ import OrderConfirmationPage from './pages/order-confirmation/OrderConfirmationP
 import { AuthContextProvider } from './context/AuthContextProvider';
 import CartContextProvider from './context/CartContextProvider';
 import ProtectedRoutes from './routes/ProtectedRoutes';
-import AuthRoutes from './routes/AuthRoutes';
 import HostVansPage from './pages/host/vans/HostVansPage';
 import EditAVan from './pages/host/vans/edit-a-van/EditAVan';
 import AddAVan from './pages/host/vans/add-a-van/AddAVan';
@@ -53,22 +50,6 @@ const router = createBrowserRouter([
       { path: 'vans/:id/edit', element: <EditAVan /> },
       { path: 'vans/add', element: <AddAVan /> },
     ],
-  },
-  {
-    path: '/sign-in',
-    element: (
-      <AuthRoutes>
-        <SignInPage />
-      </AuthRoutes>
-    ),
-  },
-  {
-    path: '/sign-up',
-    element: (
-      <AuthRoutes>
-        <SignUpPage />
-      </AuthRoutes>
-    ),
   },
 ]);
 export default function App() {
