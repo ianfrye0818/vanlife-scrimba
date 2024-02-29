@@ -1,6 +1,6 @@
 import { useUser } from '../hooks/useUser';
 import { Van } from '../types/VanInterfaces';
-import { StarIcon } from 'lucide-react';
+import { StarIcon, Trash2 } from 'lucide-react';
 
 type ReviewsProps = {
   van: Van;
@@ -8,6 +8,8 @@ type ReviewsProps = {
 
 export default function Reviews({ van }: ReviewsProps) {
   const { user } = useUser();
+  console.log('vanuid ', van.uid);
+  console.log('useruid ', user?.uid);
   // Function to calculate the percentage of each star rating
   const getPercentage = (star: number) => {
     const totalReviews = van.reviews.length;
@@ -17,6 +19,11 @@ export default function Reviews({ van }: ReviewsProps) {
     );
     return totalReviews !== 0 ? ((totalStarReviews / totalReviews) * 100).toFixed(0) : 0;
   };
+
+  async function deleteReview() {
+    console.log('delete review');
+  }
+
   return (
     <div>
       <h3 className='text-xl font-bold mb-4 text-center'>Review Summary</h3>
@@ -53,7 +60,7 @@ export default function Reviews({ van }: ReviewsProps) {
           {van.reviews.map((review, index) => (
             <div
               key={index}
-              className='flex flex-col gap-2 p-3 border-b-2 border-gray-200 last-of-type:border-none'
+              className='flex flex-col gap-2 p-3 border-b-2 border-gray-200 last-of-type:border-none relative'
             >
               <p className='font-bold'>{review.name}</p>
               <div className='flex gap-2'>
@@ -68,6 +75,14 @@ export default function Reviews({ van }: ReviewsProps) {
                 ))}
               </div>
               <p>{review.review}</p>
+              {van.uid === user?.uid && (
+                <div
+                  onClick={deleteReview}
+                  className='absolute top-2 right-2 bg-red-200 p-2  flex gap-2 items-center cursor-pointer'
+                >
+                  <Trash2 size={14} /> Delete
+                </div>
+              )}
             </div>
           ))}
         </div>

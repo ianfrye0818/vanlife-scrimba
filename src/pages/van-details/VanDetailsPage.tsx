@@ -132,8 +132,6 @@ export default function VanDetails() {
     navigate('/not-found');
     return null;
   }
-  console.log('van userid ', van.uid);
-  console.log('user id', user?.uid);
 
   return (
     <Layout>
