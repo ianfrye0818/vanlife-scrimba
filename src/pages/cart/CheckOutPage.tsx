@@ -5,12 +5,11 @@ import { useForm, FormProvider } from 'react-hook-form';
 import Layout from '../../Layout';
 import CheckOutForm from '../../components/forms/CheckOutForm';
 import OrderSummaryCard from '../../components/ui/OrderSummaryCard';
-import { useContext } from 'react';
-import { CartContext } from '../../context/CartContextProvider';
 import NoCartPage from './NoCartPage';
+import { useCart } from '../../hooks/useCart';
 
 export default function Component() {
-  const cart = useContext(CartContext);
+  const { cart } = useCart();
   //creates context to be able to pass down to the form components
   const methods = useForm();
 

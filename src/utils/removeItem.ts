@@ -1,7 +1,8 @@
+import { CartDB } from '../context/CartContextProvider';
 import { updateItem } from '../firebase/firebaseDatabase';
-import { Cart, CartItem } from '../types/CartItemInterface';
+import { CartItem } from '../types/CartItemInterface';
 
-export default async function removeItem(id: string, cart: Cart | undefined) {
+export default async function removeItem(id: string, cart: CartDB | undefined) {
   if (!cart) {
     console.error('No cart found');
     return;

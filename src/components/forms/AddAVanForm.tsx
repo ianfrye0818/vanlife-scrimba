@@ -69,7 +69,6 @@ export default function AddAVanForm({
       updatedAt: Timestamp.now(),
     };
     await updateVan.mutateAsync(newVan);
-    console.log('van updated');
     queryClient.invalidateQueries({ queryKey: ['newHostedVan'] });
     navigate('/host/vans');
   }

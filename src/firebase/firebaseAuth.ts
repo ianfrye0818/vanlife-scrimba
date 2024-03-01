@@ -37,7 +37,7 @@ async function createUser(email: string, password: string) {
     await checkAndAddUser(email, userCredential.user.uid);
     return userCredential.user;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     if (error instanceof Error) alert(error.message);
     return null;
   }
@@ -49,7 +49,7 @@ async function signInUser(email: string, password: string) {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     return userCredential.user;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     if (error instanceof Error) alert(error.message);
     return null;
   }
@@ -63,7 +63,7 @@ async function signInWithGoogle() {
     await checkAndAddUser(user.user.email as string, user.user.uid);
   } catch (error) {
     if (error instanceof Error) alert(error.message);
-    console.log(error);
+    console.error(error);
   }
 }
 
@@ -75,7 +75,7 @@ async function signInWithGithub() {
     await checkAndAddUser(user.user.email as string, user.user.uid);
   } catch (error) {
     if (error instanceof Error) alert(error.message);
-    console.log(error);
+    console.error(error);
   }
 }
 
@@ -86,7 +86,7 @@ async function logoutUser() {
     localStorage.removeItem('cartId');
   } catch (error) {
     if (error instanceof Error) alert(error.message);
-    console.log(error);
+    console.error(error);
   }
 }
 

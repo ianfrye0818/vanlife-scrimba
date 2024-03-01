@@ -1,93 +1,94 @@
-//library imports
-import { PropsWithChildren, createContext, useEffect, useState, useRef } from 'react';
-import { Timestamp, doc, onSnapshot } from 'firebase/firestore'; // Importing Firestore functionalities
-import { addItem, queryItem, updateItem } from '../firebase/firebaseDatabase'; // Importing database functions
-
-//custom imports
-import { db } from '../firebase/firebaseConfig'; // Importing Firebase database instance
-import { useUser } from '../hooks/useUser';
-
-//types imports
-import { Cart } from '../types/CartItemInterface'; // Importing Cart interface
-
-// Creating a context for the Cart
-export const CartContext = createContext<Cart | null>(null);
-
-export default function CartContextProvider({ children }: PropsWithChildren) {
-  const { user } = useUser(); // Getting user from AuthContext
-  const [cart, setCart] = useState<Cart | null>(null); // State for cart
-  const [cartLoaded, setCartLoaded] = useState(false); // State for cart loading status
-  const cartId = useRef<string | null>(null); // Reference for cart ID
-  useEffect(() => {
-    // Effect to retrieve cart ID from local storage
-    const storedCartId = localStorage.getItem('cartId');
-    if (storedCartId) {
-      cartId.current = storedCartId;
-    }
-  }, []);
-  console.log(cartId.current);
-
-  useEffect(() => {
-    // Effect for handling user and cart changes
-    async function createCartFromId(cartId: string) {
-      const unsubscribe = onSnapshot(doc(db, 'carts', cartId), (doc) => {
-        if (doc.exists()) {
-          setCart({ ...doc.data(), id: doc.id } as Cart);
-        }
-      });
-      return unsubscribe;
-    }
-
-    async function createNewCart() {
-      // Creating a new cart if none exists
-      const newCart = {
-        items: [],
-        uid: '',
-        updatedAt: Timestamp.now(),
-        createdAt: Timestamp.now(),
-      };
-      const newCartId = await addItem('carts', newCart);
-      if (newCartId) {
-        cartId.current = newCartId;
-        localStorage.setItem('cartId', newCartId);
-        setCartLoaded(true);
-        return createCartFromId(newCartId);
-      }
-    }
-
-    async function getUserCart() {
-      // Retrieving user's cart if it exists
-      const userCartId = await queryItem('carts', 'uid', user!.uid);
-      if (userCartId) {
-        cartId.current = userCartId[0].id;
-        localStorage.setItem('cartId', userCartId[0].id);
-        setCartLoaded(true);
-        return createCartFromId(userCartId[0].id);
-      } else {
-        // Creating a new cart if user's cart doesn't exist
-        return createNewCart();
-      }
-    }
-
-    async function handleUserAndCartChanges() {
-      // Handling changes in user and cart
-      if (user && !cartLoaded) {
-        // If user is logged in and cart is not loaded
-        await getUserCart();
-      }
-      if (!user && !cartLoaded && cartId.current) {
-        // If user is not logged in, cart is not loaded, and there's a cart ID available
-        await createCartFromId(cartId.current);
-        setCartLoaded(true);
-      }
-      if (user && cartLoaded && cartId.current && cart && cart.uid !== user.uid) {
-        // If user is logged in, cart is loaded, cart ID is available, and cart belongs to a different user
-        await updateItem('carts', cartId.current, { uid: user.uid, updatedAt: Timestamp.now() });
-      }
-    }
-
-    handleUserAndCartChanges(); // Call to handle user and cart changes
-  }, [user, cartLoaded, cart]); // Dependencies for the effect
-
-  return <CartContext.Provider value={cart}>{children}</CartContext.Provider>; // Returning the provider with cart value
+import React, { PropsWithChildren, createContext, useEffect, useState } from 'react';
+import {
+  Timestamp,
+  addDoc,
+  collection,
+  getDocs,
+  onSnapshot,
+  query,
+  where,
+} from 'firebase/firestore'; // Assuming you have configured Firebase
+import { CartItem } from '../types/CartItemInterface';
+import { db, auth } from '../firebase/firebaseConfig';
+interface Cart {
+  items: CartItem[];
+  uid: string;
+  updatedAt: Timestamp;
+  createdAt: Timestamp;
 }
+export interface CartDB extends Cart {
+  id: string;
+}
+
+interface CartContextType {
+  cart: CartDB | null;
+  loading: boolean;
+}
+
+export const CartContext = createContext<CartContextType>({
+  cart: null,
+  loading: true,
+});
+
+const CartProvider: React.FC = ({ children }: PropsWithChildren) => {
+  const [cart, setCart] = useState<CartDB | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  //create a callback to create cart if it doesn't exist
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        const uid = user.uid;
+        const q = query(collection(db, 'carts'), where('uid', '==', uid));
+
+        try {
+          const snapshot = await getDocs(q);
+          if (!snapshot.empty) {
+            const docData = snapshot.docs.map((doc) => {
+              return { ...doc.data(), id: doc.id } as CartDB;
+            });
+            setCart({ ...docData[0], id: docData[0].id } as CartDB);
+            setLoading(false);
+          } else {
+            const newCart: Cart = {
+              items: [],
+              uid: uid,
+              updatedAt: Timestamp.now(),
+              createdAt: Timestamp.now(),
+            };
+
+            const newCartRef = await addDoc(collection(db, 'carts'), newCart);
+            setCart({ ...newCart, id: newCartRef.id } as CartDB);
+            setLoading(false);
+          }
+
+          // Subscribe to changes in the cart collection
+          const unsubscribeCart = onSnapshot(q, (snapshot) => {
+            snapshot.docChanges().forEach((change) => {
+              if (change.type === 'modified') {
+                const updatedCart = { ...change.doc.data(), id: change.doc.id } as CartDB;
+                setCart(updatedCart);
+              }
+            });
+          });
+
+          // Clean up the subscription when component unmounts
+          return () => unsubscribeCart();
+        } catch (error) {
+          console.error('Error fetching cart:', error);
+          setLoading(false);
+        }
+      } else {
+        setCart(null);
+        setLoading(false);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  return <CartContext.Provider value={{ cart, loading }}>{children}</CartContext.Provider>;
+};
+
+export default CartProvider;

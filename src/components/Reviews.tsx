@@ -10,8 +10,6 @@ type ReviewsProps = {
 
 export default function Reviews({ van }: ReviewsProps) {
   const { user } = useUser();
-  console.log('vanuid ', van.uid);
-  console.log('useruid ', user?.uid);
   // Function to calculate the percentage of each star rating
   const getPercentage = (star: number) => {
     const totalReviews = van.reviews.length;
@@ -22,6 +20,7 @@ export default function Reviews({ van }: ReviewsProps) {
     return totalReviews !== 0 ? ((totalStarReviews / totalReviews) * 100).toFixed(0) : 0;
   };
 
+  //TODO: Implement delete review function
   async function deleteReview() {
     console.log('delete review');
   }

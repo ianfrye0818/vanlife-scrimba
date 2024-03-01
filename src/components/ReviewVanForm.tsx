@@ -38,7 +38,6 @@ export default function ReviewVanForm({ setOpen, van }: reviewVanFormProps) {
       });
       return;
     }
-    console.log(newReview);
     toast('Review Submitted Successfully', {
       description: 'Thank you for your review!',
     });

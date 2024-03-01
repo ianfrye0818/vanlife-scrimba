@@ -1,7 +1,6 @@
 //library imports
 import { useFormContext } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { useContext } from 'react';
 
 //component imports
 import { CardTitle, CardHeader, CardContent, Card, CardFooter } from './card';
@@ -11,7 +10,6 @@ import RemoveItemDialog from './RemoveItemAlertDialog';
 
 //custom imports
 import { addItem, getItembyID, updateItem } from '../../firebase/firebaseDatabase';
-import { CartContext } from '../../context/CartContextProvider';
 import { useUser } from '../../hooks/useUser';
 
 //utility imports
@@ -21,11 +19,12 @@ import removeItem from '../../utils/removeItem';
 
 //type imports
 import { CheckOutFormData, Order } from '../../types/CheckOutFormData';
+import { useCart } from '../../hooks/useCart';
 
 export default function OrderSummaryCard() {
   const { handleSubmit } = useFormContext<CheckOutFormData>();
   //use cart - custom hook for creating and managing cart for user
-  const cart = useContext(CartContext);
+  const { cart } = useCart();
   const navigate = useNavigate();
   const { user } = useUser();
 

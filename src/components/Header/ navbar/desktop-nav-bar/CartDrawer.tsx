@@ -1,14 +1,18 @@
 import { Box, Drawer, Avatar, Button } from '@mui/material';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { MdShoppingCart } from 'react-icons/md';
-import { CartContext } from '../../../../context/CartContextProvider';
 import { Link } from 'react-router-dom';
 import RemoveItemDialog from '../../../ui/RemoveItemAlertDialog';
 import removeItem from '../../../../utils/removeItem';
+import { useCart } from '../../../../hooks/useCart';
+import NoCartPage from '../../../../pages/cart/NoCartPage';
 
 export default function CartDrawer() {
   const [isOpen, setIsOpen] = useState(false);
-  const cart = useContext(CartContext);
+  const { cart } = useCart();
+
+  if (!cart) <NoCartPage />;
+
   const total = cart?.items.reduce((acc, item) => {
     return acc + item.price * item.quantity;
   }, 0);

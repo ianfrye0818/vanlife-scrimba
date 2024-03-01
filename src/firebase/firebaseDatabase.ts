@@ -30,7 +30,7 @@ async function getItembyID(collectionName: string, id: string) {
       return null;
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return { message: 'Error getting document!' };
   }
 }
@@ -45,7 +45,7 @@ async function getAllItems(collectionName: string) {
 
     return querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return null;
   }
 }
@@ -59,7 +59,7 @@ async function queryItem(collectionName: string, field: string, value: string) {
     //return documents
     return querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id } as DocumentData));
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return null;
   }
 }
@@ -67,9 +67,7 @@ async function queryItem(collectionName: string, field: string, value: string) {
 //add item to database
 async function addItem(collectionName: string, data: DocumentData) {
   try {
-    console.log(collectionName, data);
     const docRef = await addDoc(collection(db, collectionName), data);
-    console.log('docrefid: ', docRef.id);
     return docRef.id;
   } catch (error) {
     console.error(error);
@@ -85,7 +83,7 @@ async function updateItem(collectionName: string, id: string, data: DocumentData
     const document = await getDoc(docRef);
     return document;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return null;
   }
 }
@@ -96,7 +94,7 @@ async function deleteItem(collectionName: string, id: string) {
     await deleteDoc(doc(db, collectionName, id));
     return { message: 'Document deleted successfully!' };
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return { message: 'Error deleting document!' };
   }
 }

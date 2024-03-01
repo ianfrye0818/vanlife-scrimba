@@ -45,13 +45,11 @@ export default function AddAVan() {
   const { data: imageData } = useQuery({
     queryKey: ['newHostedVan'],
     queryFn: async () => {
-      console.log(van?.imageBucketPath);
       const metadata = await getAllDownloadUrlsFromFolder(van?.imageBucketPath as string);
       return metadata;
     },
     enabled: van !== undefined && van !== null,
   });
-  console.log(van);
   //create a mutation for deleting images from the storage bucket
   const deleteMutation = useMutation({
     mutationFn: async (fullImagePath: string) => await deleteImage(fullImagePath),

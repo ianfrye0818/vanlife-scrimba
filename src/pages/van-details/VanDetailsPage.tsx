@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import ReactLoading from 'react-loading';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 
 //component imports
 import Layout from '../../Layout';
@@ -20,19 +20,19 @@ import SignInModal from '../../components/SignInModal';
 import { getItembyID, updateItem } from '../../firebase/firebaseDatabase';
 
 //context & hook imports
-import { CartContext } from '../../context/CartContextProvider';
 import { useUser } from '../../hooks/useUser';
 
 //type imports
 import { Van } from '../../types/VanInterfaces';
 import { CartItem } from '../../types/CartItemInterface';
+import { useCart } from '../../hooks/useCart';
 
 export default function VanDetails() {
   const [open, setOpen] = useState(false);
   const { isSignedIn, user } = useUser();
   const { id } = useParams();
   const navigate = useNavigate();
-  const cart = useContext(CartContext);
+  const { cart } = useCart();
 
   //query db and get van by id
   const {
