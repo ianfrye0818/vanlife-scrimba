@@ -1,15 +1,27 @@
-import { useUser } from '../hooks/useUser';
-import { Van } from '../types/VanInterfaces';
+//libary imports
+import { useQueryClient } from '@tanstack/react-query';
+
+//custom imports
+import { updateItem } from '../firebase/firebaseDatabase';
+
+//component improts
 import { StarIcon, Trash2 } from 'lucide-react';
 import { ScrollArea } from './ui/scroll-area';
 import { Separator } from './ui/separator';
 
+//hook imports
+import { useUser } from '../hooks/useUser';
+
+//type imports
+import { Review, Van } from '../types/VanInterfaces';
 type ReviewsProps = {
   van: Van;
 };
 
 export default function Reviews({ van }: ReviewsProps) {
+  const queryClient = useQueryClient();
   const { user } = useUser();
+
   // Function to calculate the percentage of each star rating
   const getPercentage = (star: number) => {
     const totalReviews = van.reviews.length;
@@ -20,9 +32,12 @@ export default function Reviews({ van }: ReviewsProps) {
     return totalReviews !== 0 ? ((totalStarReviews / totalReviews) * 100).toFixed(0) : 0;
   };
 
-  //TODO: Implement delete review function
-  async function deleteReview() {
-    console.log('delete review');
+  async function deleteReview(review: Review) {
+    //fiter out current review
+    van.reviews = van.reviews.filter((r) => r.name !== review.name);
+    //update van in db with new reviews
+    await updateItem('vans', van.id, { reviews: van.reviews });
+    queryClient.invalidateQueries({ queryKey: ['van', van.id] });
   }
 
   return (
@@ -61,7 +76,7 @@ export default function Reviews({ van }: ReviewsProps) {
           {van.reviews.map((review, index) => (
             <div
               key={index}
-              className='flex flex-col gap-2 p-3 '
+              className='flex flex-col gap-2 p-3 relative'
             >
               <p className='font-bold'>{review.name}</p>
               <div className='flex gap-2'>
@@ -78,7 +93,7 @@ export default function Reviews({ van }: ReviewsProps) {
               <p>{review.review}</p>
               {van.uid === user?.uid && (
                 <div
-                  onClick={deleteReview}
+                  onClick={() => deleteReview(review)}
                   className='absolute top-2 right-2 bg-red-200 p-2  flex gap-2 items-center cursor-pointer'
                 >
                   <Trash2 size={14} /> Delete

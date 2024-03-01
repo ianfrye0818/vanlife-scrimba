@@ -6,6 +6,7 @@ export type CartItem = {
   imageURL?: string;
   type?: string;
   quantity: number;
+  uid: string;
 };
 
 export type Cart = {

@@ -1,6 +1,3 @@
-import HostPageLayout from '../HostPageLayout';
-
-//TODO: build out this component
 export default function IncomePage() {
-  return <HostPageLayout>Income Page</HostPageLayout>;
+  return <div>IncomePage</div>;
 }

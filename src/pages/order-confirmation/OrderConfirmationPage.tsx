@@ -98,7 +98,7 @@ export default function OrderConfirmationPage() {
                   <TableBody>
                     {order.cart.items.map((item) => {
                       return (
-                        <TableRow>
+                        <TableRow key={item.id}>
                           <TableCell>
                             <Avatar src={item.imageURL}>{item.name[0]}</Avatar>
                           </TableCell>

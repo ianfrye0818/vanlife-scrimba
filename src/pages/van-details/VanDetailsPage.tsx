@@ -182,7 +182,7 @@ export default function VanDetails() {
                 </button>
               )}
 
-              <div>
+              {van.uid !== user?.uid && (
                 <DialogBox
                   titleText='Leave us a review!'
                   dialogTriggerButton={
@@ -203,7 +203,7 @@ export default function VanDetails() {
                     setOpen={setOpen}
                   />
                 </DialogBox>
-              </div>
+              )}
             </div>
           </div>
           <div>{van.reviews && van.reviews.length > 0 && <Reviews van={van} />}</div>
