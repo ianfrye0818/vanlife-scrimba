@@ -22,6 +22,7 @@ import ProtectedRoutes from './routes/ProtectedRoutes';
 import HostVansPage from './pages/host/vans/HostVansPage';
 import EditAVan from './pages/host/vans/edit-a-van/EditAVan';
 import AddAVan from './pages/host/vans/add-a-van/AddAVan';
+import SignInPage from './pages/sign-in/SignIn';
 
 //crate react query client to fetch data and handle async state
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const router = createBrowserRouter([
   { path: '/vans', element: <VansPage /> },
   { path: '/vans/:id', element: <VanDetailsPage /> },
   { path: '/cart', element: <CheckOutPage /> },
+  { path: '/signin', element: <SignInPage /> },
   { path: '/order-confirmation/:orderId', element: <OrderConfirmationPage /> },
   {
     path: '/host',

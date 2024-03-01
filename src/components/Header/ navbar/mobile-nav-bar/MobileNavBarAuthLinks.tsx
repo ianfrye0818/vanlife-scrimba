@@ -8,6 +8,7 @@ import ListItemText from '@mui/material/ListItemText';
 import { useContext } from 'react';
 import { AuthContext } from '../../../../context/AuthContextProvider';
 import { logoutUser } from '../../../../firebase/firebaseAuth';
+import SignInModal from '../../../SignInModal';
 
 export default function MobileNavBarAuthLinks() {
   const { user } = useContext(AuthContext);
@@ -42,12 +43,7 @@ export default function MobileNavBarAuthLinks() {
     <>
       <ListItem>
         <ListItemButton>
-          <Link
-            className='bg-orange-500 p-2 rounded-md w-full text-center uppercase font-bold'
-            to='/sign-in'
-          >
-            <ListItemText primary='Sign In' />
-          </Link>
+          <SignInModal triggerButtonClassName='bg-orange-500 hover:bg-orange-600 w-full p-3' />
         </ListItemButton>
       </ListItem>
     </>

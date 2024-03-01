@@ -30,7 +30,7 @@ export const CartContext = createContext<CartContextType>({
   loading: true,
 });
 
-const CartProvider: React.FC = ({ children }: PropsWithChildren) => {
+const CartProvider = ({ children }: PropsWithChildren) => {
   const [cart, setCart] = useState<CartDB | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
