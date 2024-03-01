@@ -25,6 +25,7 @@ export default function CartContextProvider({ children }: PropsWithChildren) {
       cartId.current = storedCartId;
     }
   }, []);
+  console.log(cartId.current);
 
   useEffect(() => {
     // Effect for handling user and cart changes

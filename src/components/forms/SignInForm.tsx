@@ -2,12 +2,14 @@
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 
 //component imports
-import { Button, TextField } from '@mui/material';
 import { FaGoogle } from 'react-icons/fa6';
 import { FaGithub } from 'react-icons/fa';
 
 //custom imports
 import { signInUser, signInWithGithub, signInWithGoogle } from '../../firebase/firebaseAuth';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
 
 type SignInFormProps = {
   setSignup: (signup: boolean) => void;
@@ -31,15 +33,9 @@ export default function SignInForm({ setSignup }: SignInFormProps) {
   return (
     <div className='flex flex-col gap-4 w-96 mx-auto'>
       <Button
-        variant='outlined'
         type='button'
-        sx={{
-          padding: '15px',
-          color: '#1f1f1f',
-          border: '1px solid #1f1f1f',
-          display: 'flex',
-          gap: '10px',
-        }}
+        className='flex gap-2 items-center justify-center'
+        variant={'outline'}
         //create a function to sign in with google
         onClick={async () => {
           await signInWithGoogle();
@@ -48,16 +44,8 @@ export default function SignInForm({ setSignup }: SignInFormProps) {
         <FaGoogle /> Sign In with Google
       </Button>
       <Button
-        variant='contained'
+        className='bg-black text-white flex gap-2 items-center justify-center hover:text-white hover:bg-gray-00'
         type='button'
-        sx={{
-          padding: '15px',
-          backgroundColor: '#1f1f1f',
-          '&:hover': { background: '#1f1f1fdd' },
-          color: '#f5f5f5',
-          display: 'flex',
-          gap: '10px',
-        }}
         //create a function to sign in with github
         onClick={async () => {
           await signInWithGithub();
@@ -70,42 +58,38 @@ export default function SignInForm({ setSignup }: SignInFormProps) {
         onSubmit={handleSubmit(onSubmit as SubmitHandler<FieldValues>)}
         className='flex flex-col gap-4 w-full'
       >
-        <TextField
+        <Label htmlFor='email'>Email</Label>
+        <Input
           id='email'
-          label='Email'
-          variant='outlined'
+          placeholder='Enter your email'
           {...register('email', { required: 'This field is required' })}
         />
         {errors.email && <p className='text-red-600 text-sm'>{errors.email.message as string}</p>}
-        <TextField
+        <Label htmlFor='password'>Password</Label>
+        <Input
           id='password'
-          label='Password'
           type='password'
-          variant='outlined'
+          placeholder='Enter your password'
           {...register('password', { required: 'This field is required' })}
         />
         {errors.password && (
           <p className='text-red-600 text-sm'>{errors.password.message as string}</p>
         )}
         <Button
+          className='bg-orange-600 hover:bg-orange-700 text-white'
           type='submit'
-          sx={{
-            padding: '15px',
-            backgroundColor: '#ff8c38',
-            '&:hover': { background: '#ff8c38dd' },
-          }}
-          variant='contained'
         >
           Sign In
         </Button>
-        <p>
-          Don't have an account?{' '}
-          <button
-            style={{ color: 'blue', textDecoration: 'underline' }}
+        <p className='flex gap-2 items-center'>
+          Don't have an account?
+          <Button
+            className='text-blue-600 underline p-0'
+            variant={'link'}
             onClick={() => setSignup(true)}
           >
             Create One
-          </button>
+          </Button>
         </p>
       </form>
     </div>

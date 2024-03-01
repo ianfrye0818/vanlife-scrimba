@@ -2,9 +2,11 @@
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 
 //component imports
-import { Button, TextField } from '@mui/material';
 import { FaGithub, FaGoogle } from 'react-icons/fa6';
 import { createUser, signInWithGithub, signInWithGoogle } from '../../firebase/firebaseAuth';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
 
 type SignUpFormProps = {
   setSignup: (signup: boolean) => void;
@@ -29,72 +31,54 @@ export default function SignUpForm({ setSignup }: SignUpFormProps) {
   return (
     <div className='flex flex-col gap-4 w-96 mx-auto '>
       <Button
-        variant='outlined'
         type='button'
-        sx={{
-          padding: '15px',
-          color: '#1f1f1f',
-          border: '1px solid #1f1f1f',
-          display: 'flex',
-          gap: '10px',
-          width: '100%',
-        }}
+        className='flex gap-2 items-center justify-center'
+        variant={'outline'}
+        //create a function to sign in with google
         onClick={async () => {
-          //create a function to sign in with google
           await signInWithGoogle();
         }}
       >
-        <FaGoogle /> Sign Up with Google
+        <FaGoogle /> Sign In with Google
       </Button>
       <Button
-        variant='contained'
+        className='bg-black text-white flex gap-2 items-center justify-center hover:text-white hover:bg-gray-00'
         type='button'
-        sx={{
-          padding: '15px',
-          backgroundColor: '#1f1f1f',
-          '&:hover': { background: '#1f1f1fdd' },
-          color: '#f5f5f5',
-          display: 'flex',
-          gap: '10px',
-          width: '100%',
-        }}
+        //create a function to sign in with github
         onClick={async () => {
-          //create a function to sign in with github
           await signInWithGithub();
         }}
       >
-        <FaGithub /> Sign Up with Github
+        <FaGithub /> Sign In with Github
       </Button>
       <form
         onSubmit={handleSubmit(onSubmit as SubmitHandler<FieldValues>)}
         className='flex flex-col gap-4 w-full'
       >
-        <TextField
+        <Label htmlFor='email'>Email</Label>
+        <Input
           id='email'
-          label='Email'
-          variant='outlined'
+          placeholder='Enter your email'
           {...register('email', { required: 'This field is required' })}
         />
         {errors.email && (
           <span className='text-red-600 text-sm'>{errors.email.message as string}</span>
         )}
-
-        <TextField
+        <Label htmlFor='password'>Password</Label>
+        <Input
+          placeholder='Enter your password'
           id='password'
-          label='Password'
           type='password'
-          variant='outlined'
           {...register('password', { required: 'This field is required' })}
         />
         {errors.password && (
           <span className='text-red-600 text-sm'>{errors.password.message as string}</span>
         )}
 
-        <TextField
+        <Input
+          placeholder='Confirm your password'
           id='password-confirmation'
-          label='Confirm Password'
           type='password'
-          variant='outlined'
           {...register('passwordConfirmation', { required: 'This field is required' })}
         />
         {errors.passwordConfirmation && (
@@ -104,24 +88,20 @@ export default function SignUpForm({ setSignup }: SignUpFormProps) {
         )}
 
         <Button
-          sx={{
-            padding: '15px',
-            backgroundColor: '#ff8c38',
-            '&:hover': { background: '#ff8c38dd' },
-          }}
+          className='bg-orange-600 hover:bg-orange-700 text-white'
           type='submit'
-          variant='contained'
         >
           Sign Up
         </Button>
-        <p>
-          Already have an account?{' '}
-          <button
-            style={{ color: 'blue', textDecoration: 'underline' }}
+        <p className='flex gap-2 items-center'>
+          Already have an account?
+          <Button
+            className='text-blue-600 underline p-0'
+            variant={'link'}
             onClick={() => setSignup(false)}
           >
-            Log In
-          </button>
+            Sign In
+          </Button>
         </p>
       </form>
     </div>

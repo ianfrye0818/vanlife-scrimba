@@ -1,6 +1,8 @@
 import { useUser } from '../hooks/useUser';
 import { Van } from '../types/VanInterfaces';
 import { StarIcon, Trash2 } from 'lucide-react';
+import { ScrollArea } from './ui/scroll-area';
+import { Separator } from './ui/separator';
 
 type ReviewsProps = {
   van: Van;
@@ -55,12 +57,12 @@ export default function Reviews({ van }: ReviewsProps) {
             ))}
           </div>
         </div>
-        <div className='w-2/3 border p-3 h-[350px] overflow-y-scroll scroll-py-3 custom-scroll-bar'>
+        <ScrollArea className='h-72 w-2/3 rounded-md border py-3'>
           {/* Reviews */}
           {van.reviews.map((review, index) => (
             <div
               key={index}
-              className='flex flex-col gap-2 p-3 border-b-2 border-gray-200 last-of-type:border-none relative'
+              className='flex flex-col gap-2 p-3 '
             >
               <p className='font-bold'>{review.name}</p>
               <div className='flex gap-2'>
@@ -83,9 +85,10 @@ export default function Reviews({ van }: ReviewsProps) {
                   <Trash2 size={14} /> Delete
                 </div>
               )}
+              <Separator className='bg-gray-200 h-[1px] w-full mt-2 mb-2' />
             </div>
           ))}
-        </div>
+        </ScrollArea>
       </div>
     </div>
   );
