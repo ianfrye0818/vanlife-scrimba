@@ -7,46 +7,52 @@ import { CardTitle, CardHeader, CardContent, Card, CardFooter } from './card';
 import { Button } from './button';
 import { Avatar } from '@mui/material';
 import RemoveItemDialog from './RemoveItemAlertDialog';
+import SignInModal from '../SignInModal';
+import CalendarScheduler from './CalendarScheduler';
+import { toast } from 'sonner';
 
 //custom imports
-import { addItem, deleteItem, getItembyID, updateItem } from '../../firebase/firebaseDatabase';
-import { useUser } from '../../hooks/useUser';
-
-//utility imports
-import protectData from '../../utils/ProtectData';
-import removeItem from '../../utils/removeItem';
+import { deleteItem, getItembyID, updateItem } from '../../firebase/firebaseDatabase';
+import { formatDate } from '../../utils/formatDate';
+import { createOrder } from '../../utils/createOrder';
+import { protectData } from '../../utils/protectedData';
+import { removeItem } from '../../utils/removeItem';
 
 //type imports
-import { CheckOutFormData, Order } from '../../types/CheckOutFormData';
-import { useCart } from '../../hooks/useCart';
-import SignInModal from '../SignInModal';
-import { formatDate } from '../../utils/formatDate';
-import { Timestamp } from 'firebase/firestore';
-import CalendarScheduler from './CalendarScheduler';
+import { CheckOutFormData } from '../../types/CheckOutFormData';
 import { Selected } from '@demark-pro/react-booking-calendar';
-import { toast } from 'sonner';
-import { useDates } from '../../hooks/useDates';
+import { Timestamp } from 'firebase/firestore';
 import { Van } from '../../types/VanInterfaces';
+import { UserData } from '../../types/UserData';
+
+//custom hook imports
+import { useUser } from '../../hooks/useUser';
+import { useCart } from '../../hooks/useCart';
+import { useDates } from '../../hooks/useDates';
+import { calculateNumberOfDays } from '../../utils/calculateNumberOfDays';
+import calculateTotal from '../../utils/calculateTotal';
 
 export default function OrderSummaryCard() {
-  const { handleSubmit } = useFormContext<CheckOutFormData>();
-  //use cart - custom hook for creating and managing cart for user
-  const { cart } = useCart();
+  //hooks
   const navigate = useNavigate();
-
+  const { handleSubmit } = useFormContext<CheckOutFormData>();
+  const { cart } = useCart();
   const { selectedDates, setSelectedDates, setDialogOpen } = useDates();
   const { user } = useUser();
-  const numberOfDays = Math.floor(
-    ((cart?.dates[1] as Timestamp).seconds - (cart?.dates[0] as Timestamp).seconds) / 86400
-  );
-  const total = cart?.van?.price ? cart.van.price * numberOfDays : 0;
 
-  async function addToCart() {
+  //global variables
+  const numberOfDays = calculateNumberOfDays(
+    cart?.dates[0] as Timestamp,
+    cart?.dates[1] as Timestamp
+  );
+  const total = calculateTotal(cart);
+
+  //function to update dates if the user wants to change the dates they rent the van - gets passed into the add to cart function
+  async function updatingDates() {
     if (selectedDates.length === 0) {
       toast.error('Please select a date');
       return;
     }
-
     const updatedItem = updateItem('carts', cart?.id as string, {
       dates: selectedDates,
     });
@@ -55,51 +61,56 @@ export default function OrderSummaryCard() {
       toast.error('Something went wrong, please try again');
     }
   }
-  //reduces the cart array to a single value - the total price of all items in the cart
 
   async function onSubmit(data: CheckOutFormData) {
-    //if cart was unable to load return from function
-    if (!cart) {
-      alert('Something went wrong, please try again');
+    //handle edge cases for missing data
+    if (!user) {
+      toast.error('Please sign in to checkout');
       return;
     }
+    if (!cart) {
+      toast.error('Could not load cart, please try again later');
+      return;
+    }
+    if (!cart.van) {
+      toast.error('Could not load van, please try again later');
+      return;
+    }
+    const reservedDates = cart.van.reserved;
+    if (reservedDates === undefined) {
+      toast.error('Error processing dates, please try again later');
+      return;
+    }
+
     //protect user data such as cc info
     const protectedData = protectData(data);
 
-    //TODO: do not need all this info. break it out
-    //create a new order
-    const newOrder: Order = {
-      ...protectedData,
-      cart,
-      user: user ? user.uid : '',
-      total,
-    };
+    //create a new order and get order id
+    const orderId = await createOrder(protectedData, cart, user.uid as string, total as number);
 
-    //upload order to db and get order id
-    const orderId = await addItem('orders', newOrder);
-    //clear cart
+    //if order id was unable to be created return from function and display error in toast
     if (!orderId) {
-      alert('Something went wrong, please try again');
+      toast.error('Problem creating order, please try again');
       return;
     }
-    //add order id to users order array
-    if (user) {
-      const userData = await getItembyID('users', user.uid);
-      if (userData) {
-        await updateItem('users', user.uid, { orders: [...userData.orders, orderId] });
-      }
-    }
-    const reserved = cart.van?.reserved ?? [];
-    await updateItem(
-      'vans',
-      cart.van?.id as string,
-      { reserved: [...reserved, { startDate: cart.dates[0], endDate: cart.dates[1] }] } as Van
-    );
-    //empty user cart
-    await deleteItem('carts', cart.id); // empty user cart
+
+    //update user data to show that they have a new order
+    const userData = (await getItembyID('users', user.uid)) as UserData;
+    await updateItem('users', user.uid, { orders: [...userData.orders, orderId] });
+
+    //update the van to show that the dates are reserved
+    await updateItem('vans', cart.van.id, {
+      reserved: [...reservedDates, { startDate: cart.dates[0], endDate: cart.dates[1] }],
+    });
+
+    //empty user cart by deleteing cart fromn DB
+    await deleteItem('carts', cart.id);
+
     //navigate to order confirmation page passing along the order id as a param
     navigate('/order-confirmation/' + orderId);
   }
+
+  //jsx return
   return (
     <div className='lg:w-1/3'>
       <Card>
@@ -111,6 +122,7 @@ export default function OrderSummaryCard() {
             <div className='flex gap-2 items-center mb-4'>
               <Avatar src={cart.van?.imageURL}>{cart.van?.name[0]}</Avatar>
               <span>{cart.van?.name}</span>
+              {/* remove item button for removing item from cart */}
               <RemoveItemDialog
                 actionCallback={() => removeItem(cart)}
                 triggerClassNames='text-sm text-gray-500 cursor-pointer underline'
@@ -122,14 +134,16 @@ export default function OrderSummaryCard() {
               <span className='block'>From:</span>{' '}
               <span className='block'>
                 {' '}
+                {/* uses a format date funciton to format timestamp into regular date string with just month/date/year */}
                 {formatDate(cart.dates[0] as Timestamp)} to {formatDate(cart.dates[1] as Timestamp)}
               </span>
               <span className='block'>({numberOfDays} days)</span>
               <br />
+              {/* calendar scheduler component for the user to be able to select dates */}
               <CalendarScheduler
                 setSelectedDates={setSelectedDates}
                 selectedDates={selectedDates as Selected[]}
-                addToCart={addToCart}
+                callback={updatingDates}
                 buttonClassName='text-gray-600 underline cursor-pointer text-sm p-0 bg-transparent hover:bg-transparent hover:underline hover:text-gray-500'
                 buttonTitle='Change Dates'
                 van={cart.van as Van}

@@ -2,7 +2,7 @@ import { Timestamp } from 'firebase/firestore';
 import { CartDB } from '../context/CartContextProvider';
 import { updateItem } from '../firebase/firebaseDatabase';
 
-export default async function removeItem(cart: CartDB | undefined) {
+export async function removeItem(cart: CartDB | undefined) {
   if (!cart) {
     console.error('No cart found');
     return;

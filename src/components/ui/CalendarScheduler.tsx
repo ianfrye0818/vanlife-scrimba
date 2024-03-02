@@ -1,50 +1,67 @@
+//shutting up eslint from making me add a dependency array - TODO: fix this
 /* eslint-disable react-hooks/exhaustive-deps */
-import Calendar, { Reserved, Selected } from '@demark-pro/react-booking-calendar';
+
+//library imports
+import Calendar from '@demark-pro/react-booking-calendar';
+import { useEffect } from 'react';
+
+//custom imports
+import { convertTimeStampToReserved } from '../../utils/convertTimeStampToReserved';
+//component imports
 import { Dialog, DialogContent, DialogFooter, DialogTrigger } from './dialog';
 import { Button } from './button';
-import { useDates } from '../../hooks/useDates';
-import { useEffect } from 'react';
 import { toast } from 'sonner';
+import ReactLoading from 'react-loading';
+
+//type imports
+import { Reserved, Selected } from '@demark-pro/react-booking-calendar';
+
+//custom hook imports
+import { useDates } from '../../hooks/useDates';
 import { Van } from '../../types/VanInterfaces';
-import { Timestamp } from 'firebase/firestore';
 
 type CalendarSchedulerProps = {
   selectedDates: Selected[];
   setSelectedDates: (e: Selected[]) => void;
-  addToCart?: () => void;
+  callback?: () => void;
   buttonClassName: string;
   buttonTitle: string;
   van: Van;
 };
 
-//component start
 export default function CalendarScheduler({
   selectedDates,
   setSelectedDates,
-  addToCart,
+  callback,
   buttonClassName,
   buttonTitle,
   van,
 }: CalendarSchedulerProps) {
   const { dialogOpen, setDialogOpen } = useDates();
+
+  //useeffect for setting the state of selected dates to an empty array when the dialog is closed
   useEffect(() => {
     setSelectedDates([]);
   }, [dialogOpen]);
+
+  //if the van is still loading, return a loading message
   if (van.reserved === undefined) {
-    return <div>Loading...</div>;
+    return (
+      <div className='h-screen flex items-center justify-center'>
+        <ReactLoading
+          type='bubbles'
+          color='green'
+          height={300}
+          width={375}
+        />
+      </div>
+    );
   }
-  const reserved = van.reserved.map(
-    (r) =>
-      ({
-        startDate: (r.startDate as Timestamp).toDate(),
-        endDate: (r.endDate as Timestamp).toDate(),
-      } as Reserved)
-  ) as Reserved[];
-  console.log(reserved);
-  console.log(selectedDates);
 
-  const handleChange = (e: Selected[]) => setSelectedDates(e);
+  //global reserv variable
+  const reserved = convertTimeStampToReserved(van);
 
+  //takes in dates to see if they should be disabled on calendar picker
   const isDisabled = (date: Date): boolean => {
     const currentDate = new Date();
     return (
@@ -52,6 +69,7 @@ export default function CalendarScheduler({
       (reserved !== undefined && reserved.some((r) => date >= r.startDate && date < r.endDate))
     );
   };
+
   return (
     <div>
       <Dialog
@@ -64,7 +82,7 @@ export default function CalendarScheduler({
         <DialogContent className='bg-white'>
           <Calendar
             selected={selectedDates}
-            onChange={(e) => handleChange(e)}
+            onChange={(e) => setSelectedDates(e)}
             onOverbook={() => toast.error('Date not available')}
             disabled={isDisabled}
             reserved={reserved as Reserved[]}
@@ -76,7 +94,7 @@ export default function CalendarScheduler({
           <DialogFooter>
             <Button
               className='bg-orange-600 hover:bg-orange-700 text-white hover:text-white'
-              onClick={addToCart}
+              onClick={callback}
             >
               Submit
             </Button>

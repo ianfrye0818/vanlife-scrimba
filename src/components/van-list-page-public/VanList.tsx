@@ -78,13 +78,13 @@ export default function Vanslist() {
         >
           <div className='p-5 rounded-xl flex flex-col justify-between gap-3 h-full md:border-1 md:border'>
             <img
-              className='w-full bg-cover rounded-xl'
+              className='w-full h-full md:max-h-[300px] sm:object-contain  bg-cover rounded-xl'
               src={van.imageURL}
               alt={van.name}
             />
             <div className='flex justify-between items-center'>
               <h2>{van.name}</h2>
-              <div className='flex flex-col justify-center items-end text-3xl'>
+              <div className='flex flex-col justify-center items-end text-xl'>
                 <span>${van.price}</span>
                 <span className='text-lg'>/day</span>
               </div>

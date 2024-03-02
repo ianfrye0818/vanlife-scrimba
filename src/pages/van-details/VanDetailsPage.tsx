@@ -2,7 +2,6 @@
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import ReactLoading from 'react-loading';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { useState } from 'react';
@@ -14,28 +13,31 @@ import ReviewVanForm from '../../components/ReviewVanForm';
 import { StarIcon } from 'lucide-react';
 import { ImageCarousel } from '../../components/ui/imageCarousel';
 import Reviews from '../../components/Reviews';
+import CalendarScheduler from '../../components/ui/CalendarScheduler';
+import ReactLoading from 'react-loading';
 
 //custom imports
 import { getItembyID, updateItem } from '../../firebase/firebaseDatabase';
 
-//context & hook imports
+//ook imports
 import { useUser } from '../../hooks/useUser';
+import { useDates } from '../../hooks/useDates';
+import { useCart } from '../../hooks/useCart';
 
 //type imports
 import { Van } from '../../types/VanInterfaces';
-import { useCart } from '../../hooks/useCart';
-import CalendarScheduler from '../../components/ui/CalendarScheduler';
 import { Timestamp } from 'firebase/firestore';
-import { useDates } from '../../hooks/useDates';
 
 export default function VanDetails() {
-  const [open, setOpen] = useState(false);
-  const { selectedDates, setSelectedDates } = useDates();
-  const { user } = useUser();
-  const { id } = useParams();
+  //hooks
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const { id } = useParams();
+
+  //custom hooks
+  const { selectedDates, setSelectedDates, setDialogOpen } = useDates();
+  const { user } = useUser();
   const { cart } = useCart();
-  const { setDialogOpen } = useDates();
 
   //query db and get van by id
   const {
@@ -52,26 +54,35 @@ export default function VanDetails() {
 
   //add to cart function
   async function addToCart() {
-    console.log('clicked');
+    //handle edge cases if data is missing
     if (selectedDates.length === 0) {
       toast.error('Please select a date');
       return;
     }
-
-    if (cart && van) {
-      const updatedVan = await updateItem('carts', cart.id, {
-        van,
-        dates: selectedDates,
-        uid: user?.uid,
-        updatedAt: Timestamp.now(),
-      });
-      if (updatedVan) {
-        setDialogOpen(false);
-        navigate('/cart');
-      } else {
-        toast('Something went wrong. Please try again');
-      }
+    if (!user) {
+      toast.error('Please sign in to rent a van');
+      return;
     }
+    if (!cart || !van) {
+      toast.error('Something went wrong. Please try again');
+      return;
+    }
+
+    //update cart with selected van and dates
+    const updatedVan = await updateItem('carts', cart.id, {
+      van,
+      dates: selectedDates,
+      uid: user?.uid,
+      updatedAt: Timestamp.now(),
+    });
+    //handle edge case if data is missing
+    if (!updatedVan) {
+      toast.error('Something went wrong. Please try again');
+      return;
+    }
+    //close diaglog and navigate to cart
+    setDialogOpen(false);
+    navigate('/cart');
   }
 
   //while loading - show loading spinner
@@ -90,7 +101,11 @@ export default function VanDetails() {
 
   //if there is an error, show the error message
   if (error) {
-    return <div>Something went wrong</div>;
+    return (
+      <div className='h-screen w-full flex flex-col justify-center items-center'>
+        Something went wrong
+      </div>
+    );
   }
 
   //if data does not exisist return null and redirec to 404 not found page
@@ -124,6 +139,7 @@ export default function VanDetails() {
               <h2 className='text-2xl font-bold'>{van.name}</h2>
               <p className='font-bold'>Price: ${van.price}/day</p>
               <p className='leading-6'>{van.description}</p>
+              {/* if use owns the van - show edit van button instead of adding can to cart */}
               {van.uid === user?.uid ? (
                 <Link to={`/host/vans/${van.id}/edit`}>
                   <button className='bg-orange-500 text-white p-3 rounded-md hover:bg-green-600 transition-all duration-300 ease-in-out w-40 text-center cursor-pointer'>
@@ -132,10 +148,11 @@ export default function VanDetails() {
                 </Link>
               ) : (
                 <div>
+                  {/* calendar scheduler for selecting dates  - shown if the van does not belong to the user*/}
                   <CalendarScheduler
                     setSelectedDates={setSelectedDates}
                     selectedDates={selectedDates}
-                    addToCart={addToCart}
+                    callback={addToCart}
                     buttonClassName='p-2 bg-green-600 hover:bg-green-700 text-white hover:text-white'
                     buttonTitle='Rent this van'
                     van={van}
@@ -143,6 +160,7 @@ export default function VanDetails() {
                 </div>
               )}
 
+              {/* if user does not own van able to leave a review  */}
               {van.uid !== user?.uid && (
                 <DialogBox
                   titleText='Leave us a review!'

@@ -1,10 +1,12 @@
-import { CartItem } from '../types/CartItemInterface';
+import { Timestamp } from 'firebase/firestore';
+import { CartDB } from '../context/CartContextProvider';
+import { calculateNumberOfDays } from './calculateNumberOfDays';
 
-export default function calculateTotal(cartItems: CartItem[] | undefined) {
-  if (!cartItems) {
-    return 0;
-  }
-  return cartItems.reduce((acc, item) => {
-    return acc + item.price * item.quantity;
-  }, 0);
+export default function calculateTotal(cart: CartDB | null) {
+  if (!cart) return 0;
+  if (!cart.van) return 0;
+  if (!cart.van.price) return 0;
+  return (
+    calculateNumberOfDays(cart.dates[0] as Timestamp, cart.dates[1] as Timestamp) * cart?.van?.price
+  );
 }
