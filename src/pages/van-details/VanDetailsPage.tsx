@@ -116,13 +116,13 @@ export default function VanDetails() {
 
   return (
     <Layout>
-      <main className='container'>
+      <main className=' p-2 md:container'>
         <div className='underline mb-5 mt-14 pl-5'>
           <Link to='/vans'>{'<- Back to Vans'}</Link>
         </div>
-        <div className=' flex flex-col gap-4 min-h-screen md:h-auto mb-5'>
-          <div className='flex flex-col gap-8 p-3 lg:flex-row pb-9 '>
-            <div className='flex-1'>
+        <div className=' flex flex-col gap-4 min-h-screen md:h-auto mb-5 '>
+          <div className='flex flex-col gap-8 p-3 lg:flex-row lg:pb-9 '>
+            <div className='flex-1 '>
               <div className='w-full flex justify-center items-center '>
                 <ImageCarousel
                   mainImage={van.imageURL as string}
@@ -130,19 +130,19 @@ export default function VanDetails() {
                 />
               </div>
             </div>
-            <div className='flex-1 md:p-x-12 flex flex-col gap-10'>
+            <div className='flex-1  md:p-x-12 flex flex-col gap-4 w-full   lg:gap-10  '>
               <div
-                className={`p-3 text-[#ffead0] inline max-w-28 text-center rounded-xl text-xl ${van.type}`}
+                className={`p-3 text-[#ffead0] inline max-w-28 text-center rounded-xl text-xl -order-1 lg:-order-2 ${van.type}`}
               >
                 {van.type}
               </div>
-              <h2 className='text-2xl font-bold'>{van.name}</h2>
+              <h2 className='text-2xl font-bold -order-2 lg:-order-1'>{van.name}</h2>
               <p className='font-bold'>Price: ${van.price}/day</p>
               <p className='leading-6'>{van.description}</p>
               {/* if use owns the van - show edit van button instead of adding can to cart */}
               {van.uid === user?.uid ? (
                 <Link to={`/host/vans/${van.id}/edit`}>
-                  <button className='bg-orange-500 text-white p-3 rounded-md hover:bg-green-600 transition-all duration-300 ease-in-out w-40 text-center cursor-pointer'>
+                  <button className='w-full bg-orange-500 text-white p-3 rounded-md hover:bg-green-600 transition-all duration-300 ease-in-out lg:w-40 text-center cursor-pointer'>
                     Edit Van
                   </button>
                 </Link>
@@ -153,7 +153,7 @@ export default function VanDetails() {
                     setSelectedDates={setSelectedDates}
                     selectedDates={selectedDates}
                     callback={addToCart}
-                    buttonClassName='p-2 bg-green-600 hover:bg-green-700 text-white hover:text-white'
+                    buttonClassName='p-2 bg-green-600 hover:bg-green-700 text-white hover:text-white w-full lg:w-auto'
                     buttonTitle='Rent this van'
                     van={van}
                   />

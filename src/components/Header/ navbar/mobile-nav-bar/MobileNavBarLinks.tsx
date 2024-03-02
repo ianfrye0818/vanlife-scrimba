@@ -8,7 +8,6 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import { Box } from '@mui/material';
 import MobileNavBarAuthLinks from './MobileNavBarAuthLinks';
-import { FaShoppingCart } from 'react-icons/fa';
 
 //declare props so taht I can pass in the toggle function to ppen and close the mobile nav
 type MobileNavBarLinksProps = {
@@ -47,17 +46,6 @@ export default function MobileNavBarLinks({ toggleMobileNav }: MobileNavBarLinks
           </ListItem>
         ))}
 
-        <ListItem>
-          <ListItemButton>
-            <Link
-              className='text-center flex gap-2 justify-center bg-green-500 p-3 items-center rounded-md w-full'
-              to='/cart'
-            >
-              <FaShoppingCart />
-              Go to Cart
-            </Link>
-          </ListItemButton>
-        </ListItem>
         {/* displays appropriate navbar links based on if the user is logged in or not */}
         <MobileNavBarAuthLinks />
       </List>

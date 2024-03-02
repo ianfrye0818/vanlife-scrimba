@@ -43,8 +43,8 @@ export default function Reviews({ van }: ReviewsProps) {
   return (
     <div>
       <h3 className='text-xl font-bold mb-4 text-center'>Review Summary</h3>
-      <div className='flex gap-3 p-3'>
-        <div className='w-1/3 p-3'>
+      <div className='flex flex-col lg:flex-row gap-3 p-3'>
+        <div className='w-full lg:w-1/3 p-3'>
           {/* Summary Box */}
           {/* Total number of reviews */}
           <p>Total Reviews: {van.reviews.length}</p>
@@ -71,7 +71,7 @@ export default function Reviews({ van }: ReviewsProps) {
             ))}
           </div>
         </div>
-        <ScrollArea className='h-72 w-2/3 rounded-md border py-3'>
+        <ScrollArea className='h-72 w-full lg:w-2/3 rounded-md border py-3'>
           {/* Reviews */}
           {van.reviews.map((review, index) => (
             <div
