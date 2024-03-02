@@ -9,27 +9,53 @@ import { Avatar } from '@mui/material';
 import RemoveItemDialog from './RemoveItemAlertDialog';
 
 //custom imports
-import { addItem, getItembyID, updateItem } from '../../firebase/firebaseDatabase';
+import { addItem, deleteItem, getItembyID, updateItem } from '../../firebase/firebaseDatabase';
 import { useUser } from '../../hooks/useUser';
 
 //utility imports
 import protectData from '../../utils/ProtectData';
-import calculateTotal from '../../utils/calculateTotal';
 import removeItem from '../../utils/removeItem';
 
 //type imports
 import { CheckOutFormData, Order } from '../../types/CheckOutFormData';
 import { useCart } from '../../hooks/useCart';
+import SignInModal from '../SignInModal';
+import { formatDate } from '../../utils/formatDate';
+import { Timestamp } from 'firebase/firestore';
+import CalendarScheduler from './CalendarScheduler';
+import { Selected } from '@demark-pro/react-booking-calendar';
+import { toast } from 'sonner';
+import { useDates } from '../../hooks/useDates';
+import { Van } from '../../types/VanInterfaces';
 
 export default function OrderSummaryCard() {
   const { handleSubmit } = useFormContext<CheckOutFormData>();
   //use cart - custom hook for creating and managing cart for user
   const { cart } = useCart();
   const navigate = useNavigate();
-  const { user } = useUser();
 
+  const { selectedDates, setSelectedDates, setDialogOpen } = useDates();
+  const { user } = useUser();
+  const numberOfDays = Math.floor(
+    ((cart?.dates[1] as Timestamp).seconds - (cart?.dates[0] as Timestamp).seconds) / 86400
+  );
+  const total = cart?.van?.price ? cart.van.price * numberOfDays : 0;
+
+  async function addToCart() {
+    if (selectedDates.length === 0) {
+      toast.error('Please select a date');
+      return;
+    }
+
+    const updatedItem = updateItem('carts', cart?.id as string, {
+      dates: selectedDates,
+    });
+    setDialogOpen(false);
+    if (!updatedItem) {
+      toast.error('Something went wrong, please try again');
+    }
+  }
   //reduces the cart array to a single value - the total price of all items in the cart
-  const total = calculateTotal(cart?.items);
 
   async function onSubmit(data: CheckOutFormData) {
     //if cart was unable to load return from function
@@ -55,7 +81,7 @@ export default function OrderSummaryCard() {
       alert('Something went wrong, please try again');
       return;
     }
-
+    console.log(selectedDates);
     //add order id to users order array
     if (user) {
       const userData = await getItembyID('users', user.uid);
@@ -64,11 +90,11 @@ export default function OrderSummaryCard() {
       }
     }
     //navigate to order confirmation page passing along the order id as a param
-    updateItem('carts', cart!.id, { items: [] });
+    const deleted = await deleteItem('carts', cart.id); // empty user cart
+    console.log(deleted);
     //empty user cart
     navigate('/order-confirmation/' + orderId);
   }
-
   return (
     <div className='lg:w-1/3'>
       <Card>
@@ -77,24 +103,33 @@ export default function OrderSummaryCard() {
         </CardHeader>
         {cart && (
           <CardContent>
-            {cart.items.map((item) => (
-              <div
-                key={item.id}
-                className='flex gap-2 items-center mb-4'
-              >
-                <Avatar src={item.imageURL}>{item.name[0]}</Avatar>
-                <span>
-                  {item.name} x {item.quantity}
-                </span>
-                <RemoveItemDialog
-                  actionCallback={() => removeItem(item.id, cart)}
-                  triggerClassNames='text-sm text-gray-500 cursor-pointer underline'
-                  triggerText='Remove'
-                />
-                <span className='ml-auto'>${item.price * item.quantity}</span>
-              </div>
-            ))}
-
+            <div className='flex gap-2 items-center mb-4'>
+              <Avatar src={cart.van?.imageURL}>{cart.van?.name[0]}</Avatar>
+              <span>{cart.van?.name}</span>
+              <RemoveItemDialog
+                actionCallback={() => removeItem(cart)}
+                triggerClassNames='text-sm text-gray-500 cursor-pointer underline'
+                triggerText='Remove'
+              />
+              <span className='ml-auto'>${cart.van?.price}</span>
+            </div>
+            <div className='my-3'>
+              <span className='block'>From:</span>{' '}
+              <span className='block'>
+                {' '}
+                {formatDate(cart.dates[0] as Timestamp)} to {formatDate(cart.dates[1] as Timestamp)}
+              </span>
+              <span className='block'>({numberOfDays} days)</span>
+              <br />
+              <CalendarScheduler
+                setSelectedDates={setSelectedDates}
+                selectedDates={selectedDates as Selected[]}
+                addToCart={addToCart}
+                buttonClassName='text-gray-600 underline cursor-pointer text-sm p-0 bg-transparent hover:bg-transparent hover:underline hover:text-gray-500'
+                buttonTitle='Change Dates'
+                van={cart.van as Van}
+              />
+            </div>
             <div className='flex justify-between font-bold '>
               <span>Total</span>
               {total && (
@@ -104,14 +139,16 @@ export default function OrderSummaryCard() {
           </CardContent>
         )}
         <CardFooter>
-          <Button
-            type='submit'
-            disabled={cart?.items.length === 0}
-            onClick={handleSubmit(onSubmit)}
-            className='w-full p-3 bg-orange-500 hover:bg-orange-600 uppercase text-white font-bold'
-          >
-            Complete Purchase
-          </Button>
+          {user ? (
+            <Button
+              className='bg-orange-600 hover:bg-orange-700 text-white hover:text-white p-3 w-full'
+              onClick={handleSubmit(onSubmit)}
+            >
+              Checkout
+            </Button>
+          ) : (
+            <SignInModal triggerButtonClassName='bg-orange-600 hover:bg-orange-700 text-white hover:text-white p-3 w-full' />
+          )}
         </CardFooter>
       </Card>
     </div>

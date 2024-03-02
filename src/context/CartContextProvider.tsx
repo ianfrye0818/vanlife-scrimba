@@ -8,11 +8,13 @@ import {
   query,
   where,
 } from 'firebase/firestore'; // Assuming you have configured Firebase
-import { CartItem } from '../types/CartItemInterface';
 import { db, auth } from '../firebase/firebaseConfig';
-interface Cart {
-  items: CartItem[];
+import { Selected } from '@demark-pro/react-booking-calendar';
+import { Van } from '../types/VanInterfaces';
+export interface Cart {
+  van: Van | null;
   uid: string;
+  dates: Selected[] | Timestamp[];
   updatedAt: Timestamp;
   createdAt: Timestamp;
 }
@@ -52,7 +54,8 @@ const CartProvider = ({ children }: PropsWithChildren) => {
             setLoading(false);
           } else {
             const newCart: Cart = {
-              items: [],
+              dates: [],
+              van: null,
               uid: uid,
               updatedAt: Timestamp.now(),
               createdAt: Timestamp.now(),

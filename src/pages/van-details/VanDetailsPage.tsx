@@ -14,7 +14,6 @@ import ReviewVanForm from '../../components/ReviewVanForm';
 import { StarIcon } from 'lucide-react';
 import { ImageCarousel } from '../../components/ui/imageCarousel';
 import Reviews from '../../components/Reviews';
-import SignInModal from '../../components/SignInModal';
 
 //custom imports
 import { getItembyID, updateItem } from '../../firebase/firebaseDatabase';
@@ -24,15 +23,19 @@ import { useUser } from '../../hooks/useUser';
 
 //type imports
 import { Van } from '../../types/VanInterfaces';
-import { CartItem } from '../../types/CartItemInterface';
 import { useCart } from '../../hooks/useCart';
+import CalendarScheduler from '../../components/ui/CalendarScheduler';
+import { Timestamp } from 'firebase/firestore';
+import { useDates } from '../../hooks/useDates';
 
 export default function VanDetails() {
   const [open, setOpen] = useState(false);
-  const { isSignedIn, user } = useUser();
+  const { selectedDates, setSelectedDates } = useDates();
+  const { user } = useUser();
   const { id } = useParams();
   const navigate = useNavigate();
   const { cart } = useCart();
+  const { setDialogOpen } = useDates();
 
   //query db and get van by id
   const {
@@ -47,73 +50,27 @@ export default function VanDetails() {
     },
   });
 
-  //check if items are already in teh cart
-  function checkIfItemIsInCart() {
-    if (cart && van) {
-      const item = cart.items.find((item: CartItem) => item.id === van.id);
-      if (item) return item;
-      return null;
-    }
-    return null;
-  }
-
-  //add items to teh cart
+  //add to cart function
   async function addToCart() {
-    const itemInCart = checkIfItemIsInCart();
-    if (van && isSignedIn && cart) {
-      //if item is already in cart add 1 to quanity
-      if (itemInCart) {
-        const itemUpdated = await updateItem('carts', cart.id, {
-          items: cart.items.map((item: CartItem) =>
-            item.id === van.id ? { ...item, quantity: item.quantity + 1 } : item
-          ),
-        });
-        if (itemUpdated) {
-          toast('Item Added to Cart', {
-            description: `${van.name} was added to your cart.`,
-            action: {
-              label: 'Go to Cart',
-              onClick: () => {
-                navigate('/cart');
-              },
-            },
-          });
-        } else {
-          toast('Error', {
-            description: 'Something went wrong, please try again',
-          });
-        }
-      }
-      //if item is not in cart add item to cart and set quantity to 1
-      else {
-        const itemAdded = await updateItem('carts', cart.id, {
-          items: [...cart.items, { ...van, quantity: 1 }],
-        });
-        if (itemAdded) {
-          toast('Item Added to Cart', {
-            description: `${van.name} was added to your cart.`,
-            action: {
-              label: 'Go to Cart',
-              onClick: () => {
-                navigate('/cart');
-              },
-            },
-          });
-        } else {
-          toast('Error', {
-            description: 'Something went wrong, please try again',
-          });
-        }
-      }
-    } else {
-      toast('Oops!', {
-        duration: 3000,
-        description: (
-          <div className='flex gap-2 items-center'>
-            Please sign in to rent this van. <SignInModal />
-          </div>
-        ),
+    console.log('clicked');
+    if (selectedDates.length === 0) {
+      toast.error('Please select a date');
+      return;
+    }
+
+    if (cart && van) {
+      const updatedVan = await updateItem('carts', cart.id, {
+        van,
+        dates: selectedDates,
+        uid: user?.uid,
+        updatedAt: Timestamp.now(),
       });
+      if (updatedVan) {
+        setDialogOpen(false);
+        navigate('/cart');
+      } else {
+        toast('Something went wrong. Please try again');
+      }
     }
   }
 
@@ -174,12 +131,16 @@ export default function VanDetails() {
                   </button>
                 </Link>
               ) : (
-                <button
-                  onClick={addToCart}
-                  className='bg-green-500 text-white p-3 rounded-md hover:bg-green-600 transition-all duration-300 ease-in-out w-40 text-center cursor-pointer'
-                >
-                  Rent this van
-                </button>
+                <div>
+                  <CalendarScheduler
+                    setSelectedDates={setSelectedDates}
+                    selectedDates={selectedDates}
+                    addToCart={addToCart}
+                    buttonClassName='p-2 bg-green-600 hover:bg-green-700 text-white hover:text-white'
+                    buttonTitle='Rent this van'
+                    van={van}
+                  />
+                </div>
               )}
 
               {van.uid !== user?.uid && (

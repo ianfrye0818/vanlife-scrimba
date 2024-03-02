@@ -1,3 +1,6 @@
+import { Reserved } from '@demark-pro/react-booking-calendar';
+import { Timestamp } from 'firebase/firestore';
+
 export type Van = {
   id: string;
   name: string;
@@ -10,6 +13,13 @@ export type Van = {
   available: boolean;
   reviews: Review[];
   uid: string;
+  reserved: Reserved[] | TimeStampReserved[] | undefined;
+};
+
+export type TimeStampReserved = {
+  startDate: Timestamp;
+  endDate: Timestamp;
+  color?: string;
 };
 
 export type customMetaData = {

@@ -6,7 +6,7 @@ import NavLink from './NavLinks';
 import { logoutUser } from '../../../../firebase/firebaseAuth';
 import { useContext } from 'react';
 import { AuthContext } from '../../../../context/AuthContextProvider';
-import CartIcon from './CartDrawer';
+// import CartIcon from './CartDrawer';
 import SignInModal from '../../../SignInModal';
 
 export default function DesktopNavBar() {
@@ -56,7 +56,7 @@ export default function DesktopNavBar() {
           />
         ))}
         <div className='auth-links'>{authLinks}</div>
-        <CartIcon />
+        {/* <CartIcon /> */}
       </ul>
     </nav>
   );

@@ -17,8 +17,10 @@ import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getItembyID } from '../../firebase/firebaseDatabase';
 import ReactLoading from 'react-loading';
-import { Cart } from '../../types/CartItemInterface';
 import { Avatar } from '@mui/material';
+import { Cart } from '../../context/CartContextProvider';
+import { Timestamp } from 'firebase/firestore';
+import { formatDate } from '../../utils/formatDate';
 
 type Order = {
   id: string;
@@ -75,6 +77,12 @@ export default function OrderConfirmationPage() {
     return null;
   }
 
+  const numberOfDays = Math.floor(
+    ((order.cart?.dates[1] as Timestamp).seconds - (order.cart?.dates[0] as Timestamp).seconds) /
+      86400
+  );
+  const vanTotal = order.cart?.van?.price ? order.cart.van.price * numberOfDays : 0;
+
   return (
     <Layout>
       <div className='h-screen flex flex-col container'>
@@ -90,24 +98,28 @@ export default function OrderConfirmationPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
+                      <TableHead></TableHead>
                       <TableHead>Item</TableHead>
-                      <TableHead>Quantity</TableHead>
-                      <TableHead className='text-right'>Price</TableHead>
+                      <TableHead className='text-right'># of Days</TableHead>
+                      <TableHead className='text-right'>Subtotal</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {order.cart.items.map((item) => {
-                      return (
-                        <TableRow key={item.id}>
-                          <TableCell>
-                            <Avatar src={item.imageURL}>{item.name[0]}</Avatar>
-                          </TableCell>
-                          <TableCell>{item.name}</TableCell>
-                          <TableCell>{item.quantity}</TableCell>
-                          <TableCell className='text-right'>{item.price * item.quantity}</TableCell>
-                        </TableRow>
-                      );
-                    })}
+                    <TableRow>
+                      <TableCell>
+                        <Avatar src={order.cart.van?.imageURL}>{order.cart.van?.name}</Avatar>
+                      </TableCell>
+                      <TableCell>{order.cart.van?.name}</TableCell>
+                      <TableCell className='text-center'>{numberOfDays}</TableCell>
+                      <TableCell className='text-right'>${vanTotal}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Dates:</TableCell>
+                      <TableCell colSpan={2}>
+                        {formatDate(order.cart.dates[0] as Timestamp)} to{' '}
+                        {formatDate(order.cart.dates[1] as Timestamp)}
+                      </TableCell>
+                    </TableRow>
                   </TableBody>
                 </Table>
               </CardContent>

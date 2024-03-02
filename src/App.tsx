@@ -23,6 +23,7 @@ import HostVansPage from './pages/host/vans/HostVansPage';
 import EditAVan from './pages/host/vans/edit-a-van/EditAVan';
 import AddAVan from './pages/host/vans/add-a-van/AddAVan';
 import SignInPage from './pages/sign-in/SignIn';
+import DateContextProvider from './context/DateContextProvider';
 
 //crate react query client to fetch data and handle async state
 const queryClient = new QueryClient();
@@ -59,9 +60,11 @@ export default function App() {
     <AuthContextProvider>
       <QueryClientProvider client={queryClient}>
         <CartContextProvider>
-          <RouterProvider router={router} />
-          {/* add toast to any pages - can set custom message for toast within page */}
-          <Toaster />
+          <DateContextProvider>
+            <RouterProvider router={router} />
+            {/* add toast to any pages - can set custom message for toast within page */}
+            <Toaster />
+          </DateContextProvider>
         </CartContextProvider>
       </QueryClientProvider>
     </AuthContextProvider>

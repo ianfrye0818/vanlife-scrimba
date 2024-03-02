@@ -15,8 +15,8 @@ export default function Component() {
 
   return (
     <Layout>
-      <main className='container'>
-        {cart && cart?.items.length > 0 ? (
+      <main className='container h-full'>
+        {cart && cart.van ? (
           <FormProvider {...methods}>
             <div className='flex flex-col lg:flex-row gap-6 lg:gap-12 mb-10'>
               <CheckOutForm />
