@@ -1,3 +1,9 @@
+import HostPageLayout from '../HostPageLayout';
+
 export default function IncomePage() {
-  return <div>IncomePage</div>;
+  return (
+    <HostPageLayout>
+      <div>Income</div>
+    </HostPageLayout>
+  );
 }

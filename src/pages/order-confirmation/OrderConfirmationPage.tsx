@@ -18,26 +18,10 @@ import { useQuery } from '@tanstack/react-query';
 import { getItembyID } from '../../firebase/firebaseDatabase';
 import ReactLoading from 'react-loading';
 import { Avatar } from '@mui/material';
-import { Cart } from '../../context/CartContextProvider';
-import { Timestamp } from 'firebase/firestore';
 import { formatDate } from '../../utils/formatDate';
-
-type Order = {
-  id: string;
-  cardName: string;
-  cardNumber: string;
-  expiryDate: string;
-  city: string;
-  cvc: string;
-  email: string;
-  name: string;
-  state: string;
-  street: string;
-  total: number;
-  user?: string;
-  zip: string;
-  cart: Cart;
-};
+import { Order } from '../../types/Order';
+import { calculateNumberOfDays } from '../../utils/calculateNumberOfDays';
+import { Timestamp } from 'firebase/firestore';
 
 export default function OrderConfirmationPage() {
   const { orderId } = useParams();
@@ -77,18 +61,18 @@ export default function OrderConfirmationPage() {
     return null;
   }
 
-  const numberOfDays = Math.floor(
-    ((order.cart?.dates[1] as Timestamp).seconds - (order.cart?.dates[0] as Timestamp).seconds) /
-      86400
+  const numberOfDays = calculateNumberOfDays(
+    order.datesReserved[0] as Timestamp,
+    order.datesReserved[1] as Timestamp
   );
-  const vanTotal = order.cart?.van?.price ? order.cart.van.price * numberOfDays : 0;
+  const vanTotal = order.total;
 
   return (
     <Layout>
       <div className='h-screen flex flex-col container'>
         <main className='flex-1 p-6 md:p-12'>
           <h1 className='text-2xl font-semibold mb-2'>Order Confirmation</h1>
-          <h2 className='text-xl text-gray-500 mb-6'>OrderID: {order.id}</h2>
+          <h2 className='text-xl text-gray-500 mb-6'>OrderID: {orderId}</h2>
           <div className='grid gap-6 md:grid-cols-2'>
             <Card>
               <CardHeader>
@@ -107,17 +91,17 @@ export default function OrderConfirmationPage() {
                   <TableBody>
                     <TableRow>
                       <TableCell>
-                        <Avatar src={order.cart.van?.imageURL}>{order.cart.van?.name}</Avatar>
+                        <Avatar src={order.vanOrderd.vanImage}>{order.vanOrderd.vanName}</Avatar>
                       </TableCell>
-                      <TableCell>{order.cart.van?.name}</TableCell>
+                      <TableCell>{order.vanOrderd.vanName}</TableCell>
                       <TableCell className='text-center'>{numberOfDays}</TableCell>
                       <TableCell className='text-right'>${vanTotal}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell>Dates:</TableCell>
                       <TableCell colSpan={2}>
-                        {formatDate(order.cart.dates[0] as Timestamp)} to{' '}
-                        {formatDate(order.cart.dates[1] as Timestamp)}
+                        {formatDate(order.datesReserved[0] as Timestamp)} to{' '}
+                        {formatDate(order.datesReserved[1] as Timestamp)}
                       </TableCell>
                     </TableRow>
                   </TableBody>
@@ -133,11 +117,12 @@ export default function OrderConfirmationPage() {
               </CardHeader>
               <CardContent>
                 <p className='text-sm'>
-                  {order.name}
+                  {order.customerInfo.name}
                   <br />
-                  {order.street}
+                  {order.customerInfo.address.street}
                   <br />
-                  {order.city}, {order.state} {order.zip}
+                  {order.customerInfo.address.city}, {order.customerInfo.address.state}{' '}
+                  {order.customerInfo.address.zip}
                 </p>
               </CardContent>
             </Card>
@@ -147,9 +132,9 @@ export default function OrderConfirmationPage() {
               </CardHeader>
               <CardContent>
                 <p className='text-sm'>
-                  Visa ending in {order.cardNumber.slice(-4)}
+                  Visa ending in {order.card.number.slice(-4)}
                   <br />
-                  Expiration: {order.expiryDate}
+                  Expiration: {order.card.expiryDate}
                 </p>
               </CardContent>
             </Card>

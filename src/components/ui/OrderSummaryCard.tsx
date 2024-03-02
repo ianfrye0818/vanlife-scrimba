@@ -19,7 +19,7 @@ import { protectData } from '../../utils/protectedData';
 import { removeItem } from '../../utils/removeItem';
 
 //type imports
-import { CheckOutFormData } from '../../types/CheckOutFormData';
+// import { CheckOutFormData } from '../../types/CheckOutFormData';
 import { Selected } from '@demark-pro/react-booking-calendar';
 import { Timestamp } from 'firebase/firestore';
 import { Van } from '../../types/VanInterfaces';
@@ -31,6 +31,7 @@ import { useCart } from '../../hooks/useCart';
 import { useDates } from '../../hooks/useDates';
 import { calculateNumberOfDays } from '../../utils/calculateNumberOfDays';
 import calculateTotal from '../../utils/calculateTotal';
+import { CheckOutFormData } from '../../types/CheckOutFormData';
 
 export default function OrderSummaryCard() {
   //hooks
@@ -87,6 +88,12 @@ export default function OrderSummaryCard() {
 
     //create a new order and get order id
     const orderId = await createOrder(protectedData, cart, user.uid as string, total as number);
+
+    //add tranasaction to host suer
+    const hostData = (await getItembyID('users', cart.van?.uid as string)) as UserData;
+    await updateItem('users', cart.van?.uid as string, {
+      transactions: [...hostData.transactions, orderId],
+    });
 
     //if order id was unable to be created return from function and display error in toast
     if (!orderId) {

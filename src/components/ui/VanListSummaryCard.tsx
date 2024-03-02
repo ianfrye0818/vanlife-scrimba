@@ -19,12 +19,21 @@ export default function VanListSummaryCard({ van }: VanListSummaryCardProps) {
           <h3>{van.name}</h3>
           <p>${van.price}/day</p>
         </div>
-        <Link
-          className='text-gray-500 underline ml-auto'
-          to={`/host/vans/${van.id}/edit`}
-        >
-          Edit
-        </Link>
+        <div className='ml-auto flex gap-1'>
+          <Link
+            className='text-gray-500 underline '
+            to={`/host/vans/${van.id}/edit`}
+          >
+            Edit
+          </Link>
+          /
+          <Link
+            className='text-gray-500 underline ml-auto'
+            to={`/vans/${van.id}`}
+          >
+            View
+          </Link>
+        </div>
       </div>
     </div>
   );

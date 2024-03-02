@@ -1,27 +1,23 @@
-//library imports
-import NavLink from '../Header/ navbar/desktop-nav-bar/NavLinks';
-
-//component imports
+import { NavLink } from 'react-router-dom';
 
 export default function HostNavBar() {
-  //sub component to display the host navbar
-  const navLinks = [
+  const navlinks = [
     { path: '/host/dashboard', text: 'Dashboard' },
-    { path: '/host/income', text: 'Income' },
     { path: '/host/vans', text: 'Vans' },
+    { path: '/host/income', text: 'Income' },
   ];
 
   return (
-    <nav style={{ padding: '20px' }}>
-      <ul className='flex gap-3'>
-        {navLinks.map((link) => (
-          <NavLink
-            key={link.path}
-            path={link.path}
-            text={link.text}
-          />
-        ))}
-      </ul>
+    <nav className='flex gap-4 mb-4'>
+      {navlinks.map((link, index) => (
+        <NavLink
+          key={index}
+          to={link.path}
+          className={({ isActive }) => (isActive ? 'underline' : '')}
+        >
+          {link.text}
+        </NavLink>
+      ))}
     </nav>
   );
 }

@@ -1,4 +1,4 @@
-import { CartDB } from '../context/CartContextProvider';
+// import { CartDB } from '../context/CartContextProvider';
 
 export interface CheckOutFormData {
   cardName: string;
@@ -11,10 +11,4 @@ export interface CheckOutFormData {
   street: string;
   zip: string;
   expiryDate: string;
-}
-
-export interface Order extends CheckOutFormData {
-  cart: CartDB;
-  user: string;
-  total: number;
 }

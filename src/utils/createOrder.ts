@@ -1,5 +1,6 @@
 import { CartDB } from '../context/CartContextProvider';
 import { addItem } from '../firebase/firebaseDatabase';
+import { Order } from '../types/Order';
 import { ProtectedData } from './protectedData';
 
 export async function createOrder(
@@ -8,7 +9,7 @@ export async function createOrder(
   userId: string,
   total: number
 ) {
-  const newOrder = {
+  const newOrder: Order = {
     card: {
       name: protectedData.cardName,
       number: protectedData.cardNumber,
@@ -17,6 +18,7 @@ export async function createOrder(
     vanOrderd: {
       vanName: cart?.van?.name,
       vanId: cart?.van?.id,
+      vanImage: cart?.van?.imageURL as string,
     },
     hostid: cart.van?.uid,
     datesReserved: cart.dates,
@@ -27,11 +29,13 @@ export async function createOrder(
       address: {
         street: protectedData.street,
         city: protectedData.city,
+        state: protectedData.state,
         zip: protectedData.zip,
       },
     },
     total,
   };
   const orderId = await addItem('orders', newOrder);
+
   return orderId;
 }
