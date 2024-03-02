@@ -66,6 +66,7 @@ export default function OrderSummaryCard() {
     //protect user data such as cc info
     const protectedData = protectData(data);
 
+    //TODO: do not need all this info. break it out
     //create a new order
     const newOrder: Order = {
       ...protectedData,
@@ -81,7 +82,6 @@ export default function OrderSummaryCard() {
       alert('Something went wrong, please try again');
       return;
     }
-    console.log(selectedDates);
     //add order id to users order array
     if (user) {
       const userData = await getItembyID('users', user.uid);
@@ -89,10 +89,15 @@ export default function OrderSummaryCard() {
         await updateItem('users', user.uid, { orders: [...userData.orders, orderId] });
       }
     }
-    //navigate to order confirmation page passing along the order id as a param
-    const deleted = await deleteItem('carts', cart.id); // empty user cart
-    console.log(deleted);
+    const reserved = cart.van?.reserved ?? [];
+    await updateItem(
+      'vans',
+      cart.van?.id as string,
+      { reserved: [...reserved, { startDate: cart.dates[0], endDate: cart.dates[1] }] } as Van
+    );
     //empty user cart
+    await deleteItem('carts', cart.id); // empty user cart
+    //navigate to order confirmation page passing along the order id as a param
     navigate('/order-confirmation/' + orderId);
   }
   return (
