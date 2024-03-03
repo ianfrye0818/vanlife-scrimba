@@ -104,16 +104,16 @@ export default function EditAVan() {
 
   return (
     <Layout>
-      <div className='mt-14 lg:mt-0 md:container p-2 flex justify-between gap-3'>
+      <div className='mt-14 lg:mt-0 md:container p-2 flex flex-col md:flex-row justify-between gap-3'>
         <h1 className='text-3xl'>Edit Van: {van?.name}</h1>
         <RemoveItemDialog
           actionCallback={deleteVan}
-          triggerClassNames='text-md p-2 rounded-md bg-red-600 hover:bg-red-700 text-white cursor-pointer'
+          triggerClassNames='text-md p-2 rounded-md bg-red-600 hover:bg-red-700 text-white text-center cursor-pointer'
           triggerText='Delete Van'
         />
       </div>
 
-      <main className='h-full md:container flex flex-col md:flex-row gap-2 p-2'>
+      <main className='h-full md:container flex flex-col md:flex-row gap-2 p-2 '>
         <div className='flex-1 h-full '>
           <DragAndDropImage handleFilesUpload={handleFilesUpload}>
             <div className='grid grid-cols-3 w-full gap-3'>

@@ -7,7 +7,7 @@ export default function Dashboard() {
     <HostPageLayout>
       <div className='min-h-screen'>
         <SummaryComponent />
-        <div className='flex justify-between items-center p-3'>
+        <div className='flex flex-col md:flex-row gap-3 justify-between items-center p-3'>
           <div>
             <h2 className='4xl font-bold'>Your Listed vans</h2>
             <p className='text-sm'>Vans you have marked available will be listed below</p>
@@ -22,7 +22,7 @@ export default function Dashboard() {
             </p>
           </div>
           <Link
-            className='p-2 bg-orange-600 hover:bg-orange-700 text-white cursor-pointer'
+            className='p-2 w-full text-center md:w-auto bg-orange-600 hover:bg-orange-700 text-white cursor-pointer'
             to={'/host/vans/add'}
           >
             Add a Van

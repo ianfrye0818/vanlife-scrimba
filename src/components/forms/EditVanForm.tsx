@@ -71,7 +71,7 @@ export default function EditVanForm({
   return (
     <form
       onSubmit={handleSubmit(onSubmit as SubmitHandler<FieldValues>)}
-      className='flex-1 flex flex-col gap-3 px-3'
+      className='flex-1 flex flex-col gap-3 px-3 pb-5'
     >
       <Label htmlFor='name'>Name</Label>
       <Input

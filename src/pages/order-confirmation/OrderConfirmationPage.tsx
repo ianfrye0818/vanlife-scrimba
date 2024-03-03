@@ -69,7 +69,7 @@ export default function OrderConfirmationPage() {
 
   return (
     <Layout>
-      <div className='h-screen flex flex-col container'>
+      <div className='h-screen flex flex-col md:container mt-20 md:mt-0'>
         <main className='flex-1 p-6 md:p-12'>
           <h1 className='text-2xl font-semibold mb-2'>Order Confirmation</h1>
           <h2 className='text-xl text-gray-500 mb-6'>OrderID: {orderId}</h2>

@@ -14,6 +14,5 @@ export default function ProtectedRoutes({ children }: PropsWithChildren) {
 
   if (isLoading) return null;
   if (!isSignedIn) return null;
-
   return <div>{children}</div>;
 }

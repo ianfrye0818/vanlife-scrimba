@@ -8,7 +8,7 @@ export default function HostNavBar() {
   ];
 
   return (
-    <nav className='flex gap-4 mb-4'>
+    <nav className='flex gap-4 mb-4 px-4 md:px-0'>
       {navlinks.map((link, index) => (
         <NavLink
           key={index}

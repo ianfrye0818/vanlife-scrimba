@@ -19,7 +19,7 @@ export default function Vans() {
   const [vanFilter, setVanFilter] = useState<VanFilterEnum[]>([]);
   return (
     <Layout>
-      <div className='md:container '>
+      <div className='md:container'>
         <h1 className='w-8/12 text-3xl lg:text-6xl font-bold md:w-full p-2'>
           Explore Our Van Options
         </h1>

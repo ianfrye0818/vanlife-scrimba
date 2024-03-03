@@ -15,7 +15,7 @@ export default function Component() {
 
   return (
     <Layout>
-      <main className='container min-h-screen'>
+      <main className=' p-2 md:p-0 md:container min-h-screen mt-20 md:mt-0'>
         {cart && cart.van ? (
           <FormProvider {...methods}>
             <div className='flex flex-col lg:flex-row gap-6 lg:gap-12 mb-10'>

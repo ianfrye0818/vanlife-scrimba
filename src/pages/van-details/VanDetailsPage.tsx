@@ -117,7 +117,7 @@ export default function VanDetails() {
   return (
     <Layout>
       <main className=' p-2 md:container'>
-        <div className='underline mb-5 mt-14 pl-5'>
+        <div className='underline mb-5  pl-5'>
           <Link to='/vans'>{'<- Back to Vans'}</Link>
         </div>
         <div className=' flex flex-col gap-4 min-h-screen md:h-auto mb-5 '>
