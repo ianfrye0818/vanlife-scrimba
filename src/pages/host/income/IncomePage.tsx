@@ -18,11 +18,7 @@ import BarChart from '../../../components/ui/barchart';
 export default function IncomePage() {
   const { user } = useUser();
 
-  const {
-    data: transactions,
-    isLoading,
-    error,
-  } = useQuery({
+  const { data: transactions, isLoading } = useQuery({
     queryKey: ['transactions', user?.uid],
     queryFn: async () => {
       const response = (await getItembyID('users', user?.uid as string)) as UserData;
@@ -34,6 +30,7 @@ export default function IncomePage() {
       return transactionOrders;
     },
     enabled: user !== null && user !== undefined,
+    retry: 1,
   });
 
   // while loading show the "bubble" loading component from react-loading
@@ -51,13 +48,16 @@ export default function IncomePage() {
   }
 
   // if there is an error, show the error message
-  if (error) {
-    return <div>Something went wrong</div>;
-  }
 
   //if data does not exisist return null and redirec to 404 not found page
   if (transactions === null || transactions === undefined || transactions.length === 0) {
-    return <div>No Transactions Found</div>;
+    return (
+      <HostPageLayout>
+        <main className='min-h-[calc(100vh-200px)] flex flex-col justify-center items-center'>
+          No Transactions Found
+        </main>
+      </HostPageLayout>
+    );
   }
 
   return (
