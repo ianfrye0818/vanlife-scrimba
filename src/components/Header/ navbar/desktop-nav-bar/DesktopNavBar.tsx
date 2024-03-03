@@ -47,7 +47,6 @@ export default function DesktopNavBar() {
         >
           #vanlife
         </Link>
-        {user && <span>{user.email}</span>}
       </div>
       <ul className='flex gap-6 mr-5 ml-auto list-none items-center'>
         {navLinks.map((link) => (

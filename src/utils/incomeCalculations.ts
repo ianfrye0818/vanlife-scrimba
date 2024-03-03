@@ -69,19 +69,21 @@ export default class IncomeCalculations {
         transaction.datesReserved[1] as Timestamp
       );
 
-      if (!acc[vanName]) {
-        acc[vanName] = {
+      const existingVanIndex = acc.findIndex((item) => item.vanName === vanName);
+      if (existingVanIndex === -1) {
+        acc.push({
+          vanName,
           numSold: 1,
           totalSales: transaction.total,
           totalNights: nightsRented,
-        };
+        });
       } else {
-        acc[vanName].numSold++;
-        acc[vanName].totalSales += transaction.total;
-        acc[vanName].totalNights += nightsRented;
+        acc[existingVanIndex].numSold++;
+        acc[existingVanIndex].totalSales += transaction.total;
+        acc[existingVanIndex].totalNights += nightsRented;
       }
       return acc;
-    }, {} as { [key: string]: { numSold: number; totalSales: number; totalNights: number } });
+    }, [] as { vanName: string; numSold: number; totalSales: number; totalNights: number }[]);
   }
 
   //sold by van last 30 days
@@ -94,108 +96,21 @@ export default class IncomeCalculations {
         transaction.datesReserved[1] as Timestamp
       );
 
-      if (!acc[vanName]) {
-        acc[vanName] = {
+      const existingVanIndex = acc.findIndex((item) => item.vanName === vanName);
+      if (existingVanIndex === -1) {
+        acc.push({
+          vanName,
           numSold: 1,
           totalSales: transaction.total,
           totalNights: nightsRented,
-        };
+        });
       } else {
-        acc[vanName].numSold++;
-        acc[vanName].totalSales += transaction.total;
-        acc[vanName].totalNights += nightsRented;
+        acc[existingVanIndex].numSold++;
+        acc[existingVanIndex].totalSales += transaction.total;
+        acc[existingVanIndex].totalNights += nightsRented;
       }
       return acc;
-    }, {} as { [key: string]: { numSold: number; totalSales: number; totalNights: number } });
-  }
-
-  //percentages
-  //percentage of total sales by van
-  static getPercentageOfTotalSalesByVan(transactions: Order[]) {
-    const vansSoldByVan = this.getVansSoldByVan(transactions);
-    const totalSales = this.getTotalSales(transactions);
-    return Object.keys(vansSoldByVan).reduce((acc, vanName) => {
-      acc[vanName] = (vansSoldByVan[vanName].totalSales / totalSales) * 100;
-      return acc;
-    }, {} as { [key: string]: number });
-  }
-
-  //percentage of total sales by van last 30 days
-  static getPercentageOfTotalSalesByVanLastThirtyDays(transactions: Order[]) {
-    const vansSoldByVan = this.getVansSoldByVanLastThirtyDays(transactions);
-    const totalSales = this.getTotalSalesLastThirtyDays(transactions);
-    return Object.keys(vansSoldByVan).reduce((acc, vanName) => {
-      acc[vanName] = (vansSoldByVan[vanName].totalSales / totalSales) * 100;
-      return acc;
-    }, {} as { [key: string]: number });
-  }
-
-  //percentage of total nights by van
-  static getPercentageOfTotalNightsByVan(transactions: Order[]) {
-    const vansSoldByVan = this.getVansSoldByVan(transactions);
-    const totalNights = this.getTotalNightsSold(transactions);
-    return Object.keys(vansSoldByVan).reduce((acc, vanName) => {
-      acc[vanName] = (vansSoldByVan[vanName].totalNights / totalNights) * 100;
-      return acc;
-    }, {} as { [key: string]: number });
-  }
-
-  //percentage of total nights by van last 30 days
-  static getPercentageOfTotalNightsByVanLastThirtyDays(transactions: Order[]) {
-    const vansSoldByVan = this.getVansSoldByVanLastThirtyDays(transactions);
-    const totalNights = this.getTotalNightsSoldLastThirtyDays(transactions);
-    return Object.keys(vansSoldByVan).reduce((acc, vanName) => {
-      acc[vanName] = (vansSoldByVan[vanName].totalNights / totalNights) * 100;
-      return acc;
-    }, {} as { [key: string]: number });
-  }
-
-  //percentage increase in total
-  static getPercentageIncreaseInTotal(transactions: Order[]) {
-    const totalSales = this.getTotalSales(transactions);
-    const totalNights = this.getTotalNightsSold(transactions);
-    const totalSalesLastThirtyDays = this.getTotalSalesLastThirtyDays(transactions);
-    const totalNightsLastThirtyDays = this.getTotalNightsSoldLastThirtyDays(transactions);
-    return {
-      sales: ((totalSales - totalSalesLastThirtyDays) / totalSalesLastThirtyDays) * 100,
-      nights: ((totalNights - totalNightsLastThirtyDays) / totalNightsLastThirtyDays) * 100,
-    };
-  }
-
-  //percentage increase in total sales
-  static getPercentageIncreaseInTotalSales(transactions: Order[]) {
-    const totalSales = this.getTotalSales(transactions);
-    const totalSalesLastThirtyDays = this.getTotalSalesLastThirtyDays(transactions);
-    return ((totalSales - totalSalesLastThirtyDays) / totalSalesLastThirtyDays) * 100;
-  }
-
-  //averages
-  //average sales per transaction
-  static getAverageSalesPerTransaction(transactions: Order[]) {
-    return this.getTotalSales(transactions) / transactions.length;
-  }
-
-  //average nights rented per transaction
-  static getAverageNightsRentedPerTransaction(transactions: Order[]) {
-    return this.getTotalNightsSold(transactions) / transactions.length;
-  }
-
-  //average sales per van
-  static getAverageSalesPerVan(transactions: Order[]) {
-    const vansSoldByVan = this.getVansSoldByVan(transactions);
-    return Object.keys(vansSoldByVan).reduce((acc, vanName) => {
-      acc[vanName] = vansSoldByVan[vanName].totalSales / vansSoldByVan[vanName].numSold;
-      return acc;
-    }, {} as { [key: string]: number });
-  }
-
-  //average nights rented per van
-  static getAverageNightsRentedPerVan(transactions: Order[]) {
-    const vansSoldByVan = this.getVansSoldByVan(transactions);
-    return Object.keys(vansSoldByVan).reduce((acc, vanName) => {
-      acc[vanName] = vansSoldByVan[vanName].totalNights / vansSoldByVan[vanName].numSold;
-      return acc;
-    }, {} as { [key: string]: number });
+    }, [] as { vanName: string; numSold: number; totalSales: number; totalNights: number }[]);
   }
 
   //total customers

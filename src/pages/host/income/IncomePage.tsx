@@ -5,7 +5,16 @@ import { useUser } from '../../../hooks/useUser';
 import { UserData } from '../../../types/UserData';
 import { Order } from '../../../types/Order';
 import ReactLoading from 'react-loading';
+import {
+  CardTitle,
+  CardDescription,
+  CardHeader,
+  CardContent,
+  Card,
+} from '../../../components/ui/card';
+
 import IncomeCalculations from '../../../utils/incomeCalculations';
+import BarChart from '../../../components/ui/barchart';
 export default function IncomePage() {
   const { user } = useUser();
 
@@ -51,27 +60,105 @@ export default function IncomePage() {
     return <div>No Transactions Found</div>;
   }
 
-  const totalSales = IncomeCalculations.getTotalSales(transactions);
-  console.log(totalSales);
-  const totalVansSole = IncomeCalculations.getNumberOfVansSold(transactions);
-  console.log(totalVansSole);
-
-  const totalNightsSold = IncomeCalculations.getTotalNightsSold(transactions);
-  console.log(totalNightsSold);
-
-  const transactionsLastThirtyDays = IncomeCalculations.getTransactionsLastThirtyDays(transactions);
-  console.log(transactionsLastThirtyDays);
-
-  const numberOfVansSoldLastThirtyDays =
-    IncomeCalculations.getNumberOfVansSoldLastThirtyDays(transactions);
-  console.log(numberOfVansSoldLastThirtyDays);
-
-  const getTotalNightsSoldLastThirtyDays =
-    IncomeCalculations.getTotalNightsSoldLastThirtyDays(transactions);
-  console.log(getTotalNightsSoldLastThirtyDays);
   return (
     <HostPageLayout>
-      <div>Income</div>
+      <div className='flex flex-col min-h-screen'>
+        <main className='grid flex-1 min-h-[calc(100vh_-_theme(spacing.14))] gap-4 p-4 md:gap-8 md:p-10'>
+          <div className='grid gap-4 md:grid-cols-2'>
+            <Card>
+              <CardHeader>
+                <CardTitle>Total Revenue</CardTitle>
+              </CardHeader>
+              <CardContent className='flex items-center justify-center'>
+                <div className='text-4xl font-bold'>
+                  ${IncomeCalculations.getTotalSales(transactions)}
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Total Revenue Last 30 Days</CardTitle>
+              </CardHeader>
+              <CardContent className='flex items-center justify-center'>
+                <div className='text-4xl font-bold'>
+                  ${IncomeCalculations.getTotalSalesLastThirtyDays(transactions)}
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Total Vans Rented</CardTitle>
+              </CardHeader>
+              <CardContent className='flex items-center justify-center'>
+                <div className='text-4xl font-bold'>
+                  {IncomeCalculations.getNumberOfVansSold(transactions)}
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Total Vans Rented Last 30 Days</CardTitle>
+              </CardHeader>
+              <CardContent className='flex items-center justify-center'>
+                <div className='text-4xl font-bold'>
+                  {IncomeCalculations.getNumberOfVansSoldLastThirtyDays(transactions)}
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Total Nights</CardTitle>
+                <CardDescription>Total nights stayed in all vans</CardDescription>
+              </CardHeader>
+              <CardContent className='flex items-center justify-center'>
+                <div className='text-4xl font-bold'>
+                  {IncomeCalculations.getTotalNightsSold(transactions)}
+                </div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Nights in the Last 30 Days</CardTitle>
+                <CardDescription>Total nights stayed in the last 30 days</CardDescription>
+              </CardHeader>
+              <CardContent className='flex items-center justify-center'>
+                <div className='text-4xl font-bold'>
+                  {IncomeCalculations.getTotalNightsSoldLastThirtyDays(transactions)}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          <div className='grid gap-4 md:grid-cols-2'>
+            <Card>
+              <CardHeader>
+                <CardTitle>Sales by Van</CardTitle>
+                <CardDescription>Visual representation of sales by van</CardDescription>
+              </CardHeader>
+              <CardContent className='flex items-center justify-center'>
+                <BarChart
+                  className='w-full aspect-[1.5]'
+                  transactions={IncomeCalculations.getVansSoldByVan(transactions)}
+                />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Nights by Van</CardTitle>
+                <CardDescription>
+                  Visual representation of sales by van in the last 30 days
+                </CardDescription>
+              </CardHeader>
+              <CardContent className='flex items-center justify-center'>
+                <BarChart
+                  className='w-full aspect-[1.5]'
+                  transactions={IncomeCalculations.getVansSoldByVanLastThirtyDays(transactions)}
+                />
+              </CardContent>
+            </Card>
+          </div>
+        </main>
+      </div>
     </HostPageLayout>
   );
 }

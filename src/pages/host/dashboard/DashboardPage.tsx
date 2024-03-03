@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 export default function Dashboard() {
   return (
     <HostPageLayout>
-      <div className='h-full'>
+      <div className='min-h-screen'>
         <SummaryComponent />
         <div className='flex justify-between items-center p-3'>
           <div>
