@@ -87,9 +87,19 @@ export default function OrderSummaryCard() {
 
     //add tranasaction to host suer
     const hostData = (await getItembyID('users', cart.van?.uid as string)) as UserData;
-    await updateItem('users', cart.van?.uid as string, {
-      transactions: [...hostData.transactions, orderId],
-    });
+    if (
+      hostData.transactions === undefined ||
+      hostData.transactions === null ||
+      hostData.transactions.length === 0
+    ) {
+      await updateItem('users', cart.van?.uid as string, {
+        transactions: [orderId],
+      });
+    } else {
+      await updateItem('users', cart.van?.uid as string, {
+        transactions: [...hostData.transactions, orderId],
+      });
+    }
 
     //if order id was unable to be created return from function and display error in toast
     if (!orderId) {
