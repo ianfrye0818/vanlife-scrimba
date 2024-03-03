@@ -52,7 +52,11 @@ export default function Vanslist() {
 
   // if there is an error, show the error message
   if (error) {
-    return <div>Something went wrong</div>;
+    return (
+      <div className='min-h-screen flex flex-col justify-center items-center text-3xl'>
+        No vans Found
+      </div>
+    );
   }
 
   //if data does not exisist return null and redirec to 404 not found page
