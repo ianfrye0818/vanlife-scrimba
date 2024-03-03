@@ -99,7 +99,12 @@ export default function OrderSummaryCard() {
 
     //update user data to show that they have a new order
     const userData = (await getItembyID('users', user.uid)) as UserData;
-    await updateItem('users', user.uid, { orders: [...userData.orders, orderId] });
+    console.log(userData);
+    if (userData.orders === undefined || userData.orders === null || userData.orders.length === 0) {
+      await updateItem('users', user.uid, { orders: [orderId] });
+    } else {
+      await updateItem('users', user.uid, { orders: [...userData.orders, orderId] });
+    }
 
     //update the van to show that the dates are reserved
     if (reservedDates !== undefined && reservedDates.length !== 0) {
