@@ -1,5 +1,5 @@
 //library imporrts
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 //component imports
 import NavLink from './NavLinks';
@@ -10,6 +10,7 @@ import { AuthContext } from '../../../../context/AuthContextProvider';
 import SignInModal from '../../../SignInModal';
 
 export default function DesktopNavBar() {
+  const navigate = useNavigate();
   const navLinks = [
     { path: '/', text: 'Home' },
     { path: '/about', text: 'About' },
@@ -27,13 +28,15 @@ export default function DesktopNavBar() {
       />
       <button
         className='p-2  bg-orange-500 text-gray-100 rounded-md'
-        onClick={() => logoutUser()}
+        onClick={() => {
+          logoutUser().then(() => navigate('/'));
+        }}
       >
         Sign Out
       </button>
     </div>
   ) : (
-    <SignInModal />
+    <SignInModal triggerButtonClassName='p-2 bg-orange-600 hover:bg-orange700 text-white hover:text-white' />
   );
   return (
     <nav className='hidden lg:flex p-3 min-h-28 items-center'>

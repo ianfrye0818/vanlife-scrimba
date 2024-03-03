@@ -7,7 +7,7 @@ export type Order = {
     number: string;
     expiryDate: string;
   };
-  vanOrderd: {
+  vanOrdered: {
     vanName?: string;
     vanId?: string;
     vanImage: string;
@@ -26,4 +26,5 @@ export type Order = {
     };
   };
   total: number;
+  createdAt: Timestamp;
 };

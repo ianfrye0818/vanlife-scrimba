@@ -113,7 +113,7 @@ export default function VanDetails() {
     navigate('/not-found');
     return null;
   }
-
+  console.log(van.id, user?.uid);
   return (
     <Layout>
       <main className=' p-2 md:container'>

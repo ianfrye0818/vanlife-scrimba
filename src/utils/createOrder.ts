@@ -1,3 +1,4 @@
+import { Timestamp } from 'firebase/firestore';
 import { CartDB } from '../context/CartContextProvider';
 import { addItem } from '../firebase/firebaseDatabase';
 import { Order } from '../types/Order';
@@ -15,7 +16,7 @@ export async function createOrder(
       number: protectedData.cardNumber,
       expiryDate: protectedData.expiryDate,
     },
-    vanOrderd: {
+    vanOrdered: {
       vanName: cart?.van?.name,
       vanId: cart?.van?.id,
       vanImage: cart?.van?.imageURL as string,
@@ -34,6 +35,7 @@ export async function createOrder(
       },
     },
     total,
+    createdAt: Timestamp.now(),
   };
   const orderId = await addItem('orders', newOrder);
 

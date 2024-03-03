@@ -11,7 +11,6 @@ import { convertTimeStampToReserved } from '../../utils/convertTimeStampToReserv
 import { Dialog, DialogContent, DialogFooter, DialogTrigger } from './dialog';
 import { Button } from './button';
 import { toast } from 'sonner';
-import ReactLoading from 'react-loading';
 
 //type imports
 import { Reserved, Selected } from '@demark-pro/react-booking-calendar';
@@ -43,20 +42,6 @@ export default function CalendarScheduler({
   useEffect(() => {
     setSelectedDates([]);
   }, [dialogOpen]);
-
-  //if the van is still loading, return a loading message
-  if (van.reserved === undefined) {
-    return (
-      <div className='h-screen flex items-center justify-center'>
-        <ReactLoading
-          type='bubbles'
-          color='green'
-          height={300}
-          width={375}
-        />
-      </div>
-    );
-  }
 
   //global reserv variable
   const reserved = convertTimeStampToReserved(van);

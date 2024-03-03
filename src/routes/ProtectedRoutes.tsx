@@ -8,7 +8,7 @@ export default function ProtectedRoutes({ children }: PropsWithChildren) {
 
   useEffect(() => {
     if (!isLoading && !isSignedIn) {
-      navigate('/sign-in');
+      navigate('/signin');
     }
   }, [isSignedIn, isLoading, navigate]);
 

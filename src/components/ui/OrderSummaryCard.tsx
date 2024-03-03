@@ -12,7 +12,7 @@ import CalendarScheduler from './CalendarScheduler';
 import { toast } from 'sonner';
 
 //custom imports
-import { deleteItem, getItembyID, updateItem } from '../../firebase/firebaseDatabase';
+import { getItembyID, updateItem } from '../../firebase/firebaseDatabase';
 import { formatDate } from '../../utils/formatDate';
 import { createOrder } from '../../utils/createOrder';
 import { protectData } from '../../utils/protectedData';
@@ -78,10 +78,6 @@ export default function OrderSummaryCard() {
       return;
     }
     const reservedDates = cart.van.reserved;
-    if (reservedDates === undefined) {
-      toast.error('Error processing dates, please try again later');
-      return;
-    }
 
     //protect user data such as cc info
     const protectedData = protectData(data);
@@ -106,12 +102,18 @@ export default function OrderSummaryCard() {
     await updateItem('users', user.uid, { orders: [...userData.orders, orderId] });
 
     //update the van to show that the dates are reserved
-    await updateItem('vans', cart.van.id, {
-      reserved: [...reservedDates, { startDate: cart.dates[0], endDate: cart.dates[1] }],
-    });
+    if (reservedDates !== undefined && reservedDates.length !== 0) {
+      await updateItem('vans', cart.van.id, {
+        reserved: [...reservedDates, { startDate: cart.dates[0], endDate: cart.dates[1] }],
+      });
+    } else {
+      await updateItem('vans', cart.van.id, {
+        reserved: [{ startDate: cart.dates[0], endDate: cart.dates[1] }],
+      });
+    }
 
     //empty user cart by deleteing cart fromn DB
-    await deleteItem('carts', cart.id);
+    await updateItem('carts', cart.id, { van: null, dates: [] });
 
     //navigate to order confirmation page passing along the order id as a param
     navigate('/order-confirmation/' + orderId);

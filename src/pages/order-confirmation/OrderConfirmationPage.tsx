@@ -91,9 +91,9 @@ export default function OrderConfirmationPage() {
                   <TableBody>
                     <TableRow>
                       <TableCell>
-                        <Avatar src={order.vanOrderd.vanImage}>{order.vanOrderd.vanName}</Avatar>
+                        <Avatar src={order.vanOrdered.vanImage}>{order.vanOrdered.vanName}</Avatar>
                       </TableCell>
-                      <TableCell>{order.vanOrderd.vanName}</TableCell>
+                      <TableCell>{order.vanOrdered.vanName}</TableCell>
                       <TableCell className='text-center'>{numberOfDays}</TableCell>
                       <TableCell className='text-right'>${vanTotal}</TableCell>
                     </TableRow>

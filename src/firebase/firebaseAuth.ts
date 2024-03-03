@@ -22,7 +22,6 @@ async function checkAndAddUser(email: string, uid: string) {
       name: '',
       uid,
       email: email,
-      hostId: '',
       hostVans: [],
       transactions: [],
       orders: [],
@@ -47,6 +46,7 @@ async function createUser(email: string, password: string) {
 async function signInUser(email: string, password: string) {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    await checkAndAddUser(email, userCredential.user.uid);
     return userCredential.user;
   } catch (error) {
     console.error(error);

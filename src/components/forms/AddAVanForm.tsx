@@ -64,6 +64,7 @@ export default function AddAVanForm({
     const newVan = {
       ...submitData,
       reviews: [],
+      reserved: [],
       imageURL: defaultImage,
       uid: user?.uid || '',
       updatedAt: Timestamp.now(),
