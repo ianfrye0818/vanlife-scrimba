@@ -70,33 +70,35 @@ export default function Vanslist() {
       : vans;
 
   return (
-    <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-col-4 gap-5 p-0 w-full max-w-5xl my-16 mx-auto'>
-      {filteredVans.map((van, index) => (
-        <Link
-          to={`/vans/${van.id}`}
-          key={index}
-        >
-          <div className='p-5 rounded-xl flex flex-col justify-between gap-3 h-full md:border-1 md:border'>
-            <img
-              className='w-full h-full md:max-h-[300px] sm:object-contain  bg-cover rounded-xl'
-              src={van.imageURL}
-              alt={van.name}
-            />
-            <div className='flex justify-between items-center'>
-              <h2>{van.name}</h2>
-              <div className='flex flex-col justify-center items-end text-xl'>
-                <span>${van.price}</span>
-                <span className='text-lg'>/day</span>
+    <main className='min-h-screen'>
+      <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-col-4 gap-5 p-0 w-full max-w-5xl my-16 mx-auto'>
+        {filteredVans.map((van, index) => (
+          <Link
+            to={`/vans/${van.id}`}
+            key={index}
+          >
+            <div className='p-5 rounded-xl flex flex-col justify-between gap-3 h-full md:border-1 md:border'>
+              <img
+                className='w-full h-full md:max-h-[300px] sm:object-contain  bg-cover rounded-xl'
+                src={van.imageURL}
+                alt={van.name}
+              />
+              <div className='flex justify-between items-center'>
+                <h2>{van.name}</h2>
+                <div className='flex flex-col justify-center items-end text-xl'>
+                  <span>${van.price}</span>
+                  <span className='text-lg'>/day</span>
+                </div>
+              </div>
+              <div
+                className={`p-3 text-[#ffead0] inline max-w-28 text-center rounded-xl text-xl ${van.type}`}
+              >
+                {van.type}
               </div>
             </div>
-            <div
-              className={`p-3 text-[#ffead0] inline max-w-28 text-center rounded-xl text-xl ${van.type}`}
-            >
-              {van.type}
-            </div>
-          </div>
-        </Link>
-      ))}
-    </div>
+          </Link>
+        ))}
+      </div>
+    </main>
   );
 }

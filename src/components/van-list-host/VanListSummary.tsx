@@ -44,7 +44,7 @@ export default function VanListSummary({ isListed = false }: VanListSummaryProps
   if (isListed) {
     const listedVans = vans.filter((van) => van.available === true);
     return (
-      <div className='bg-[#FFF7ED] p-2 h-full'>
+      <div className=' p-2 h-full'>
         <div>
           {listedVans.map((van: Van) => (
             <VanListSummaryCard
@@ -57,7 +57,7 @@ export default function VanListSummary({ isListed = false }: VanListSummaryProps
     );
   }
   return (
-    <div className='bg-[#FFF7ED] p-2 h-full'>
+    <div className='p-2 h-full'>
       <div>
         {vans.map((van: Van) => (
           <VanListSummaryCard
