@@ -18,6 +18,7 @@ export default function VanListSummaryCard({ van }: VanListSummaryCardProps) {
         <div>
           <h3>{van.name}</h3>
           <p>${van.price}/day</p>
+          <p>Available? {van.available.toString()}</p>
         </div>
         <div className='ml-auto flex gap-1'>
           <Link
