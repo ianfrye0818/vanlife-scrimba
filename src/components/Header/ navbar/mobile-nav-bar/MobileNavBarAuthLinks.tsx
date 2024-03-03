@@ -43,7 +43,13 @@ export default function MobileNavBarAuthLinks() {
     <>
       <ListItem>
         <ListItemButton>
-          <SignInModal triggerButtonClassName='bg-orange-500 hover:bg-orange-600 w-full p-3' />
+          {/* <SignInModal triggerButtonClassName='bg-orange-500 hover:bg-orange-600 w-full p-3' /> */}
+          <Link
+            className='text-center block w-full p-2 bg-orange-500 hover:bg-orange-600'
+            to='/signin'
+          >
+            Sign In
+          </Link>
         </ListItemButton>
       </ListItem>
     </>
