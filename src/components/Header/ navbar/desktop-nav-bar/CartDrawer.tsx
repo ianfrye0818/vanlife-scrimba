@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { MdShoppingCart } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import RemoveItemDialog from '../../../ui/RemoveItemAlertDialog';
-import removeItem from '../../../../utils/removeItem';
+import { removeItem } from '../../../../utils/removeItem';
 import { useCart } from '../../../../hooks/useCart';
 import NoCartPage from '../../../../pages/cart/NoCartPage';
 
@@ -56,7 +56,7 @@ export default function CartDrawer() {
                   <span>{cart.van.name}</span>
                   <span>
                     <RemoveItemDialog
-                      actionCallback={() => removeItem(cart.van?.id as string, cart)}
+                      actionCallback={() => removeItem(cart)}
                       triggerClassNames='text-sm text-gray-500 cursor-pointer underline'
                       triggerText='Remove'
                     />

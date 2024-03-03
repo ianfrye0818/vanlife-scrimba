@@ -99,7 +99,6 @@ export default function OrderSummaryCard() {
 
     //update user data to show that they have a new order
     const userData = (await getItembyID('users', user.uid)) as UserData;
-    console.log(userData);
     if (userData.orders === undefined || userData.orders === null || userData.orders.length === 0) {
       await updateItem('users', user.uid, { orders: [orderId] });
     } else {

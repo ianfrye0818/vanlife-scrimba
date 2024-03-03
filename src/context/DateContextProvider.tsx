@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { Selected } from '@demark-pro/react-booking-calendar';
-import { useState, createContext, PropsWithChildren, useEffect } from 'react';
+import { useState, createContext, PropsWithChildren } from 'react';
 
 export const DateContext = createContext({
   selectedDates: [] as Selected[],

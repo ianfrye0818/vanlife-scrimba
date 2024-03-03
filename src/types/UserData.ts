@@ -1,4 +1,4 @@
-import { Order } from './CheckOutFormData';
+import { Order } from './Order';
 
 export type UserData = {
   name: string;
