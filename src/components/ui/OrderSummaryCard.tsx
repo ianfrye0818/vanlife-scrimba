@@ -81,12 +81,17 @@ export default function OrderSummaryCard() {
 
     //protect user data such as cc info
     const protectedData = protectData(data);
-
+    const hostData = (await getItembyID('users', cart.van?.uid as string)) as UserData;
+    if (!hostData) {
+      toast.error('Could not load van owner data, please try again later');
+      return;
+    }
     //create a new order and get order id
     const orderId = await createOrder(protectedData, cart, user.uid as string, total as number);
 
     //add tranasaction to host suer
-    const hostData = (await getItembyID('users', cart.van?.uid as string)) as UserData;
+
+    console.log(cart.van?.uid);
     if (
       hostData.transactions === undefined ||
       hostData.transactions === null ||
