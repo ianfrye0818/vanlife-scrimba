@@ -6,7 +6,7 @@ import notFoundImg from '../../assets/404-error-page-not-found-hand-hold-plug-gr
 
 export default function Component() {
   return (
-    <div className='flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900'>
+    <div className='flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 p-3'>
       <img
         src={notFoundImg}
         alt='404 error'
@@ -15,11 +15,11 @@ export default function Component() {
       <p className='text-2xl text-gray-600 dark:text-gray-400 mt-4'>
         Opps looks like we hit a snag!
       </p>
-      <p className='text-2xl text-gray-600 dark:text-gray-400 mt-4'>
+      <p className='text-center md:text-left text-2xl text-gray-600 dark:text-gray-400 mt-4'>
         The page you're looking for does not exist
       </p>
       <Link
-        className='mt-8 bg-orange-500 text-gray-100 py-2 px-4 rounded-md hover:bg-orange-600 '
+        className='w-full md:w-auto text-center mt-8 bg-orange-500 text-gray-100 py-2 px-4 rounded-md hover:bg-orange-600 '
         to='/'
       >
         Return to Homepage
