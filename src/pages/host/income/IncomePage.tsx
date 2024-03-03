@@ -60,6 +60,16 @@ export default function IncomePage() {
     );
   }
 
+  const vanSalesData = IncomeCalculations.getVansSoldByVan(transactions).map((van) => ({
+    name: van.vanName,
+    value: van.totalSales,
+  }));
+
+  const vanNightsData = IncomeCalculations.getVansSoldByVan(transactions).map((van) => ({
+    name: van.vanName,
+    value: van.totalNights,
+  }));
+
   return (
     <HostPageLayout>
       <div className='flex flex-col min-h-screen'>
@@ -137,7 +147,7 @@ export default function IncomePage() {
               <CardContent className='flex items-center justify-center'>
                 <BarChart
                   className='w-full aspect-[1.5]'
-                  transactions={IncomeCalculations.getVansSoldByVan(transactions)}
+                  data={vanSalesData}
                 />
               </CardContent>
             </Card>
@@ -152,7 +162,7 @@ export default function IncomePage() {
               <CardContent className='flex items-center justify-center'>
                 <BarChart
                   className='w-full aspect-[1.5]'
-                  transactions={IncomeCalculations.getVansSoldByVanLastThirtyDays(transactions)}
+                  data={vanNightsData}
                 />
               </CardContent>
             </Card>

@@ -1,25 +1,21 @@
 import { ResponsiveBar } from '@nivo/bar';
 
+type BarChartItem = {
+  name: string;
+  value: number;
+};
+
 type BarChartProps = {
-  transactions: {
-    numSold: number;
-    totalNights: number;
-    totalSales: number;
-    vanName: string;
-  }[];
+  data: BarChartItem[];
   className?: string;
 };
 
-export default function BarChart({ transactions, className }: BarChartProps) {
-  const data = transactions.map((van) => ({
-    name: van.vanName,
-    Sales: van.totalSales,
-  }));
+export default function BarChart({ data, className }: BarChartProps) {
   return (
     <div className={className}>
       <ResponsiveBar
         data={data}
-        keys={['Sales']}
+        keys={['value']}
         indexBy='name'
         margin={{ top: 0, right: 0, bottom: 40, left: 40 }}
         padding={0.3}
