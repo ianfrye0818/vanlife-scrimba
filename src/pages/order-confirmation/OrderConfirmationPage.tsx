@@ -113,7 +113,7 @@ export default function OrderConfirmationPage() {
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle>Shipping Address</CardTitle>
+                <CardTitle>Customer Address</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className='text-sm'>
